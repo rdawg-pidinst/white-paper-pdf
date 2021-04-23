@@ -76,7 +76,6 @@
 }
 
 \newcommand{\sphinxtableofcontents}{%
-  \pagenumbering{roman}%
   \begingroup
     \parskip \z@skip
     \tableofcontents
