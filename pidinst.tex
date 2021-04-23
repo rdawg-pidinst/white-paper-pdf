@@ -23,6 +23,7 @@
 \usepackage{babel}
 \usepackage{times}
 \usepackage{chngcntr}
+\usepackage{wrapfig}
 \usepackage[Bjarne]{fncychap}
 \usepackage[,numfigreset=1,mathnumfig]{sphinx}
 
@@ -82,8 +83,9 @@
 \pagestyle{plain}
 \pagenumbering{roman}
 \phantomsection\label{\detokenize{index::doc}}
-\noindent{\hspace*{\fill}\sphinxincludegraphics[width=100\sphinxpxdimen]{{pidinst-logo}.pdf}}
-
+\begin{wrapfigure}{r}{100\sphinxpxdimen}
+  \sphinxincludegraphics[width=100\sphinxpxdimen]{{pidinst-logo}.pdf}
+\end{wrapfigure}
 The \sphinxhref{https://www.rd-alliance.org/groups/persistent-identification-instruments-wg}{Persistent Identification of Instruments WG (PIDINST)} seeks to explore a community-driven solution for globally
 unique identification of measuring instruments operated in the
 sciences.
@@ -124,24 +126,19 @@ Detailed instructions on how to create instrument PIDs using the
 ePIC infrastructure.
 
 \end{itemize}
-
-\sphinxhref{https://creativecommons.org/licenses/by/4.0/}{{\hspace*{\fill}\sphinxincludegraphics[width=88\sphinxpxdimen]{{cc-by}.pdf}}}
-
-The content of this site is licensed under a \sphinxhref{https://creativecommons.org/licenses/by/4.0/}{Creative Commons
-Attribution 4.0 International License}.
+\bigskip
 
 \begin{savenotes}\sphinxattablestart
 \centering
-\begin{tabular}[t]{|*{2}{\X{1}{2}|}}
+\begin{tabular}[t]{|l|l|}
 \hline
-
 Document type
-&
-\begin{DUlineblock}{0em}
-\item[] Research Data Alliance (RDA)
-\item[] Persistent Identification of Instruments (PIDINST)
-\item[] working group output report
-\end{DUlineblock}
+&\noindent
+\begin{minipage}[t]{0.45\linewidth}
+Research Data Alliance (RDA) \\
+Persistent Identification of Instruments (PIDINST) \\
+working group output report
+\end{minipage}
 \\
 \hline
 Version
@@ -157,6 +154,14 @@ Date
 \end{tabular}
 \par
 \sphinxattableend\end{savenotes}
+
+\vfill
+
+\sphinxhref{https://creativecommons.org/licenses/by/4.0/}{{\sphinxincludegraphics[width=88\sphinxpxdimen]{{cc-by}.pdf}}}
+
+This document site is licensed under
+a \sphinxhref{https://creativecommons.org/licenses/by/4.0/}{Creative
+Commons Attribution 4.0 International License}.
 
 \clearpage
 \section*{Contributors}
