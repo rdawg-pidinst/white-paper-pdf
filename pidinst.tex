@@ -22,6 +22,7 @@
 \usepackage{amsmath,amssymb,amstext}
 \usepackage{babel}
 \usepackage{times}
+\usepackage{chngcntr}
 \usepackage[Bjarne]{fncychap}
 \usepackage[,numfigreset=1,mathnumfig]{sphinx}
 
@@ -34,6 +35,15 @@
 \usepackage{hypcap}% it must be loaded after hyperref.
 % Set up styles of URL: it should be placed after hyperref.
 \urlstyle{same}
+
+% Suppress chapter numbering
+\makeatletter
+\renewcommand\thechapter  {\relax}
+\renewcommand\thesection  {\@arabic\c@section}
+\makeatother
+\counterwithin{table}{section}
+\counterwithin{figure}{section}
+\counterwithin{literalblock}{section}
 
 \addto\captionsenglish{\renewcommand{\figurename}{Figure }}
 \makeatletter
