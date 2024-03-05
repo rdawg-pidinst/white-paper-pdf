@@ -4,29 +4,47 @@
 \ifdefined\pdfpxdimen
    \let\sphinxpxdimen\pdfpxdimen\else\newdimen\sphinxpxdimen
 \fi \sphinxpxdimen=.75bp\relax
+\ifdefined\pdfimageresolution
+    \pdfimageresolution= \numexpr \dimexpr1in\relax/\sphinxpxdimen\relax
+\fi
+%% let collapsible pdf bookmarks panel have high depth per default
+\PassOptionsToPackage{bookmarksdepth=5}{hyperref}
 
 \PassOptionsToPackage{warn}{textcomp}
 \usepackage[utf8]{inputenc}
 \ifdefined\DeclareUnicodeCharacter
 % support both utf8 and utf8x syntaxes
-\edef\sphinxdqmaybe{\ifdefined\DeclareUnicodeCharacterAsOptional\string"\fi}
-  \DeclareUnicodeCharacter{\sphinxdqmaybe00A0}{\nobreakspace}
-  \DeclareUnicodeCharacter{\sphinxdqmaybe2500}{\sphinxunichar{2500}}
-  \DeclareUnicodeCharacter{\sphinxdqmaybe2502}{\sphinxunichar{2502}}
-  \DeclareUnicodeCharacter{\sphinxdqmaybe2514}{\sphinxunichar{2514}}
-  \DeclareUnicodeCharacter{\sphinxdqmaybe251C}{\sphinxunichar{251C}}
-  \DeclareUnicodeCharacter{\sphinxdqmaybe2572}{\textbackslash}
+  \ifdefined\DeclareUnicodeCharacterAsOptional
+    \def\sphinxDUC#1{\DeclareUnicodeCharacter{"#1}}
+  \else
+    \let\sphinxDUC\DeclareUnicodeCharacter
+  \fi
+  \sphinxDUC{00A0}{\nobreakspace}
+  \sphinxDUC{2500}{\sphinxunichar{2500}}
+  \sphinxDUC{2502}{\sphinxunichar{2502}}
+  \sphinxDUC{2514}{\sphinxunichar{2514}}
+  \sphinxDUC{251C}{\sphinxunichar{251C}}
+  \sphinxDUC{2572}{\textbackslash}
 \fi
 \usepackage{cmap}
 \usepackage[T1]{fontenc}
 \usepackage{amsmath,amssymb,amstext}
 \usepackage{babel}
-\usepackage{times}
+
+
+
+\usepackage{tgtermes}
+\usepackage{tgheros}
+\renewcommand{\ttdefault}{txtt}
+
+
+
 \usepackage[Bjarne]{fncychap}
 \usepackage[,numfigreset=1,mathnumfig]{sphinx}
 
-\fvset{fontsize=\small}
+\fvset{fontsize=auto}
 \usepackage{geometry}
+
 
 % Include hyperref last.
 \usepackage{hyperref}
@@ -35,24 +53,8 @@
 % Set up styles of URL: it should be placed after hyperref.
 \urlstyle{same}
 
-\addto\captionsenglish{\renewcommand{\figurename}{Figure }}
-\makeatletter
-\def\fnum@figure{\figurename\thefigure{}}
-\makeatother
-\addto\captionsenglish{\renewcommand{\tablename}{Table }}
-\makeatletter
-\def\fnum@table{\tablename\thetable{}}
-\makeatother
-\addto\captionsenglish{\renewcommand{\literalblockname}{Snippet}}
 
-\addto\captionsenglish{\renewcommand{\literalblockcontinuedname}{continued from previous page}}
-\addto\captionsenglish{\renewcommand{\literalblockcontinuesname}{continues on next page}}
-\addto\captionsenglish{\renewcommand{\sphinxnonalphabeticalgroupname}{Non-alphabetical}}
-\addto\captionsenglish{\renewcommand{\sphinxsymbolsname}{Symbols}}
-\addto\captionsenglish{\renewcommand{\sphinxnumbersname}{Numbers}}
-
-\addto\extrasenglish{\def\pageautorefname{page}}
-
+\usepackage{sphinxmessages}
 \setcounter{tocdepth}{1}
 
 
@@ -76,10 +78,12 @@
 
 
 
-The \sphinxhref{https://www.rd-alliance.org/groups/persistent-identification-instruments-wg}{Persistent Identification of Instruments WG (PIDINST)} seeks to explore a community-driven solution for globally
+\sphinxAtStartPar
+The \sphinxhref{https://www.rd-alliance.org/groups/persistent-identification-instruments-wg}{Persistent Identification of Instruments WG (PIDINST)} seeks to explore a community\sphinxhyphen{}driven solution for globally
 unique identification of measuring instruments operated in the
 sciences.
 
+\sphinxAtStartPar
 Measuring instruments, such as sensors used in environmental science,
 DNA sequencers used in life sciences or laboratory engines used for
 medical domains, are widespread in most fields of applied sciences.
@@ -90,13 +94,16 @@ manufacturers, etc., is critical, especially for automated processing
 of such contextual information and for the interpretation of generated
 data.
 
-PIDINST is a working group in the \sphinxhref{https://www.rd-alliance.org/}{Research Data Alliance (RDA)}.  It aims to establish a cross-discipline, operational
+\sphinxAtStartPar
+PIDINST is a working group in the \sphinxhref{https://www.rd-alliance.org/}{Research Data Alliance (RDA)}.  It aims to establish a cross\sphinxhyphen{}discipline, operational
 solution for the unique and lasting identification of measuring
 instruments actively operated in the sciences.
 
+\sphinxAtStartPar
 The group produced the following outputs:
 \begin{itemize}
 \item {} 
+\sphinxAtStartPar
 Stocker, M, Darroch, L, Krahl, R, Habermann, T, Devaraju, A,
 Schwardmann, U, D’Onofrio, C and Häggström, I.  2020.  Persistent
 Identification of Instruments.  Data Science Journal, 19: 18,
@@ -104,6 +111,7 @@ pp. 1\textendash{}12.  DOI: \sphinxurl{https://doi.org/10.5334/dsj-2020-018}
 This paper provides an overview of the work of PIDINST.
 
 \item {} 
+\sphinxAtStartPar
 {\hyperref[\detokenize{white-paper/index:white-paper}]{\sphinxcrossref{\DUrole{std,std-ref}{PIDINST White Paper}}}} 
 This white paper provides recommendations for the use of instrument
 PIDs and gives technical details that go beyond the overview
@@ -111,6 +119,7 @@ provided in the Data Science Journal paper.  It is expected to
 evolve with new user requirements and working group activities.
 
 \item {} 
+\sphinxAtStartPar
 {\hyperref[\detokenize{cookbook/index:epic-cookbook}]{\sphinxcrossref{\DUrole{std,std-ref}{ePIC Cookbook}}}} 
 Detailed instructions on how to create instrument PIDs using the
 ePIC infrastructure.
@@ -119,6 +128,7 @@ ePIC infrastructure.
 
 \sphinxhref{https://creativecommons.org/licenses/by/4.0/}{{\hspace*{\fill}\sphinxincludegraphics[width=88\sphinxpxdimen]{{cc-by}.pdf}}}
 
+\sphinxAtStartPar
 The content of this site is licensed under a \sphinxhref{https://creativecommons.org/licenses/by/4.0/}{Creative Commons
 Attribution 4.0 International License}.
 
@@ -131,6 +141,7 @@ Attribution 4.0 International License}.
 \begin{tabular}[t]{|*{2}{\X{1}{2}|}}
 \hline
 
+\sphinxAtStartPar
 Document type
 &
 \begin{DUlineblock}{0em}
@@ -140,13 +151,17 @@ Document type
 \end{DUlineblock}
 \\
 \hline
+\sphinxAtStartPar
 Version
 &
+\sphinxAtStartPar
 1.0b1
 \\
 \hline
+\sphinxAtStartPar
 Date
 &
+\sphinxAtStartPar
 19 April 2021
 \\
 \hline
@@ -160,6 +175,7 @@ Date
 
 \subsection{Overview}
 \label{\detokenize{white-paper/overview:overview}}\label{\detokenize{white-paper/overview::doc}}
+\sphinxAtStartPar
 This white paper provides recommendations for the use of instrument
 Persistent Identifiers (PIDs) for institutional instrument providers,
 such as bodies who fund, maintain or provide instruments, or are
@@ -181,17 +197,19 @@ new user requirements and working group activities.
 
 \subsection{Instrument PIDs}
 \label{\detokenize{white-paper/instrument-pids:instrument-pids}}\label{\detokenize{white-paper/instrument-pids::doc}}
+\sphinxAtStartPar
 The PIDINST PID is used to identify measuring instruments, defined by
 the Joint Committee for Guides in Metrology (JCGM) as “device used for
 making measurements, alone or in conjunction with one or more
 supplementary devices” (VIM, 2012). It is used to identify the devices
-themselves (instances), the real-world assets with instantaneous
+themselves (instances), the real\sphinxhyphen{}world assets with instantaneous
 capabilities and configurations, rather than the identification of
 material instrument designs (models).
 
 
 \subsection{Publishing new instrument PIDs}
 \label{\detokenize{white-paper/publishing:publishing-new-instrument-pids}}\label{\detokenize{white-paper/publishing::doc}}
+\sphinxAtStartPar
 To create new PIDs and assign them to instruments, institutional
 instrument providers will submit a metadata record following the PIDINST
 metadata schema and a URL for the landing page of the instrument to a
@@ -206,12 +224,14 @@ providers; others may implement the schema, too.
 
 \subsection{PIDINST metadata schema}
 \label{\detokenize{white-paper/metadata-schema:pidinst-metadata-schema}}\label{\detokenize{white-paper/metadata-schema:id1}}\label{\detokenize{white-paper/metadata-schema::doc}}
+\sphinxAtStartPar
 The metadata that is to be registered with an instrument PID need to
 contain enough information to unambiguously identify the
 instrument across networks and infrastructures.  It furthermore allows
 to link resources related to the instrument and thus provides a mean
 to aggregate information about the instrument.
 
+\sphinxAtStartPar
 Currently, two variants of the metadata schema exist.  The original
 \sphinxhref{https://github.com/rdawg-pidinst/schema/blob/master/schema.rst}{PIDINST schema}, based on the evaluation of use cases collected by
 the working group, is used for prototypical implementation of metadata
@@ -222,18 +242,22 @@ describe the properties in the original PIDINST schema and discuss
 their semantics:
 \begin{description}
 \item[{\sphinxtitleref{Identifier}}] \leavevmode
+\sphinxAtStartPar
 The PID of the instrument.  The subproperty
 \sphinxtitleref{identifierType} contains the type of the PID, e.g. \sphinxtitleref{Handle} or
 \sphinxtitleref{DOI} in the case of an ePIC Handle or a DataCite DOI respectively.
 
 \item[{\sphinxtitleref{LandingPage}}] \leavevmode
+\sphinxAtStartPar
 The URL of the landing page that the PID resolves to.
 
 \item[{\sphinxtitleref{Name}}] \leavevmode
+\sphinxAtStartPar
 The name by which this instrument is known.  It should preferably be
 meaningful and unique within the organization that manages it.
 
 \item[{\sphinxtitleref{Owner}}] \leavevmode
+\sphinxAtStartPar
 The organization or individual that manages the instrument.  This
 may or may not be the legal owner.  It could also be an organization
 that hosts or operates the instrument, manages its deployment, or
@@ -241,11 +265,13 @@ provides access to it.  In case of doubt, it would be the instance
 that a potential user would reach out to in order to get access.
 There may be more then one owner registered in the metadata.
 
+\sphinxAtStartPar
 \sphinxtitleref{Owner} is a complex property having at least the subproperty
 \sphinxtitleref{ownerName} and optionally a contact address in \sphinxtitleref{ownerContact} and a
 persistent identifier of the owner in \sphinxtitleref{ownerIdentifier}.
 
 \item[{\sphinxtitleref{Manufacturer}}] \leavevmode
+\sphinxAtStartPar
 The organization or individual that built the instrument.  In the
 case of an off the shelf product, this will probably be a commercial
 company that put the instrument on the market.  In the case of an
@@ -256,11 +282,13 @@ instance that defined the technical specification of the instrument.
 Again, there may be more then one manufacturer registered in the
 metadata.
 
+\sphinxAtStartPar
 In the same way as \sphinxtitleref{Owner}, \sphinxtitleref{Manufacturer} is a complex property
 with subproperties \sphinxtitleref{manufacturerName}, \sphinxtitleref{manufacturerContact}, and
 \sphinxtitleref{manufacturerIdentifier}.
 
 \item[{\sphinxtitleref{Model}}] \leavevmode
+\sphinxAtStartPar
 The name of the model or type of the instrument.  In the
 case of an off the shelf product, this may be a brand name
 attributed by the manufacturer.  In the case of an custom built
@@ -270,11 +298,13 @@ optional subproperty \sphinxtitleref{modelIdentifier} to be used if a persistent
 identifier for the model is known.
 
 \item[{\sphinxtitleref{Description}}] \leavevmode
+\sphinxAtStartPar
 A textual description of the device and its capabilities.  This is
 mostly targeted to a human reader and should provide a notion of
 what this instrument is and what it can do.
 
 \item[{\sphinxtitleref{InstrumentType}}] \leavevmode
+\sphinxAtStartPar
 A classification of the type of the instrument.  At present, there
 is no global classification scheme that would apply to instruments
 in all scientific domains.  Some communities have established
@@ -285,34 +315,40 @@ Otherwise, a textual description of the type of the instrument may
 be used.
 
 \item[{\sphinxtitleref{MeasuredVariable}}] \leavevmode
+\sphinxAtStartPar
 The variables or physical properties that the instrument measures or
 observes.  Again, there is no overarching classification scheme
 established in all scientific domains at present, but specific
 classification should be used if applicable.
 
 \item[{\sphinxtitleref{Date}}] \leavevmode
+\sphinxAtStartPar
 Relevant events pertaining to this instrument instance, such as when
 it has started and ended to be in operation.  Each \sphinxtitleref{Date} need to
 have a \sphinxtitleref{dateType} subproperty to specify the nature of the event.
 
 \item[{\sphinxtitleref{RelatedIdentifier}}] \leavevmode
+\sphinxAtStartPar
 This can be used to establish links to related resources, such as
 documents describing the instrument or external metadata records,
 possibly using other metadata standards to provide more details
 about the instrument.
 
+\sphinxAtStartPar
 Another application might be, if an instrument has been
 substantially modified, it would make sense to issue a new PID for
 the modified instrument with a new metadata record.  In this case
 both PIDs should relate to each other to indicate that one is a new
 version of the other.
 
+\sphinxAtStartPar
 Furthermore, in the case of a complex instrument, it can make sense
 to issue PIDs for individual components, such as an individual
 detector in a larger experimental station.  In this case, the
 relation between the complex instrument and its components should be
 established by creating links between the respective PIDs.
 
+\sphinxAtStartPar
 The links established using this property are particuarly useful as
 they allow the automatic aggregation of a rich set of information
 about the instrument.  Each \sphinxtitleref{RelatedIdentifier} needs to have
@@ -321,6 +357,7 @@ the type of the related PID and the type of the relation
 respectively.
 
 \item[{\sphinxtitleref{AlternateIdentifier}}] \leavevmode
+\sphinxAtStartPar
 If the instrument instance is also registered elsewhere, aside from
 the persistent identifier, \sphinxtitleref{AlternateIdentifier} is the place to
 store a reference to these register entries.  Common use cases are
@@ -329,6 +366,7 @@ used by the owner.  But also other instrument databases or access
 portals may hold an entry for the instrument that should be
 referenced from the PIDINST metadata.
 
+\sphinxAtStartPar
 The subproperty \sphinxtitleref{alternateIdentifierType} needs to specify the kind
 of the alternate identifier.  Standardized values should be used
 where applicable.  For serial and inventory numbers, the suggested
@@ -339,6 +377,7 @@ values are \sphinxtitleref{serialNumber} and \sphinxtitleref{inventoryNumber} re
 
 \subsection{Recommendations using the PIDINST metadata schema}
 \label{\detokenize{white-paper/metadata-schema-recommendations:recommendations-using-the-pidinst-metadata-schema}}\label{\detokenize{white-paper/metadata-schema-recommendations:pidinst-metadata-schema-recommendations}}\label{\detokenize{white-paper/metadata-schema-recommendations::doc}}
+\sphinxAtStartPar
 We recommend that an instrument’s associated metadata is published in a common language,
 specifically US English to enable its reuse.  In the following section, we provide
 advanced recommendations on how to specify the values in the PIDINST
@@ -347,6 +386,7 @@ metadata and discuss special cases.
 
 \subsubsection{Using common terminologies}
 \label{\detokenize{white-paper/metadata-schema-recommendations:using-common-terminologies}}\label{\detokenize{white-paper/metadata-schema-recommendations:pidinst-metadata-schema-terminologies}}
+\sphinxAtStartPar
 Common terminologies such as controlled vocabularies, taxonomies or
 ontologies, are sets of standardised terms that solve the problem of
 ambiguities associated with metadata markup and enable records to be
@@ -354,15 +394,15 @@ shared and interpreted semantically by computers. Many terminologies
 exist, covering a broad spectrum of disciplines and their best
 practices. The PIDINST schema is designed to complement
 multidisciplinary best practices for property values. Many properties
-allow for soft-typing (e.g., \sphinxstyleemphasis{ownerName}), giving users the ability to
-use values of their choice, such as free text or domain-specific
+allow for soft\sphinxhyphen{}typing (e.g., \sphinxstyleemphasis{ownerName}), giving users the ability to
+use values of their choice, such as free text or domain\sphinxhyphen{}specific
 terminologies. Property attributes enable users and machines to
 understand the context of the value (e.g., \sphinxstyleemphasis{ownerIdentifier},
 \sphinxstyleemphasis{ownerIdentifierType}), again using free text or standardised
 terminologies. While free text is allowed, institutions should consider
 using common terminologies where practical to enhance the (semantic)
 interoperability of PID records, particularly where they form part of
-domain-specific best practice. For example, a comprehensive set of
+domain\sphinxhyphen{}specific best practice. For example, a comprehensive set of
 terminologies that describe \sphinxstyleemphasis{instrumentType} or the recently added
 \sphinxstyleemphasis{Model} (via \sphinxstyleemphasis{modelIdentifier}) are used widely in the Earth science
 marine domain (\sphinxurl{http://vocab.nerc.ac.uk/collection/L22/current/},
@@ -376,23 +416,26 @@ in \hyperref[\detokenize{white-paper/metadata-schema-recommendations:tab-schema-
 \sphinxcapstartof{table}
 \sphinxthecaptionisattop
 \sphinxcaption{Handle record of instrument identifier
-       http://hdl.handle.net/21.T11998/0000-001A-3905-F displaying
+       http://hdl.handle.net/21.T11998/0000\sphinxhyphen{}001A\sphinxhyphen{}3905\sphinxhyphen{}F displaying
        the use of common terminologies to identify instrument
        metadata compliant with the PIDINST schema as implemented
        by ePIC. The terminologies used are published on the NERC
        Vocabulary Server (NVS). The data for each
        metadata property is provided in JSON. The Handle record
        can be viewed at
-       http://hdl.handle.net/21.T11998/0000-001A-3905-F?noredirect}\label{\detokenize{white-paper/metadata-schema-recommendations:id4}}\label{\detokenize{white-paper/metadata-schema-recommendations:tab-schema-handle-record}}
+       http://hdl.handle.net/21.T11998/0000\sphinxhyphen{}001A\sphinxhyphen{}3905\sphinxhyphen{}F?noredirect}\label{\detokenize{white-paper/metadata-schema-recommendations:id4}}\label{\detokenize{white-paper/metadata-schema-recommendations:tab-schema-handle-record}}
 \sphinxaftertopcaption
 \begin{tabular}[t]{|*{2}{\X{1}{2}|}}
 \hline
 \sphinxstyletheadfamily 
+\sphinxAtStartPar
 Type
 &\sphinxstyletheadfamily 
+\sphinxAtStartPar
 Data
 \\
 \hline
+\sphinxAtStartPar
 URL
 &
 \begin{sphinxVerbatimintable}[commandchars=\\\{\}]
@@ -599,6 +642,7 @@ data storage.
 
 \subsubsection{Using other PIDs}
 \label{\detokenize{white-paper/metadata-schema-recommendations:using-other-pids}}
+\sphinxAtStartPar
 The PIDINST metadata may contain references to related entities at
 various places.  Obviously, these references should preferably use
 persistent identifiers whenever applicable.  Different types of PIDs
@@ -606,18 +650,22 @@ are recommended depending on the nature of the referenced entity.  The
 most common cases are:
 \begin{itemize}
 \item {} 
+\sphinxAtStartPar
 other instruments may be referenced in several cases.  The most
 common PID types are Handles and DOIs here.
 
 \item {} 
+\sphinxAtStartPar
 organizations that may appear as owner or manufacturer may be
 referenced using a \sphinxhref{https://ror.org/}{ROR}.
 
 \item {} 
+\sphinxAtStartPar
 the most common PID for individuals that may appear as owner or
 manufacturer is the \sphinxhref{https://orcid.org/}{ORCID} iD.
 
 \item {} 
+\sphinxAtStartPar
 the \sphinxhref{https://www.rrids.org/}{RRID} is common in the biological sciences and may be used to
 reference a class of instruments, see next subsection.
 
@@ -626,6 +674,7 @@ reference a class of instruments, see next subsection.
 
 \paragraph{RRIDs}
 \label{\detokenize{white-paper/metadata-schema-recommendations:rrids}}
+\sphinxAtStartPar
 In a similar way to common terminologies, persistent identifiers have
 been created to help users classify and accurately describe physical
 objects.  The research resource identifier (RRID) can be used to identify
@@ -633,10 +682,10 @@ classes of instruments (models) and is thus related to PIDINST, which
 identifies instrument instances.%
 \begin{footnote}[1]\sphinxAtStartFootnote
 Bandrowski A, Brush M, Grethe JS, Haendel MA, Kennedy DN, Hill S, Hof
-PR, Martone ME, Pols M, Tan SC, Washington N, Zudilova-Seinstra E,
+PR, Martone ME, Pols M, Tan SC, Washington N, Zudilova\sphinxhyphen{}Seinstra E,
 Vasilevsky N. \sphinxhref{https://pubmed.ncbi.nlm.nih.gov/26599696/}{The Resource Identification Initiative: A Cultural
 Shift in Publishing.} J
-Comp Neurol. 2016 Jan 1;524(1):8-22.
+Comp Neurol. 2016 Jan 1;524(1):8\sphinxhyphen{}22.
 \sphinxurl{https://doi.org/10.1002/cne.23913}
 %
 \end{footnote} This work is undertaken
@@ -657,6 +706,7 @@ UsedIT, will be interoperable with instrument instance (PIDINST) PIDs.
 This interoperability should enable any project to quickly download
 data about the model to consistently fill mapped fields.
 
+\sphinxAtStartPar
 Why RRIDs? RRIDs are currently used in about 1000 journals to tag
 classes of research resources (including reagents like antibodies or
 plasmids, organisms, cell lines, and a relatively broad category of
@@ -666,7 +716,7 @@ as models of sequencers or microscopes). Because RRIDs were created as
 an agreement between a group of biological journals and the National
 Institutes of Health, they are most commonly found and linked in the
 biological sciences literature (e.g., Cell, eLife), they are part of the
-JATS NISO standard, STAR Methods, and the MDAR pan-publisher
+JATS NISO standard, STAR Methods, and the MDAR pan\sphinxhyphen{}publisher
 reproducibility checklist, resolved by identifiers.org and the n2t
 resolver and echoed by some of the major reagent providers (e.g., Thermo
 Fisher, Addgene, and the MMRRC mouse repository).
@@ -681,79 +731,114 @@ Fisher, Addgene, and the MMRRC mouse repository).
 \begin{tabulary}{\linewidth}[t]{|T|T|T|T|T|T|}
 \hline
 \sphinxstyletheadfamily 
+\sphinxAtStartPar
 ID
 &\sphinxstyletheadfamily 
+\sphinxAtStartPar
 Property
 &\sphinxstyletheadfamily 
+\sphinxAtStartPar
 Obligation
 &\sphinxstyletheadfamily 
+\sphinxAtStartPar
 Occ.
 &\sphinxstyletheadfamily 
+\sphinxAtStartPar
 Definition
 &\sphinxstyletheadfamily 
+\sphinxAtStartPar
 Allowed values, constraints, remarks
 \\
 \hline
+\sphinxAtStartPar
 6
 &
+\sphinxAtStartPar
 Model
 &
+\sphinxAtStartPar
 R
 &
-0-1
+\sphinxAtStartPar
+0\sphinxhyphen{}1
 &
+\sphinxAtStartPar
 Name of the model or type of device as attributed
 by the manufacturer
 &
+\sphinxAtStartPar
 Element
 \\
 \hline
+\sphinxAtStartPar
 6.1
 &
+\sphinxAtStartPar
 modelName
 &
+\sphinxAtStartPar
 R
 &
+\sphinxAtStartPar
 1
 &
+\sphinxAtStartPar
 Full name of the model
 &
+\sphinxAtStartPar
 Name field from RRID
 
+\sphinxAtStartPar
 E.g.
 
+\sphinxAtStartPar
 ‘Illumina HiSeq 3000/HiSeq 4000 System’
 \\
 \hline
+\sphinxAtStartPar
 6.2
 &
+\sphinxAtStartPar
 modelIdentifier
 &
+\sphinxAtStartPar
 O
 &
-0-1
+\sphinxAtStartPar
+0\sphinxhyphen{}1
 &
+\sphinxAtStartPar
 Persistent identifier of the model
 &
+\sphinxAtStartPar
 RRID identifier
 
+\sphinxAtStartPar
 E.g.
 
+\sphinxAtStartPar
 ‘RRID:SCR\_016386’
 \\
 \hline
+\sphinxAtStartPar
 6.2.1
 &
+\sphinxAtStartPar
 modelIdentifierType
 &
+\sphinxAtStartPar
 O
 &
+\sphinxAtStartPar
 1
 &
+\sphinxAtStartPar
 Type of the identifier
 &
+\sphinxAtStartPar
 Free text; must be identifier type
 
+\sphinxAtStartPar
 E.g. ‘RRID’
 \\
 \hline
@@ -764,6 +849,7 @@ E.g. ‘RRID’
 
 \subsubsection{Dealing with unknown information}
 \label{\detokenize{white-paper/metadata-schema-recommendations:dealing-with-unknown-information}}
+\sphinxAtStartPar
 There are situations where it is not possible or not appropriate to
 provide some piece of information that should normally be present in
 the metadata.  This may for instance happen, if this information is
@@ -774,6 +860,7 @@ that contributes measurements to a citizen science project, but who
 prefers to remain anonymous for privacy reasons.  That person might
 not want to be named as the owner of the instrument taking the data.
 
+\sphinxAtStartPar
 In all these cases it is still useful to make it at least explicit
 that this information has not been omitted inadvertently and also to
 give a reason why it is missing.  For this purpose, PIDINST adopts the
@@ -801,6 +888,7 @@ Version 4.3.  DataCite e.V.  \sphinxurl{https://doi.org/10.14454/7xq3-zf69}
   \PYG{n+nt}{\PYGZlt{}/manufacturers\PYGZgt{}}
 \end{sphinxVerbatim}
 
+\sphinxAtStartPar
 \hyperref[\detokenize{white-paper/metadata-schema-recommendations:snip-schema-unknown-xml}]{Snippet \ref{\detokenize{white-paper/metadata-schema-recommendations:snip-schema-unknown-xml}}} demonstrates the use of standard
 values for unknown information in the metadata of an instrument PID.
 It shows an instrument that has not yet been assigned a name, e.g. it
@@ -814,6 +902,7 @@ refused to be disclosed and the manufacturer is not known.
 
 \subsubsection{Central registration at PID providers}
 \label{\detokenize{white-paper/registration:central-registration-at-pid-providers}}
+\sphinxAtStartPar
 The following resources (\hyperref[\detokenize{white-paper/registration:tab-register-guidance}]{Table \ref{\detokenize{white-paper/registration:tab-register-guidance}}}) provide
 technical guidance for institutions to publish and manage PID records
 at PID providers compliant with RDA PIDINST recommendations.
@@ -832,24 +921,33 @@ at PID providers compliant with RDA PIDINST recommendations.
 \begin{tabulary}{\linewidth}[t]{|T|T|T|}
 \hline
 \sphinxstyletheadfamily 
+\sphinxAtStartPar
 PID provider
 &\sphinxstyletheadfamily 
+\sphinxAtStartPar
 Technical resource
 &\sphinxstyletheadfamily 
+\sphinxAtStartPar
 Metadata schema
 \\
 \hline
+\sphinxAtStartPar
 ePIC
 &
+\sphinxAtStartPar
 {\hyperref[\detokenize{cookbook/index:epic-cookbook}]{\sphinxcrossref{\DUrole{std,std-ref}{ePIC Cookbook}}}}
 &
+\sphinxAtStartPar
 \sphinxhref{https://github.com/rdawg-pidinst/schema/blob/master/schema.rst}{PIDINST}
 \\
 \hline
+\sphinxAtStartPar
 DataCite
 &
+\sphinxAtStartPar
 \sphinxurl{https://datacite.org/dois.html}
 &
+\sphinxAtStartPar
 \sphinxhref{https://github.com/rdawg-pidinst/schema/blob/master/schema-datacite.rst}{PIDINST to DataCite}
 \\
 \hline
@@ -860,10 +958,11 @@ DataCite
 
 \subsubsection{Local registration at institutional instrument providers}
 \label{\detokenize{white-paper/registration:local-registration-at-institutional-instrument-providers}}
+\sphinxAtStartPar
 In order to register instrument PIDs at a provider service,
 institutional instrument providers must publish a landing page for each
 instrument PID to resolve to. These publications might be encoded using
-standard markup languages (e.g. HTML), structured, machine-actionable
+standard markup languages (e.g. HTML), structured, machine\sphinxhyphen{}actionable
 web resources (e.g. World Wide Consortium’s (W3C) Linked Data), or
 specialist standards for describing instruments and their inherited
 properties and processes (e.g. Open Geospatial Consortium’s (OGC)
@@ -877,6 +976,7 @@ locator to the PID’s metadata record.
 
 \subsection{Dealing with duplication}
 \label{\detokenize{white-paper/duplication:dealing-with-duplication}}\label{\detokenize{white-paper/duplication::doc}}
+\sphinxAtStartPar
 Duplication between identifier records is not a new problem and is
 common to many applications (e.g. bibliographic, medical records). While
 PIDINST identifiers are considered globally persistent it is accepted
@@ -886,6 +986,7 @@ facilities (e.g. large scale synchrotrons, medical laboratories,
 computational facilities). Such duplication may lead to inaccurate
 statistics or reporting about instrument assets.
 
+\sphinxAtStartPar
 It is recommended that owners of instruments try to employ workflows and
 procedures that avoid duplication in the first instance. Where this has
 not been possible, it is recommended that instrument owners employ
@@ -913,6 +1014,7 @@ with a \sphinxstyleemphasis{relationType} attribute \sphinxstyleemphasis{IsIdent
   \PYG{p}{\PYGZcb{}}\PYG{p}{]}
 \end{sphinxVerbatim}
 
+\sphinxAtStartPar
 Recent advances in technologies are expanding to algorithms that
 automatically detect and resolve deduplication. While such methodologies
 have been known to improve the efficiency of detection in large
@@ -921,12 +1023,13 @@ algorithms may be limited by heterogeneous representations for example,
 by the use of differing semantics. While automatic detection is
 encouraged, the PIDINST schema is designed to complement
 multidisciplinary best practices for property values and many properties
-allow for soft-typing, giving users the ability to use values of their
-choice, such as free text or domain-specific standards.
+allow for soft\sphinxhyphen{}typing, giving users the ability to use values of their
+choice, such as free text or domain\sphinxhyphen{}specific standards.
 
 
 \subsection{Linking physical objects}
 \label{\detokenize{white-paper/physical-objects:linking-physical-objects}}\label{\detokenize{white-paper/physical-objects::doc}}
+\sphinxAtStartPar
 Instruments and their individual configuration represent the major
 reference for the origin of a broad spectrum of data. As such, both
 become part of the Internet of Things (IoT) and therefore it is of key
@@ -936,13 +1039,14 @@ catalogue metadata. Thus, to ultimately allow the “mapping the real
 world into the virtual world”.%
 \begin{footnote}[1]\sphinxAtStartFootnote
 Atzori, Luigi \& Iera, Antonio \& Morabito, Giacomo. (2010). The
-Internet of Things: A Survey. Computer Networks. 2787-2805.
+Internet of Things: A Survey. Computer Networks. 2787\sphinxhyphen{}2805.
 10.1016/j.comnet.2010.05.010.
 %
 \end{footnote} This kind of access is
 essential to reproduce science as it allows us to compare experimental
 setup and to repeat analyses.
 
+\sphinxAtStartPar
 The most trivial but failsafe method to link physical objects with their
 virtual representation would be to permanently label an instrument by
 writing or engraving its PID onto it or its container along with its
@@ -957,6 +1061,7 @@ generators now allow users to integrate images like organisation logos
 or track scanning activity such as the GPS position when the label is
 scanned.
 
+\sphinxAtStartPar
 In case neither labelling of physical objects with barcodes or PID
 strings is possible, linking of instruments with their digital
 representation can be maintained by providing appropriate metadata
@@ -964,13 +1069,14 @@ records. For instruments such linking can be achieved by capturing
 identifiers which uniquely identify an instrument such as serial number
 or inventory number.
 
+\sphinxAtStartPar
 While PIDINST schema metadata does not provide explicit fields for
 serial numbers or inventory numbers, it currently offers a generic way
 to capture any kind of identifier which can be used for this purpose.
 \sphinxstyleemphasis{AlternateIdentifier} can be used to record any identifier string and
 \sphinxstyleemphasis{alternateIdentifierType} to specify an identifier type
 (\hyperref[\detokenize{white-paper/physical-objects:snip-objects-serial}]{Snippet \ref{\detokenize{white-paper/physical-objects:snip-objects-serial}}}). PIDINST schema recommends the use of
-the terms \sphinxstyleemphasis{serialNumber} and \sphinxstyleemphasis{inventoryNumber.} There is on-going
+the terms \sphinxstyleemphasis{serialNumber} and \sphinxstyleemphasis{inventoryNumber.} There is on\sphinxhyphen{}going
 discussion regarding the use of explicit fields for these properties
 in PIDINST.
 
@@ -980,7 +1086,7 @@ in PIDINST.
 
 \noindent\sphinxincludegraphics{{image4}.png}
 \caption{An example of a webpage QR code that includes an organisation logo
-and re-directs the scanner to the PID URL
+and re\sphinxhyphen{}directs the scanner to the PID URL
 (\sphinxurl{http://hdl.handle.net/21.T11998/0000-001A-3905-F}).}\label{\detokenize{white-paper/physical-objects:id2}}\label{\detokenize{white-paper/physical-objects:fig-objects-qr}}\end{figure}
 \sphinxSetupCaptionForVerbatim{An instrument serial number expressed in XML}
 \def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/physical-objects:id3}}\label{\detokenize{white-paper/physical-objects:snip-objects-serial}}}
@@ -990,6 +1096,7 @@ and re-directs the scanner to the PID URL
   \PYGZlt{}/AlternateIdentifiers\PYGZgt{}
 \end{sphinxVerbatim}
 
+\sphinxAtStartPar
 Besides storing e.g. serial numbers in PIDINST schema metadata, it is
 highly recommended to store the instrument PID within an institutional
 sensor management or inventory system immediately after PID
@@ -1002,6 +1109,7 @@ either side.
 
 \subsection{When to create a new PID?}
 \label{\detokenize{white-paper/create-new-pid:when-to-create-a-new-pid}}\label{\detokenize{white-paper/create-new-pid::doc}}
+\sphinxAtStartPar
 Instruments can be changed or modified over time. For example, when a
 component is changed or an instrument is upgraded to meet new
 requirements in measurement capability. Defining the exact moment when a
@@ -1068,6 +1176,7 @@ superseded PID records in JSON}
 
 \subsection{Landing page content}
 \label{\detokenize{white-paper/landing-page-content:landing-page-content}}\label{\detokenize{white-paper/landing-page-content:id1}}\label{\detokenize{white-paper/landing-page-content::doc}}
+\sphinxAtStartPar
 It is recommended that instrument providers use enough information
 (metadata) on landing pages to unambiguously identify the instrument.
 Ideally, landing pages should include the metadata specified in the
@@ -1077,6 +1186,7 @@ Institutions should also consider providing links to the metadata record
 that accompanies PIDs published at PID providers to aid metadata
 exchange (e.g. DataCite XML).
 
+\sphinxAtStartPar
 \hyperref[\detokenize{white-paper/landing-page-content:tab-landing-content-inst}]{Tables \ref{\detokenize{white-paper/landing-page-content:tab-landing-content-inst}}} and
 \hyperref[\detokenize{white-paper/landing-page-content:tab-landing-content-events}]{\ref{\detokenize{white-paper/landing-page-content:tab-landing-content-events}}} provide recommendations for
 some additional, more descriptive metadata that can be published on
@@ -1097,13 +1207,17 @@ instrument metadata into data workflows.
 \begin{tabulary}{\linewidth}[t]{|T|T|}
 \hline
 \sphinxstyletheadfamily 
+\sphinxAtStartPar
 \sphinxstylestrong{Metadata type}
 &\sphinxstyletheadfamily 
+\sphinxAtStartPar
 \sphinxstylestrong{Comments}
 \\
 \hline
+\sphinxAtStartPar
 Model version
 &
+\sphinxAtStartPar
 A variant of an instrument model. While the
 design of an instrument remains largely the
 same, variants are available with minor changes
@@ -1115,15 +1229,19 @@ dynamic environments such as extreme pressures
 or weather conditions.
 \\
 \hline
+\sphinxAtStartPar
 Documents
 &
+\sphinxAtStartPar
 Descriptive or supporting documentation such as
 manuals, data sheets, scientific references
 etc.
 \\
 \hline
+\sphinxAtStartPar
 Classifications
 &
+\sphinxAtStartPar
 Properties that categorise instruments. In
 addition to instrument type, these properties
 can describe aspects such as the intended
@@ -1151,13 +1269,17 @@ component etc.
 \begin{tabulary}{\linewidth}[t]{|T|T|}
 \hline
 \sphinxstyletheadfamily 
+\sphinxAtStartPar
 \sphinxstylestrong{Metadata type}
 &\sphinxstyletheadfamily 
+\sphinxAtStartPar
 \sphinxstylestrong{Comments}
 \\
 \hline
+\sphinxAtStartPar
 Calibrations
 &
+\sphinxAtStartPar
 Many instruments are calibrated to convert raw
 outputs to meaningful units or to correct for
 data uncertainty. It is highly recommended to
@@ -1166,35 +1288,45 @@ also be useful to store the coefficients,
 algorithm used and calibration certificates.
 \\
 \hline
+\sphinxAtStartPar
 Capabilities
 &
+\sphinxAtStartPar
 Capabilities are properties that further
 quantify or qualify an instrument’s outputs
 (e.g. detection limits, accuracy, precision,
 operating ranges etc.).
 \\
 \hline
+\sphinxAtStartPar
 Characteristics
 &
+\sphinxAtStartPar
 Properties that describe features and
 qualities belonging to an instrument. (e.g.
 weight, size, housing material, components,
 firmware etc.).
 \\
 \hline
+\sphinxAtStartPar
 Servicing
 &
+\sphinxAtStartPar
 Descriptions of maintenance procedures carried
 out on the instrument.
 \\
 \hline
+\sphinxAtStartPar
 Funding references
 &
+\sphinxAtStartPar
 Identifiers or names of funding resources
 \\
 \hline
+\sphinxAtStartPar
 Ownership dates
 &
+\sphinxAtStartPar
 Ownership start and end dates
 \\
 \hline
@@ -1205,6 +1337,7 @@ Ownership start and end dates
 
 \subsection{Landing page encoding}
 \label{\detokenize{white-paper/landing-page-encoding:landing-page-encoding}}\label{\detokenize{white-paper/landing-page-encoding:id1}}\label{\detokenize{white-paper/landing-page-encoding::doc}}
+\sphinxAtStartPar
 Landing page web resources can be written in any format (e.g. HTML,
 XML). Although not obligatory, ideally resources should be encoded in
 formats that not only improve syntactic interpretation of information
@@ -1217,8 +1350,9 @@ between systems. Below are some examples of landing page encodings.
 \subsubsection{Examples}
 \label{\detokenize{white-paper/landing-page-encoding:examples}}
 
-\paragraph{JSON-LD}
+\paragraph{JSON\sphinxhyphen{}LD}
 \label{\detokenize{white-paper/landing-page-encoding:json-ld}}
+\sphinxAtStartPar
 There is a strong relation between PIDs with values of types that are
 defined in a data type registry (DTR) as for instance in the NERC
 example in \hyperref[\detokenize{white-paper/metadata-schema-recommendations:tab-schema-handle-record}]{Table \ref{\detokenize{white-paper/metadata-schema-recommendations:tab-schema-handle-record}}} and linked data. First
@@ -1234,17 +1368,18 @@ PID. Such PIDs with types defined upon sub types span a graph of
 metadata around the PID. PIDs with types are in other words a specific
 representation of linked data.
 
+\sphinxAtStartPar
 It is therefore obvious to ask for other, more a common linked data
-representation like RDF or JSON-LD of such PIDs with types. Such a
+representation like RDF or JSON\sphinxhyphen{}LD of such PIDs with types. Such a
 conversion can be done by a simple backtracking algorithm that crawls
 from the PID through all its type and subtypes definitions to identify
 the used names by the type PIDs and to collect this information for the
 LD representation. This way the whole graph is explored and this graph
 can be mapped into a linked data representation. In the following a
-respective representation in JSON-LD of the schema example shown in
+respective representation in JSON\sphinxhyphen{}LD of the schema example shown in
 \hyperref[\detokenize{white-paper/metadata-schema-recommendations:tab-schema-handle-record}]{Table \ref{\detokenize{white-paper/metadata-schema-recommendations:tab-schema-handle-record}}} is shown in
 \hyperref[\detokenize{white-paper/landing-page-encoding:snip-landing-encoding-json-ld}]{Snippet \ref{\detokenize{white-paper/landing-page-encoding:snip-landing-encoding-json-ld}}}.
-\sphinxSetupCaptionForVerbatim{representation in JSON-LD of the NERC example of
+\sphinxSetupCaptionForVerbatim{representation in JSON\sphinxhyphen{}LD of the NERC example of
 \hyperref[\detokenize{white-paper/metadata-schema-recommendations:tab-schema-handle-record}]{Table \ref{\detokenize{white-paper/metadata-schema-recommendations:tab-schema-handle-record}}}.}
 \def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/landing-page-encoding:id4}}\label{\detokenize{white-paper/landing-page-encoding:snip-landing-encoding-json-ld}}}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
@@ -1388,6 +1523,7 @@ respective representation in JSON-LD of the schema example shown in
   \PYG{p}{\PYGZcb{}}
 \end{sphinxVerbatim}
 
+\sphinxAtStartPar
 As one can see in this result the context is over complete in the sense
 that all possible sub types are resolved and referred in @context, but
 not all of them are actually used by the types occuring in the PID. This
@@ -1405,7 +1541,7 @@ and the names used in the type definitions are replaced by their type
 PID suffixes:
 \sphinxSetupCaptionForVerbatim{representation in Turtle Terse RDF of the NERC example
 of \hyperref[\detokenize{white-paper/metadata-schema-recommendations:tab-schema-handle-record}]{Table \ref{\detokenize{white-paper/metadata-schema-recommendations:tab-schema-handle-record}}} that was generated
-by a JSON-LD to RDF converter from the JSON-LD in
+by a JSON\sphinxhyphen{}LD to RDF converter from the JSON\sphinxhyphen{}LD in
 \hyperref[\detokenize{white-paper/landing-page-encoding:snip-landing-encoding-json-ld}]{Snippet \ref{\detokenize{white-paper/landing-page-encoding:snip-landing-encoding-json-ld}}}.}
 \def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/landing-page-encoding:id5}}\label{\detokenize{white-paper/landing-page-encoding:snip-landing-encoding-turtle}}}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
@@ -1446,13 +1582,14 @@ by a JSON-LD to RDF converter from the JSON-LD in
 
 \paragraph{Sensor web enablement (SWE)}
 \label{\detokenize{white-paper/landing-page-encoding:sensor-web-enablement-swe}}\label{\detokenize{white-paper/landing-page-encoding:landing-page-encoding-swe}}
-Global standards have been developed which enable the web-based
+\sphinxAtStartPar
+Global standards have been developed which enable the web\sphinxhyphen{}based
 discovery, exchange and processing of sensors and their observations.
 Many developers using standards, such as the Open Geospatial
 Consortium’s (OGC) Sensor Web Enablement (SWE), publish formal,
-machine-readable descriptions of sensors and their technical information
+machine\sphinxhyphen{}readable descriptions of sensors and their technical information
 as web resources using URLs, identifying the instrument locally.
-Web-based sensor descriptions published using SensorML, part of the SWE
+Web\sphinxhyphen{}based sensor descriptions published using SensorML, part of the SWE
 specifications, and may be used as a URL to the landing page of the
 instrument registered at a PID provider. A SensorML landing page example
 has been published at the British Oceanographic Data Centre (BODC) via
@@ -1462,6 +1599,7 @@ record directly see
 \sphinxurl{http://hdl.handle.net/21.T11998/0000-001A-3905-F?noredirect} or
 \hyperref[\detokenize{white-paper/metadata-schema-recommendations:tab-schema-handle-record}]{Table \ref{\detokenize{white-paper/metadata-schema-recommendations:tab-schema-handle-record}}} in this document.
 
+\sphinxAtStartPar
 In SensorML (version 2.0), sensors are identified using a unique ID
 within the \sphinxstyleemphasis{gml:identifier} element and institutions may choose to use
 an instrument PID to assure uniqueness. Alternatively, an instrument PID
@@ -1470,7 +1608,7 @@ may be declared as metadata within a SensorML description using the
 While the latter is simpler to implement, it may limit the global
 discoverability of sensors and their observations within the Sensor
 Observation Service (SOS) web Application Programming Interface (API),
-part of the SWE standard. Web-based enquiries, requests or
+part of the SWE standard. Web\sphinxhyphen{}based enquiries, requests or
 transactions made for sensors using this service are typically based
 on \sphinxstyleemphasis{gml:identifier} element in SensorML (expressed as a \sphinxstyleemphasis{procedure}),
 thus identifying sensors using local identifiers rather than global
@@ -1494,6 +1632,7 @@ depth sensor.}
   \PYG{n+nt}{\PYGZlt{}/sml:identifier\PYGZgt{}}
 \end{sphinxVerbatim}
 
+\sphinxAtStartPar
 The list of properties that can be expressed in SensorML to describe
 sensors is not particularly restrictive and it is recommended that
 institutional instrument providers follow the PIDINST guidance on
@@ -1506,10 +1645,11 @@ terminologies.
 
 \subsubsection{Content negotiation}
 \label{\detokenize{white-paper/landing-page-encoding:content-negotiation}}
+\sphinxAtStartPar
 We recommend using content negotiation where instrument landing pages
 are not easily consumed for human reading (such as XML schemas). PIDINST
-does not specify the form of negotiation that produces human-readable
-content from machine-readable representations. Other groups, such as the
+does not specify the form of negotiation that produces human\sphinxhyphen{}readable
+content from machine\sphinxhyphen{}readable representations. Other groups, such as the
 W3C Dataset Exchange Working Group (DXWG) are currently drafting
 recommendations on content negotiation from different information
 models.%
@@ -1521,6 +1661,7 @@ models.%
 
 \subsection{Linking instrument PIDs to datasets}
 \label{\detokenize{white-paper/linking-datasets:linking-instrument-pids-to-datasets}}\label{\detokenize{white-paper/linking-datasets::doc}}
+\sphinxAtStartPar
 One major purpose of PIDINST is to ease tracking the scientific output
 of the instrument.  In order to benefit from this, it is important to
 establish the relation between the datasets and the instrument being
@@ -1529,14 +1670,15 @@ used to collect the data in a machine readable way.
 
 \subsubsection{DataCite metadata}
 \label{\detokenize{white-paper/linking-datasets:datacite-metadata}}
+\sphinxAtStartPar
 Datasets are usually published with a DataCite DOI.  The \sphinxhref{https://schema.datacite.org/}{DataCite
 Metadata Schema} allows to link the instrument from the metadata
 registered with that DOI for a data publication using the
 \sphinxstyleemphasis{relatedIdentifier} property.  The recommended \sphinxstyleemphasis{relationType} is
 \sphinxstyleemphasis{IsCompiledBy} in this case.  \hyperref[\detokenize{white-paper/linking-datasets:fig-link-hzb}]{Figure \ref{\detokenize{white-paper/linking-datasets:fig-link-hzb}}} shows an example
 for a dataset published by HZB (\sphinxurl{https://doi.org/10.5442/ND000001}).
-The data has been collected using neutron diffraction with the E2 -
-Flat-Cone Diffractometer beamline at BER II.  The image show a
+The data has been collected using neutron diffraction with the E2 \sphinxhyphen{}
+Flat\sphinxhyphen{}Cone Diffractometer beamline at BER II.  The image show a
 screenshot of the data publication landing page which links the PID of
 the instrument.  \hyperref[\detokenize{white-paper/linking-datasets:snip-link-dataset-datacite-xml}]{Snippet \ref{\detokenize{white-paper/linking-datasets:snip-link-dataset-datacite-xml}}} shows a
 section of the DOI metadata from the same data publication containing
@@ -1564,6 +1706,7 @@ the PID of the instrument.}
 
 \subsubsection{schema.org}
 \label{\detokenize{white-paper/linking-datasets:schema-org}}
+\sphinxAtStartPar
 \hyperref[\detokenize{white-paper/linking-datasets:fig-link-pangea}]{Figure \ref{\detokenize{white-paper/linking-datasets:fig-link-pangea}}} shows an example of marine dataset
 (\sphinxurl{https://doi.org/10.1594/PANGAEA.887579}) published through PANGAEA. The
 metadata of the dataset includes descriptive information about the
@@ -1613,9 +1756,10 @@ associated with the dataset in \hyperref[\detokenize{white-paper/linking-dataset
 
 \subsubsection{NetCDF4}
 \label{\detokenize{white-paper/linking-datasets:netcdf4}}\label{\detokenize{white-paper/linking-datasets:section-1}}
-State-of-the-art research ships are multimillion-pound floating
-laboratories which operate diverse arrays of high-powered,
-high-resolution sensors around-the-clock (e.g. sea-floor depth, weather,
+\sphinxAtStartPar
+State\sphinxhyphen{}of\sphinxhyphen{}the\sphinxhyphen{}art research ships are multimillion\sphinxhyphen{}pound floating
+laboratories which operate diverse arrays of high\sphinxhyphen{}powered,
+high\sphinxhyphen{}resolution sensors around\sphinxhyphen{}the\sphinxhyphen{}clock (e.g. sea\sphinxhyphen{}floor depth, weather,
 ocean current velocity and hydrography etc.). The National Oceanography
 Centre (NOC)%
 \begin{footnote}[1]\sphinxAtStartFootnote
@@ -1628,7 +1772,7 @@ Uk Polar Data Centre division
 %
 \end{footnote}
 are currently working together to improve the integrity of the data
-management workflow from these sensor systems to end-users across the UK
+management workflow from these sensor systems to end\sphinxhyphen{}users across the UK
 National Environment Research Council (NERC) large research vessel
 fleet, as part of a UK initiative, I/Ocean. In doing so, we can make
 cost effective use of vessel time while improving the
@@ -1647,7 +1791,7 @@ Forecast conventions. NetCDF4 groups are used to include rich
 information about the instruments used to derive parameter streams. Data
 streams are linked to the instruments which produced them using the
 variable attribute \sphinxstyleemphasis{instrument} from Attribute Convention for Data
-Discovery (ACDD) 1-3 (\hyperref[\detokenize{white-paper/linking-datasets:snip-link-netcdf-cdl}]{Snippet \ref{\detokenize{white-paper/linking-datasets:snip-link-netcdf-cdl}}}). Each instrument
+Discovery (ACDD) 1\sphinxhyphen{}3 (\hyperref[\detokenize{white-paper/linking-datasets:snip-link-netcdf-cdl}]{Snippet \ref{\detokenize{white-paper/linking-datasets:snip-link-netcdf-cdl}}}). Each instrument
 is identified as a group where their properties are expressed in
 variables including the instrument’s PID. Each property is defined
 using common terminologies published on the NERC Vocabulary Server. In
@@ -1655,7 +1799,7 @@ this way, users can express properties of their choice. Through
 groups, other information relating to parameter streams or instruments
 could be expressed, such as calibralibrations and instrument reference
 frames and orientations.
-\sphinxSetupCaptionForVerbatim{Truncated CF-NetCDF4 CDL file. Note some terminologies
+\sphinxSetupCaptionForVerbatim{Truncated CF\sphinxhyphen{}NetCDF4 CDL file. Note some terminologies
 are in development.}
 \def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/linking-datasets:id9}}\label{\detokenize{white-paper/linking-datasets:snip-link-netcdf-cdl}}}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
@@ -1739,14 +1883,15 @@ are in development.}
   \PYG{p}{\PYGZcb{}}
 \end{sphinxVerbatim}
 
+\sphinxAtStartPar
 The National Centres for Environmental Information (NCEI) at the
 National Oceanic and Atmospheric Administration (NOAA) in the US, also
-report instruments in CF-NetCDF files but as empty data variables within
+report instruments in CF\sphinxhyphen{}NetCDF files but as empty data variables within
 the root group of the NetCDF file instead of sub groups. The PID
 instrument identifier may be expressed as an instrument attribute e.g.
 \hyperref[\detokenize{white-paper/linking-datasets:snip-link-pidinst-netcdf}]{Snippet \ref{\detokenize{white-paper/linking-datasets:snip-link-pidinst-netcdf}}}. Ideally, blank separated lists
 should be used if linking more than one instrument.
-\sphinxSetupCaptionForVerbatim{Addition of a instrument PID attribute to NCEI CF-NetCDF
+\sphinxSetupCaptionForVerbatim{Addition of a instrument PID attribute to NCEI CF\sphinxhyphen{}NetCDF
 files.}
 \def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/linking-datasets:id10}}\label{\detokenize{white-paper/linking-datasets:snip-link-pidinst-netcdf}}}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
@@ -1760,8 +1905,9 @@ files.}
 \subsection{Current, planned and potential adoption}
 \label{\detokenize{white-paper/adoption:current-planned-and-potential-adoption}}\label{\detokenize{white-paper/adoption::doc}}
 
-\subsubsection{Helmholtz-Zentrum Berlin für Materialien und Energie (HZB)}
+\subsubsection{Helmholtz\sphinxhyphen{}Zentrum Berlin für Materialien und Energie (HZB)}
 \label{\detokenize{white-paper/adoption:helmholtz-zentrum-berlin-fur-materialien-und-energie-hzb}}
+\sphinxAtStartPar
 HZB minted four DOIs with DataCite for HZB instruments: two beamlines
 at the neutron source BER II;%
 \begin{footnote}[1]\sphinxAtStartFootnote
@@ -1798,14 +1944,15 @@ user operation in the near future.
 
 \subsubsection{British Oceanographic Data Centre (BODC)}
 \label{\detokenize{white-paper/adoption:british-oceanographic-data-centre-bodc}}
+\sphinxAtStartPar
 The British Oceanographic Data Centre (BODC) is a national facility for
 preserving and distributing oceanographic and marine data. BODC tested
-the ePIC implementation in web-published, sensor technical metadata
+the ePIC implementation in web\sphinxhyphen{}published, sensor technical metadata
 descriptions encoded in the Open Geospatial Consortium’s (OGC)
 \sphinxhref{https://www.opengeospatial.org/standards/sensorml}{SensorML} open standards for conceptualising and integrating
-real-world sensors. In an initial test case, a PID was minted for a
-Sea-Bird Scientific SBE37 Microcat regularly deployed on fixed-point
-moorings in the \sphinxhref{https://projects.noc.ac.uk/pap/}{Porcupine Abyssal Plain Sustained Observatory (PAP-SO)} in the north Atlantic. For further details see
+real\sphinxhyphen{}world sensors. In an initial test case, a PID was minted for a
+Sea\sphinxhyphen{}Bird Scientific SBE37 Microcat regularly deployed on fixed\sphinxhyphen{}point
+moorings in the \sphinxhref{https://projects.noc.ac.uk/pap/}{Porcupine Abyssal Plain Sustained Observatory (PAP\sphinxhyphen{}SO)} in the north Atlantic. For further details see
 {\hyperref[\detokenize{white-paper/landing-page-encoding:landing-page-encoding-swe}]{\sphinxcrossref{\DUrole{std,std-ref}{Sensor web enablement (SWE)}}}}. BODC plan to continue adoption
 identifying sensors on large research vessels owned by the Natural
 Environment Research Council (NERC) and managed by the National
@@ -1816,10 +1963,11 @@ desktop’ as part of a UK initiative, I/Ocean.
 
 \subsubsection{EISCAT3D}
 \label{\detokenize{white-paper/adoption:eiscat3d}}
+\sphinxAtStartPar
 \sphinxhref{https://eiscat.se/business/eiscat3d7/}{EISCAT3D} will be an international research infrastructure, using
 radar observations and the incoherent scatter technique for studies of
-the atmosphere and near-Earth space environment above the
-Fenno-Scandinavian Arctic as well as for the support of the solar system
+the atmosphere and near\sphinxhyphen{}Earth space environment above the
+Fenno\sphinxhyphen{}Scandinavian Arctic as well as for the support of the solar system
 and radio astronomy sciences. EISCAT3D will implement persistent
 identification for instruments following the recommendations by PIDINST.
 The radar is complex, more digital than previous radars, and is roughly
@@ -1833,20 +1981,21 @@ can be used to relate to the persistently identified units.
 
 \subsubsection{SENSOR.awi.de and PANGAEA}
 \label{\detokenize{white-paper/adoption:sensor-awi-de-and-pangaea}}
+\sphinxAtStartPar
 The Alfred Wegener Institute Helmholtz Centre for Polar and Marine
 Research (AWI) has been continuously committed to develop and sustain an
 eResearch infrastructure for coherent discovery, view, dissemination,
 and archival of scientific data and related information in polar and
 marine regions. In order to address the increasing heterogeneity of
 research platforms and respective devices and sensors along with varying
-project-driven requirements, a generic and modular framework has been
+project\sphinxhyphen{}driven requirements, a generic and modular framework has been
 built intended to support the flow of sensor observations to archives
 (O2A).%
 \begin{footnote}[5]\sphinxAtStartFootnote
-Koppe, R., Gerchow, P., Macario, A., Haas, A., Schäfer-Neth, C.
+Koppe, R., Gerchow, P., Macario, A., Haas, A., Schäfer\sphinxhyphen{}Neth, C.
 and Pfeiffenberger, H. (2015): O2A: A Generic Framework for Enabling
 the Flow of Sensor Observations to Archives and Publications, OCEANS
-2015 Genova. doi: 10.1109/OCEANS-Genova.2015.7271657
+2015 Genova. doi: 10.1109/OCEANS\sphinxhyphen{}Genova.2015.7271657
 %
 \end{footnote} In this context, SENSOR.awi.de, available since
 2015, is an O2A component dedicated to the registry of research
@@ -1868,6 +2017,7 @@ in time (sensors are being calibrated, instrument payload changes,
 etc), SENSOR.awi.de also supports record versioning by maintaining an
 audit trail of changes in the XML record.
 
+\sphinxAtStartPar
 PANGAEA is a digital repository for environmental research data and the
 dedicated long term archive within the O2A framework jointly operated by
 the AWI and MARUM (University Bremen). Each dataset is made available
@@ -1878,7 +2028,7 @@ information of a device such as device name, identifier and type. As an
 effort to standardize device type and name, currently the repository
 applies external terminologies, in particular the NERC L05 device
 category vocabulary and the L22 device catalogue. The repository has
-developed tailor-made client applications to import these terminologies
+developed tailor\sphinxhyphen{}made client applications to import these terminologies
 in a periodic, incremental manner. For both the persistent
 identification as well as for the detailed description of instruments,
 PANGAEA thus relies on institutional instrument registries such as
@@ -1893,10 +2043,11 @@ destination, the PANGAEA data archive.\sphinxfootnotemark[5]
 
 \subsubsection{ICOS}
 \label{\detokenize{white-paper/adoption:icos}}
-The Integrated Carbon Observation System (ICOS) is a pan-european
+\sphinxAtStartPar
+The Integrated Carbon Observation System (ICOS) is a pan\sphinxhyphen{}european
 research infrastructure for quantifying and understanding the greenhouse
 gas balance of the European continent. It conducts many continuous
-in-situ measurements like gas concentrations, wind speed and direction,
+in\sphinxhyphen{}situ measurements like gas concentrations, wind speed and direction,
 humidity, temperature, etc. To deliver high quality measurement data,
 ICOS considers the adoption of a persistent identifier for instruments a
 must for documenting data provenance and tracking calibration history.
@@ -1904,62 +2055,77 @@ must for documenting data provenance and tracking calibration history.
 
 \section{Contributors}
 \label{\detokenize{white-paper/index:contributors}}
+\sphinxAtStartPar
 \sphinxstyleemphasis{Louise Darroch} (\sphinxhref{mailto:louise.darroch@bodc.ac.uk}{louise.darroch@bodc.ac.uk}, \sphinxurl{https://orcid.org/0000-0003-4163-9575}),
 British Oceanographic Data Centre, National Oceanography Centre,
 Liverpool, L3 5DA, United Kingdom
 
-\sphinxstyleemphasis{Robert Huber} (\sphinxhref{mailto:rhuber@uni-bremen.de}{rhuber@uni-bremen.de}, \sphinxurl{https://orcid.org/0000-0003-3000-0020}),
-MARUM - Center for Marine Environmental Sciences, University of Bremen, Leobener Str. 8, 28359 Bremen, Germany
+\sphinxAtStartPar
+\sphinxstyleemphasis{Robert Huber} (\sphinxhref{mailto:rhuber@uni-bremen.de}{rhuber@uni\sphinxhyphen{}bremen.de}, \sphinxurl{https://orcid.org/0000-0003-3000-0020}),
+MARUM \sphinxhyphen{} Center for Marine Environmental Sciences, University of Bremen, Leobener Str. 8, 28359 Bremen, Germany
 
+\sphinxAtStartPar
 \sphinxstyleemphasis{Anusuriya Devaraju} (\sphinxhref{mailto:adevaraju@marum.de}{adevaraju@marum.de}, \sphinxurl{https://orcid.org/0000-0003-0870-3192}),
-MARUM - Center for Marine Environmental Sciences, University of Bremen, Leobener Str. 8, 28359 Bremen, Germany
+MARUM \sphinxhyphen{} Center for Marine Environmental Sciences, University of Bremen, Leobener Str. 8, 28359 Bremen, Germany
 
+\sphinxAtStartPar
 \sphinxstyleemphasis{Ulrich Schwardmann} (\sphinxhref{mailto:ulrich.schwardmann@gwdg.de}{ulrich.schwardmann@gwdg.de}, \sphinxurl{https://orcid.org/0000-0001-6337-8674}),
 GWDG, Gesellschaft für wissenschaftliche Datenverarbeitung Göttingen, Am
 Fassberg 11, 37077 Göttingen, Germany
 
+\sphinxAtStartPar
 \sphinxstyleemphasis{Anita Bandrowski} (\sphinxhref{mailto:abandrowski@ucsd.edu}{abandrowski@ucsd.edu}, \sphinxurl{https://orcid.org/0000-0002-5497-0243}),
 Department of Neuoscience, University of California at San Diego,
-9500 Gilman Drive La Jolla, CA 92093-0662
+9500 Gilman Drive La Jolla, CA 92093\sphinxhyphen{}0662
 
+\sphinxAtStartPar
 \sphinxstyleemphasis{Markus Stocker} (\sphinxhref{mailto:markus.stocker@tib.eu}{markus.stocker@tib.eu}, \sphinxurl{https://orcid.org/0000-0001-5492-3212}),
 TIB Leibniz Information Centre for Science and Technology, Welfengarten
 1 B, 30167 Hannover, Germany and PANGAEA, Center for Marine
 Environmental Sciences (MARUM), University of Bremen, Leobener Str. 8,
 28359 Bremen, Germany
 
-\sphinxstyleemphasis{Rolf Krahl} (\sphinxhref{mailto:rolf.krahl@helmholtz-berlin.de}{rolf.krahl@helmholtz-berlin.de}, \sphinxurl{https://orcid.org/0000-0002-1266-3819}),
-Helmholtz-Zentrum Berlin für Materialien und Energie GmbH,
-Albert-Einstein-Str. 15, 12489 Berlin, Germany
+\sphinxAtStartPar
+\sphinxstyleemphasis{Rolf Krahl} (\sphinxhref{mailto:rolf.krahl@helmholtz-berlin.de}{rolf.krahl@helmholtz\sphinxhyphen{}berlin.de}, \sphinxurl{https://orcid.org/0000-0002-1266-3819}),
+Helmholtz\sphinxhyphen{}Zentrum Berlin für Materialien und Energie GmbH,
+Albert\sphinxhyphen{}Einstein\sphinxhyphen{}Str. 15, 12489 Berlin, Germany
 
+\sphinxAtStartPar
 \sphinxstyleemphasis{Ted Habermann} (\sphinxhref{mailto:ted@tedhabermann.com}{ted@tedhabermann.com}, \sphinxurl{http://orcid.org/0000-0003-3585-6733}),
-Metadata Game Changers, 3980 Broadway, Suite 103-185, Boulder,
+Metadata Game Changers, 3980 Broadway, Suite 103\sphinxhyphen{}185, Boulder,
 Colorado, USA 80304
 
+\sphinxAtStartPar
 \sphinxstyleemphasis{Claudio D’Onofrio} (\sphinxhref{mailto:claudio.donofrio@nateko.lu.se}{claudio.donofrio@nateko.lu.se}, \sphinxurl{https://orcid.org/0000-0002-1982-3889}),
 ICOS Carbon Portal, Lund University, Physical Geography \& Ecosystem
 Science, Sölvegatan 12, 223 62 Lund, Sweden
 
+\sphinxAtStartPar
 \sphinxstyleemphasis{Maggie Hellström} (\sphinxhref{mailto:margareta.hellstrom@nateko.lu.se}{margareta.hellstrom@nateko.lu.se}, \sphinxurl{https://orcid.org/0000-0002-4154-2610}),
 ICOS Carbon Portal, Physical Geography \& Ecosystem Science, Lund
 University, Sölvegatan 12, 223 62 Lund, Sweden
 
+\sphinxAtStartPar
 \sphinxstyleemphasis{Ingemar Häggström} (\sphinxhref{mailto:ingemar.haggstrom@eiscat.se}{ingemar.haggstrom@eiscat.se}, \sphinxurl{https://orcid.org/0000-0003-1070-6915}),
 EISCAT Scientific Association, Box 812, 98128 Kiruna, Sweden
 
+\sphinxAtStartPar
 \sphinxstyleemphasis{Roland Koppe} (\sphinxhref{mailto:roland.koppe@awi.de}{roland.koppe@awi.de}, \sphinxurl{https://orcid.org/0000-0002-2826-3932}),
 Computing and Data Centre, Alfred Wegener Institute Helmholtz Centre for
 Polar and Marine Research. Am Handelshafen 12, 27570, Bremerhaven,
 Germany
 
+\sphinxAtStartPar
 \sphinxstyleemphasis{Ana Macario} (\sphinxhref{mailto:ana.macario@awi.de}{ana.macario@awi.de}, \sphinxurl{https://orcid.org/0000-0003-3747-793X}),
 Computing and Data Centre, Alfred Wegener Institute Helmholtz Centre for
 Polar and Marine Research. Am Handelshafen 12, 27570, Bremerhaven,
 Germany
 
+\sphinxAtStartPar
 \sphinxstyleemphasis{Tina Dohna} (\sphinxhref{mailto:tdohna@marum.de}{tdohna@marum.de}, \sphinxurl{https://orcid.org/0000-0002-5948-0980}),
-MARUM - Center for Marine Environmental Sciences, University of Bremen, Leobener Str. 8, 28199 Bremen, Germany
+MARUM \sphinxhyphen{} Center for Marine Environmental Sciences, University of Bremen, Leobener Str. 8, 28199 Bremen, Germany
 
+\sphinxAtStartPar
 \sphinxstyleemphasis{The Research Data Alliance Persistent Identification of Instruments
 Working Group members} (\sphinxurl{https://www.rd-alliance.org/node/57186/members})
 
@@ -1972,6 +2138,7 @@ Working Group members} (\sphinxurl{https://www.rd-alliance.org/node/57186/member
 \begin{tabular}[t]{|*{2}{\X{1}{2}|}}
 \hline
 
+\sphinxAtStartPar
 Document type
 &
 \begin{DUlineblock}{0em}
@@ -1988,6 +2155,7 @@ Document type
 
 \section{Introduction}
 \label{\detokenize{cookbook/intro:introduction}}\label{\detokenize{cookbook/intro::doc}}
+\sphinxAtStartPar
 This cookbook enables instrument providers to create persistent
 identifiers (PID) for instruments using the \sphinxhref{https://www.pidconsortium.net/}{ePIC infrastructure}.
 ePIC is an international consortium that provides PID services for the
@@ -2002,10 +2170,11 @@ guidance for publishing instrument PIDs through ePIC.
 
 \section{PIDINST handles at ePIC}
 \label{\detokenize{cookbook/handles:pidinst-handles-at-epic}}\label{\detokenize{cookbook/handles::doc}}
-Properties, sub-properties and attributes of the PIDINST metadata
+\sphinxAtStartPar
+Properties, sub\sphinxhyphen{}properties and attributes of the PIDINST metadata
 schema used in ePIC PID handle records can be viewed as follows.  Use
-‘\#’ before ‘objects’ to interchange between human-readable and JSON
-representations.  Each property, sub-property and attribute is
+‘\#’ before ‘objects’ to interchange between human\sphinxhyphen{}readable and JSON
+representations.  Each property, sub\sphinxhyphen{}property and attribute is
 resolvable through a unique handle record:
 
 
@@ -2014,13 +2183,17 @@ resolvable through a unique handle record:
 \begin{tabulary}{\linewidth}[t]{|T|T|}
 \hline
 
-Human-readable
+\sphinxAtStartPar
+Human\sphinxhyphen{}readable
 &
+\sphinxAtStartPar
 \sphinxurl{http://dtr-test.pidconsortium.eu/\#objects/21.T11148/17ce618137e697852ea6}
 \\
 \hline
+\sphinxAtStartPar
 JSON representation
 &
+\sphinxAtStartPar
 \sphinxurl{http://dtr-test.pidconsortium.eu/objects/21.T11148/17ce618137e697852ea6}
 \\
 \hline
@@ -2031,6 +2204,7 @@ JSON representation
 
 \subsection{Generating a new instrument PID}
 \label{\detokenize{cookbook/handles:generating-a-new-instrument-pid}}
+\sphinxAtStartPar
 ePIC handles are accessed and managed via a RESTful web service, using
 the HTTP application protocol.  This service or Application
 Programming Interface (API) uses JSON as the primary exchange format.
@@ -2043,6 +2217,7 @@ in the future.  There is also an overview for the basic CRUD
 operations on PIDs for either the ePIC API or the Handle API at the
 end.
 
+\sphinxAtStartPar
 In order to generate new PIDs and assign them to your instruments, it
 is necessary to become an ePIC member (provider), or work with one of
 their current members or repositories that has their own ePIC API
@@ -2051,18 +2226,21 @@ obtain credentials (username and password) for authentication using
 the test environment prefix 21.T11998.  These can be obtained from
 ePIC by emailing \sphinxhref{mailto:support@pidconsortium.net}{support@pidconsortium.net}.
 
+\sphinxAtStartPar
 PIDs are typically created using POST/PUT methods.  Using the POST
 method will automatically generate a Universally Unique Identifier
 (UUID) within the suffix of a handle record.  Alternatively a suffix
 can be manually created via PUT method using a local identifier (see
 \sphinxurl{https://doc.pidconsortium.eu/guides/api-create/}).
 
+\sphinxAtStartPar
 All examples below use cURL requests at the command line (in Linux).
 Requests can also use PHP, Perl and Python (see
 \sphinxurl{https://doc.pidconsortium.eu/guides/api-create/}).  Examples also use
 the test API endpoint \sphinxurl{http://vm04.pid.gwdg.de:8081/handles/}.  Each
-ePIC member may use their own API end-point.
+ePIC member may use their own API end\sphinxhyphen{}point.
 
+\sphinxAtStartPar
 To generate a PID handle record automatically generating a UUID for
 the suffix:
 
@@ -2070,8 +2248,10 @@ the suffix:
 \PYG{n}{curl} \PYG{o}{\PYGZhy{}}\PYG{n}{v} \PYG{o}{\PYGZhy{}}\PYG{n}{u} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{username:password}\PYG{l+s+s2}{\PYGZdq{}} \PYG{o}{\PYGZhy{}}\PYG{n}{H} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Accept:application/json}\PYG{l+s+s2}{\PYGZdq{}} \PYG{o}{\PYGZhy{}}\PYG{n}{H} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Content\PYGZhy{}Type:application/json}\PYG{l+s+s2}{\PYGZdq{}} \PYG{o}{\PYGZhy{}}\PYG{n}{X} \PYG{n}{POST} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZhy{}}\PYG{n}{data} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{[}\PYG{l+s+s1}{\PYGZob{}}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{:}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{URL}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{,}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{parsed\PYGZus{}data}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{:}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{https://linkedsystems.uk/system/instance/TOOL0022\PYGZus{}2490/current/}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{\PYGZcb{}]}\PYG{l+s+s1}{\PYGZsq{}} \PYG{n}{http}\PYG{p}{:}\PYG{o}{/}\PYG{o}{/}\PYG{n}{vm04}\PYG{o}{.}\PYG{n}{pid}\PYG{o}{.}\PYG{n}{gwdg}\PYG{o}{.}\PYG{n}{de}\PYG{p}{:}\PYG{l+m+mi}{8081}\PYG{o}{/}\PYG{n}{handles}\PYG{o}{/}\PYG{l+m+mf}{21.}\PYG{n}{T11998}\PYG{o}{/}
 \end{sphinxVerbatim}
 
+\sphinxAtStartPar
 \sphinxcode{\sphinxupquote{Result:}} \sphinxurl{https://vm04.pid.gwdg.de:8081/handles/21.T11998/0000-001A-64A4-A}
 
+\sphinxAtStartPar
 To generate a PID handle record automatically generating a UUID within
 the suffix:
 
@@ -2079,47 +2259,60 @@ the suffix:
 curl \PYGZhy{}v \PYGZhy{}u \PYGZdq{}username:password\PYGZdq{} \PYGZhy{}H \PYGZdq{}Accept:application/json\PYGZdq{} \PYGZhy{}H \PYGZdq{}Content\PYGZhy{}Type:application/json\PYGZdq{} \PYGZhy{}X POST \PYGZhy{}\PYGZhy{}data \PYGZsq{}[\PYGZob{}\PYGZdq{}type\PYGZdq{}:\PYGZdq{}URL\PYGZdq{},\PYGZdq{}parsed\PYGZus{}data\PYGZdq{}:\PYGZdq{}https://linkedsystems.uk/system/instance/TOOL0022\PYGZus{}2490/current/\PYGZdq{}\PYGZcb{}]\PYGZsq{} http://vm04.pid.gwdg.de:8081/handles/21.T11998/\PYGZbs{}?prefix=BODC\PYGZbs{}\PYGZam{}suffix=TEST
 \end{sphinxVerbatim}
 
+\sphinxAtStartPar
 \sphinxcode{\sphinxupquote{Result:}} \sphinxurl{https://vm04.pid.gwdg.de:8081/handles/21.T11998/BODC-0000-001A-64A3-B-TEST}
 
+\sphinxAtStartPar
 To manually generate a suffix using PUT method:
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{n}{curl} \PYG{o}{\PYGZhy{}}\PYG{n}{v} \PYG{o}{\PYGZhy{}}\PYG{n}{u} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{username:password}\PYG{l+s+s2}{\PYGZdq{}} \PYG{o}{\PYGZhy{}}\PYG{n}{H} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Accept:application/json}\PYG{l+s+s2}{\PYGZdq{}} \PYG{o}{\PYGZhy{}}\PYG{n}{H} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Content\PYGZhy{}Type:application/json}\PYG{l+s+s2}{\PYGZdq{}} \PYG{o}{\PYGZhy{}}\PYG{n}{X} \PYG{n}{PUT} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZhy{}}\PYG{n}{data} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{[}\PYG{l+s+s1}{\PYGZob{}}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{:}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{URL}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{,}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{parsed\PYGZus{}data}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{:}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{https://linkedsystems.uk/system/instance/TOOL0022\PYGZus{}2490/current/}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{\PYGZcb{}]}\PYG{l+s+s1}{\PYGZsq{}} \PYG{n}{http}\PYG{p}{:}\PYG{o}{/}\PYG{o}{/}\PYG{n}{vm04}\PYG{o}{.}\PYG{n}{pid}\PYG{o}{.}\PYG{n}{gwdg}\PYG{o}{.}\PYG{n}{de}\PYG{p}{:}\PYG{l+m+mi}{8081}\PYG{o}{/}\PYG{n}{handles}\PYG{o}{/}\PYG{l+m+mf}{21.}\PYG{n}{T11998}\PYG{o}{/}\PYG{l+m+mi}{564987}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{8865544}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{9998}
 \end{sphinxVerbatim}
 
+\sphinxAtStartPar
 \sphinxcode{\sphinxupquote{Result:}} \sphinxurl{https://vm04.pid.gwdg.de:8081/handles/21.T11998/564987-8865544-9998}
 
 
 \subsection{Viewing PID handle records}
 \label{\detokenize{cookbook/handles:viewing-pid-handle-records}}
+\sphinxAtStartPar
 If you have specified the URLproperty in the handle record it will
 automatically redirect you to it when you view the handle record:
 
+\sphinxAtStartPar
 \sphinxurl{http://hdl.handle.net/21.T11998/0000-001A-3905-F}
 
+\sphinxAtStartPar
 If you want to see the handle record then use:
 
+\sphinxAtStartPar
 \sphinxurl{http://hdl.handle.net/21.T11998/0000-001A-3905-F?noredirect}
 
+\sphinxAtStartPar
 The REST API calls can also yield JSON responses:
 
+\sphinxAtStartPar
 \sphinxurl{http://hdl.handle.net/api/handles/21.T11998/0000-001A-3905-F}
 
 
 \subsection{Updating the description of a PID handle record}
 \label{\detokenize{cookbook/handles:updating-the-description-of-a-pid-handle-record}}
+\sphinxAtStartPar
 Properties are updated using the PUT method by either specifying the
 JSON properties directly in the cURL request or parsing them via a
 JSON file (see \sphinxcode{\sphinxupquote{JSON example}}).
 
+\sphinxAtStartPar
 Directly specifying properties within the cURL request:
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{n}{curl} \PYG{o}{\PYGZhy{}}\PYG{n}{v} \PYG{o}{\PYGZhy{}}\PYG{n}{u} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{username:password}\PYG{l+s+s2}{\PYGZdq{}} \PYG{o}{\PYGZhy{}}\PYG{n}{H} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Accept:application/json}\PYG{l+s+s2}{\PYGZdq{}} \PYG{o}{\PYGZhy{}}\PYG{n}{H} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Content\PYGZhy{}Type:application/json}\PYG{l+s+s2}{\PYGZdq{}} \PYG{o}{\PYGZhy{}}\PYG{n}{X} \PYG{n}{PUT} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZhy{}}\PYG{n}{data} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{[}\PYG{l+s+s1}{\PYGZob{}}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{: }\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{21.T11148/8eb858ee0b12e8e463a5}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{,}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{parsed\PYGZus{}data}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{: }\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{\PYGZob{}}\PYG{l+s+se}{\PYGZbs{}\PYGZdq{}}\PYG{l+s+s1}{identifierValue}\PYG{l+s+se}{\PYGZbs{}\PYGZdq{}}\PYG{l+s+s1}{:}\PYG{l+s+se}{\PYGZbs{}\PYGZdq{}}\PYG{l+s+s1}{http://hdl.handle.net/21.T11998/BODC\PYGZhy{}0000\PYGZhy{}001A\PYGZhy{}64A3\PYGZhy{}B\PYGZhy{}TEST}\PYG{l+s+se}{\PYGZbs{}\PYGZdq{}}\PYG{l+s+s1}{,}\PYG{l+s+se}{\PYGZbs{}\PYGZdq{}}\PYG{l+s+s1}{identiferType}\PYG{l+s+se}{\PYGZbs{}\PYGZdq{}}\PYG{l+s+s1}{:}\PYG{l+s+se}{\PYGZbs{}\PYGZdq{}}\PYG{l+s+s1}{MeasuringInstrument}\PYG{l+s+se}{\PYGZbs{}\PYGZdq{}}\PYG{l+s+s1}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{\PYGZcb{},}\PYG{l+s+s1}{\PYGZob{}}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{type}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{: }\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{21.T11148/4eaec4bc0f1df68ab2a7}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{,}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{parsed\PYGZus{}data}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{: }\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{[}\PYG{l+s+s1}{\PYGZob{}}\PYG{l+s+se}{\PYGZbs{}\PYGZdq{}}\PYG{l+s+s1}{Owner}\PYG{l+s+se}{\PYGZbs{}\PYGZdq{}}\PYG{l+s+s1}{: }\PYG{l+s+s1}{\PYGZob{}}\PYG{l+s+se}{\PYGZbs{}\PYGZdq{}}\PYG{l+s+s1}{ownerName}\PYG{l+s+se}{\PYGZbs{}\PYGZdq{}}\PYG{l+s+s1}{:}\PYG{l+s+se}{\PYGZbs{}\PYGZdq{}}\PYG{l+s+s1}{National Oceanography Centre}\PYG{l+s+se}{\PYGZbs{}\PYGZdq{}}\PYG{l+s+s1}{,}\PYG{l+s+se}{\PYGZbs{}\PYGZdq{}}\PYG{l+s+s1}{ownerContact}\PYG{l+s+se}{\PYGZbs{}\PYGZdq{}}\PYG{l+s+s1}{:}\PYG{l+s+se}{\PYGZbs{}\PYGZdq{}}\PYG{l+s+s1}{louise.darroch@bodc.ac.uk}\PYG{l+s+se}{\PYGZbs{}\PYGZdq{}}\PYG{l+s+s1}{,}\PYG{l+s+se}{\PYGZbs{}\PYGZdq{}}\PYG{l+s+s1}{ownerIdentifier}\PYG{l+s+se}{\PYGZbs{}\PYGZdq{}}\PYG{l+s+s1}{:}\PYG{l+s+s1}{\PYGZob{}}\PYG{l+s+se}{\PYGZbs{}\PYGZdq{}}\PYG{l+s+s1}{ownerIdentifierValue}\PYG{l+s+se}{\PYGZbs{}\PYGZdq{}}\PYG{l+s+s1}{:}\PYG{l+s+se}{\PYGZbs{}\PYGZdq{}}\PYG{l+s+s1}{http://vocab.nerc.ac.uk/collection/B75/current/ORG00009/}\PYG{l+s+se}{\PYGZbs{}\PYGZdq{}}\PYG{l+s+s1}{,}\PYG{l+s+se}{\PYGZbs{}\PYGZdq{}}\PYG{l+s+s1}{ownerIdentifierType}\PYG{l+s+se}{\PYGZbs{}\PYGZdq{}}\PYG{l+s+s1}{:}\PYG{l+s+se}{\PYGZbs{}\PYGZdq{}}\PYG{l+s+s1}{URL}\PYG{l+s+se}{\PYGZbs{}\PYGZdq{}}\PYG{l+s+s1}{\PYGZcb{}\PYGZcb{}\PYGZcb{}]}\PYG{l+s+s1}{\PYGZdq{}}\PYG{l+s+s1}{\PYGZcb{}]}\PYG{l+s+s1}{\PYGZsq{}} \PYG{n}{http}\PYG{p}{:}\PYG{o}{/}\PYG{o}{/}\PYG{n}{vm04}\PYG{o}{.}\PYG{n}{pid}\PYG{o}{.}\PYG{n}{gwdg}\PYG{o}{.}\PYG{n}{de}\PYG{p}{:}\PYG{l+m+mi}{8081}\PYG{o}{/}\PYG{n}{handles}\PYG{o}{/}\PYG{l+m+mf}{21.}\PYG{n}{T11998}\PYG{o}{/}\PYG{n}{BODC}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{0000}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{001}\PYG{n}{A}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{64}\PYG{n}{A3}\PYG{o}{\PYGZhy{}}\PYG{n}{B}\PYG{o}{\PYGZhy{}}\PYG{n}{TEST}
 \end{sphinxVerbatim}
 
+\sphinxAtStartPar
 \sphinxstyleemphasis{Note: Double quotes must be escaped with a backslash (\textbackslash{}) within the JSON parsed\_data string}
 
+\sphinxAtStartPar
 Specifying properties with a JSON file:
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
@@ -2132,22 +2325,26 @@ Specifying properties with a JSON file:
 
 \subsubsection{Using the ePIC API}
 \label{\detokenize{cookbook/handles:using-the-epic-api}}
+\sphinxAtStartPar
 The following HTTP protocol methods enable users to manage their PID
-handle records using the ePIC API based on username-password.
+handle records using the ePIC API based on username\sphinxhyphen{}password.
 Server: \sphinxcode{\sphinxupquote{vm04.pid.gwdg.de}}, Port: \sphinxcode{\sphinxupquote{8081}}, Resources: \sphinxcode{\sphinxupquote{handles/}}
 
+\sphinxAtStartPar
 \sphinxstylestrong{Get a PID:}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{n}{curl} \PYG{o}{\PYGZhy{}}\PYG{n}{D}\PYG{o}{\PYGZhy{}} \PYG{o}{\PYGZhy{}}\PYG{n}{u} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{username:password}\PYG{l+s+s2}{\PYGZdq{}} \PYG{o}{\PYGZhy{}}\PYG{n}{X} \PYG{n}{GET} \PYG{o}{\PYGZhy{}}\PYG{n}{H} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Content\PYGZhy{}Type: application/json}\PYG{l+s+s2}{\PYGZdq{}} \PYG{n}{http}\PYG{p}{:}\PYG{o}{/}\PYG{o}{/}\PYG{n}{vm04}\PYG{o}{.}\PYG{n}{pid}\PYG{o}{.}\PYG{n}{gwdg}\PYG{o}{.}\PYG{n}{de}\PYG{p}{:}\PYG{l+m+mi}{8081}\PYG{o}{/}\PYG{n}{handles}\PYG{o}{/}\PYG{l+m+mf}{21.}\PYG{n}{T11998}\PYG{o}{/}\PYG{n}{BODC}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{0000}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{001}\PYG{n}{A}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{64}\PYG{n}{A3}\PYG{o}{\PYGZhy{}}\PYG{n}{B}\PYG{o}{\PYGZhy{}}\PYG{n}{TEST}
 \end{sphinxVerbatim}
 
+\sphinxAtStartPar
 \sphinxstylestrong{Delete a PID (not allowed for production Handles):}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{n}{curl} \PYG{o}{\PYGZhy{}}\PYG{n}{v} \PYG{o}{\PYGZhy{}}\PYG{n}{u} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{username:password}\PYG{l+s+s2}{\PYGZdq{}} \PYG{o}{\PYGZhy{}}\PYG{n}{H} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Accept:application/json}\PYG{l+s+s2}{\PYGZdq{}} \PYG{o}{\PYGZhy{}}\PYG{n}{H} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Content\PYGZhy{}Type:application/json}\PYG{l+s+s2}{\PYGZdq{}} \PYG{o}{\PYGZhy{}}\PYG{n}{X} \PYG{n}{DELETE} \PYG{n}{http}\PYG{p}{:}\PYG{o}{/}\PYG{o}{/}\PYG{n}{vm04}\PYG{o}{.}\PYG{n}{pid}\PYG{o}{.}\PYG{n}{gwdg}\PYG{o}{.}\PYG{n}{de}\PYG{p}{:}\PYG{l+m+mi}{8081}\PYG{o}{/}\PYG{n}{handles}\PYG{o}{/}\PYG{l+m+mf}{21.}\PYG{n}{T11998}\PYG{o}{/}\PYG{n}{BODC}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{0000}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{001}\PYG{n}{A}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{64}\PYG{n}{A3}\PYG{o}{\PYGZhy{}}\PYG{n}{B}\PYG{o}{\PYGZhy{}}\PYG{n}{TEST}
 \end{sphinxVerbatim}
 
+\sphinxAtStartPar
 \sphinxstylestrong{Update a PID:}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
@@ -2157,24 +2354,30 @@ Server: \sphinxcode{\sphinxupquote{vm04.pid.gwdg.de}}, Port: \sphinxcode{\sphinx
 
 \subsubsection{Using the Handle API}
 \label{\detokenize{cookbook/handles:using-the-handle-api}}
+\sphinxAtStartPar
 The following HTTP protocol methods enable users to manage their PID
 handle records using the generic Handle API based on Certificates.
 Server: \sphinxcode{\sphinxupquote{vm04.pid.gwdg.de}}, Port: \sphinxcode{\sphinxupquote{8081}}, Resources: \sphinxcode{\sphinxupquote{handles/}}
 
+\sphinxAtStartPar
 The process to derive the \sphinxcode{\sphinxupquote{privkey.pem}} and \sphinxcode{\sphinxupquote{certificate\_only.pem}}
 from a is described for instance at:
 \sphinxurl{http://eudat-b2safe.github.io/B2HANDLE/creatingclientcertificates.html}
 
+\sphinxAtStartPar
 The Handle API does not have an internal suffix generator.  The suffix
 needs to be provided by the user.
 
+\sphinxAtStartPar
 The Handle API only knows POST, GET and DELETE methods, which means
 that, if the Credentials are sufficient, an existing PID could be
 accidentally overwritten by a request intended for creation.  This has
 to be detected by the user in advance.
 
+\sphinxAtStartPar
 \sphinxstylestrong{Access parameters:}
 
+\sphinxAtStartPar
 For given username, index, where the public key HS\_PUBKEY is stored,
 and prefix the certificate files are stored here with the naming
 convention \$\{INDEX\}\_\$\{PREFIX\}\_\$\{USER\}\_???.pem.
@@ -2191,24 +2394,28 @@ convention \$\{INDEX\}\_\$\{PREFIX\}\_\$\{USER\}\_???.pem.
 \PYG{n}{USERCERT}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZdl{}}\PYG{l+s+si}{\PYGZob{}PATH\PYGZcb{}}\PYG{l+s+s2}{/Certificates/\PYGZdl{}}\PYG{l+s+si}{\PYGZob{}INDEX\PYGZcb{}}\PYG{l+s+s2}{\PYGZus{}\PYGZdl{}}\PYG{l+s+si}{\PYGZob{}PREFIX\PYGZcb{}}\PYG{l+s+s2}{\PYGZus{}\PYGZdl{}}\PYG{l+s+si}{\PYGZob{}USER\PYGZcb{}}\PYG{l+s+s2}{\PYGZus{}certificate\PYGZus{}only.pem}\PYG{l+s+s2}{\PYGZdq{}}
 \end{sphinxVerbatim}
 
+\sphinxAtStartPar
 \sphinxstylestrong{Create Handle:}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 curl \PYGZhy{}s \PYGZhy{}\PYGZhy{}insecure \PYGZdl{}\PYGZob{}VERBOSE\PYGZcb{} \PYGZhy{}\PYGZhy{}key \PYGZdl{}\PYGZob{}USERKEY\PYGZcb{} \PYGZhy{}\PYGZhy{}cert \PYGZdl{}\PYGZob{}USERCERT\PYGZcb{} \PYGZhy{}H \PYGZdq{}Content\PYGZhy{}Type:application/json\PYGZdq{} \PYGZhy{}H \PYGZsq{}Authorization: Handle clientCert=\PYGZdq{}true\PYGZdq{}\PYGZsq{} \PYGZhy{}X PUT \PYGZhy{}\PYGZhy{}data  \PYGZsq{}\PYGZob{}\PYGZdq{}values\PYGZdq{}:[\PYGZob{}\PYGZdq{}index\PYGZdq{}:100,\PYGZdq{}type\PYGZdq{}:\PYGZdq{}HS\PYGZus{}ADMIN\PYGZdq{},\PYGZdq{}data\PYGZdq{}:\PYGZob{}\PYGZdq{}value\PYGZdq{}:\PYGZob{}\PYGZdq{}index\PYGZdq{}:\PYGZsq{}\PYGZdl{}\PYGZob{}INDEX\PYGZcb{}\PYGZsq{},\PYGZdq{}handle\PYGZdq{}:\PYGZdq{}\PYGZsq{}\PYGZdl{}\PYGZob{}PREFIX\PYGZcb{}\PYGZsq{}\PYGZbs{}/\PYGZsq{}\PYGZdl{}\PYGZob{}USER\PYGZcb{}\PYGZsq{}\PYGZdq{},\PYGZdq{}permissions\PYGZdq{}:\PYGZdq{}011111110011\PYGZdq{},\PYGZdq{}format\PYGZdq{}:\PYGZdq{}admin\PYGZdq{}\PYGZcb{},\PYGZdq{}format\PYGZdq{}:\PYGZdq{}admin\PYGZdq{}\PYGZcb{}\PYGZcb{},\PYGZob{}\PYGZdq{}index\PYGZdq{}:1,\PYGZdq{}type\PYGZdq{}:\PYGZdq{}URL\PYGZdq{},\PYGZdq{}data\PYGZdq{}:\PYGZdq{}www.gwdg.de\PYGZdq{}\PYGZcb{}]\PYGZcb{}\PYGZsq{} https://\PYGZdl{}\PYGZob{}SERVPORT\PYGZcb{}/api/handles/\PYGZdl{}\PYGZob{}PREFIX\PYGZcb{}/test\PYGZus{}epic3\PYGZus{}1234
 \end{sphinxVerbatim}
 
+\sphinxAtStartPar
 \sphinxstylestrong{Get Handle created:}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 curl \PYGZhy{}s \PYGZhy{}\PYGZhy{}insecure \PYGZdl{}\PYGZob{}VERBOSE\PYGZcb{} \PYGZhy{}\PYGZhy{}key \PYGZdl{}\PYGZob{}USERKEY\PYGZcb{} \PYGZhy{}\PYGZhy{}cert \PYGZdl{}\PYGZob{}USERCERT\PYGZcb{} \PYGZhy{}H \PYGZdq{}Content\PYGZhy{}Type:application/json\PYGZdq{} \PYGZhy{}H \PYGZsq{}Authorization: Handle clientCert=\PYGZdq{}true\PYGZdq{}\PYGZsq{} \PYGZhy{}q https://\PYGZdl{}\PYGZob{}SERVPORT\PYGZcb{}/api/handles/test\PYGZus{}epic3\PYGZus{}1234
 \end{sphinxVerbatim}
 
+\sphinxAtStartPar
 \sphinxstylestrong{Modify Handle created:}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 curl \PYGZhy{}s \PYGZhy{}\PYGZhy{}insecure \PYGZdl{}\PYGZob{}VERBOSE\PYGZcb{} \PYGZhy{}\PYGZhy{}key \PYGZdl{}\PYGZob{}USERKEY\PYGZcb{} \PYGZhy{}\PYGZhy{}cert \PYGZdl{}\PYGZob{}USERCERT\PYGZcb{} \PYGZhy{}H \PYGZdq{}Content\PYGZhy{}Type:application/json\PYGZdq{} \PYGZhy{}H \PYGZsq{}Authorization: Handle clientCert=\PYGZdq{}true\PYGZdq{}\PYGZsq{} \PYGZhy{}X PUT \PYGZhy{}\PYGZhy{}data  \PYGZsq{}\PYGZob{}\PYGZdq{}values\PYGZdq{}:[\PYGZob{}\PYGZdq{}index\PYGZdq{}:100,\PYGZdq{}type\PYGZdq{}:\PYGZdq{}HS\PYGZus{}ADMIN\PYGZdq{},\PYGZdq{}data\PYGZdq{}:\PYGZob{}\PYGZdq{}value\PYGZdq{}:\PYGZob{}\PYGZdq{}index\PYGZdq{}:\PYGZsq{}\PYGZdl{}\PYGZob{}INDEX\PYGZcb{}\PYGZsq{},\PYGZdq{}handle\PYGZdq{}:\PYGZdq{}\PYGZsq{}\PYGZdl{}\PYGZob{}PREFIX\PYGZcb{}\PYGZsq{}\PYGZbs{}/\PYGZsq{}\PYGZdl{}\PYGZob{}USER\PYGZcb{}\PYGZsq{}\PYGZdq{},\PYGZdq{}permissions\PYGZdq{}:\PYGZdq{}011111110011\PYGZdq{},\PYGZdq{}format\PYGZdq{}:\PYGZdq{}admin\PYGZdq{}\PYGZcb{},\PYGZdq{}format\PYGZdq{}:\PYGZdq{}admin\PYGZdq{}\PYGZcb{}\PYGZcb{},\PYGZob{}\PYGZdq{}index\PYGZdq{}:1,\PYGZdq{}type\PYGZdq{}:\PYGZdq{}URL\PYGZdq{},\PYGZdq{}data\PYGZdq{}:\PYGZdq{}pid.gwdg.de\PYGZdq{}\PYGZcb{}]\PYGZcb{}\PYGZsq{} https://\PYGZdl{}\PYGZob{}SERVPORT\PYGZcb{}/api/handles/\PYGZdl{}\PYGZob{}PREFIX\PYGZcb{}/test\PYGZus{}epic3\PYGZus{}1234
 \end{sphinxVerbatim}
 
+\sphinxAtStartPar
 \sphinxstylestrong{Delete Handle created:}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
