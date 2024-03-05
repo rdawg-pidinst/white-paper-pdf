@@ -60,13 +60,18 @@
 
 
 \title{PIDINST Documentation}
-\date{19 April 2021}
-\release{1.0b1}
+\date{7 February 2024}
+\release{1.0b2.dev132+gb154c75}
 \author{RDA Persistent Identification of Instruments WG}
 \newcommand{\sphinxlogo}{\vbox{}}
 \renewcommand{\releasename}{Release}
 \makeindex
 \begin{document}
+
+\ifdefined\shorthandoff
+  \ifnum\catcode`\=\string=\active\shorthandoff{=}\fi
+  \ifnum\catcode`\"=\active\shorthandoff{"}\fi
+\fi
 
 \pagestyle{empty}
 \sphinxmaketitle
@@ -112,6 +117,16 @@ This paper provides an overview of the work of PIDINST.
 
 \item {} 
 \sphinxAtStartPar
+Krahl, R., Darroch, L., Huber, R., Devaraju, A., Klump, J.,
+Habermann, T., Stocker, M., \& The Research Data Alliance Persistent
+Identification of Instruments Working Group members (2022).
+Metadata Schema for the Persistent Identification of Instruments
+(1.0).  Research Data Alliance.
+\sphinxurl{https://doi.org/10.15497/RDA00070} 
+This RDA recommendation defines the Metadata Schema.
+
+\item {} 
+\sphinxAtStartPar
 {\hyperref[\detokenize{white-paper/index:white-paper}]{\sphinxcrossref{\DUrole{std,std-ref}{PIDINST White Paper}}}} 
 This white paper provides recommendations for the use of instrument
 PIDs and gives technical details that go beyond the overview
@@ -120,9 +135,14 @@ evolve with new user requirements and working group activities.
 
 \item {} 
 \sphinxAtStartPar
-{\hyperref[\detokenize{cookbook/index:epic-cookbook}]{\sphinxcrossref{\DUrole{std,std-ref}{ePIC Cookbook}}}} 
+{\hyperref[\detokenize{epic-cookbook/index:epic-cookbook}]{\sphinxcrossref{\DUrole{std,std-ref}{ePIC Cookbook}}}} 
 Detailed instructions on how to create instrument PIDs using the
 ePIC infrastructure.
+
+\item {} 
+\sphinxAtStartPar
+{\hyperref[\detokenize{datacite-cookbook/index:datacite-cookbook}]{\sphinxcrossref{\DUrole{std,std-ref}{DataCite Cookbook}}}} 
+Detailed instructions on how to create DataCite DOIs for instruments.
 
 \end{itemize}
 
@@ -155,14 +175,14 @@ Document type
 Version
 &
 \sphinxAtStartPar
-1.0b1
+1.0b2.dev132+gb154c75
 \\
 \hline
 \sphinxAtStartPar
 Date
 &
 \sphinxAtStartPar
-19 April 2021
+7 February 2024
 \\
 \hline
 \end{tabular}
@@ -225,11 +245,22 @@ providers; others may implement the schema, too.
 \subsection{PIDINST metadata schema}
 \label{\detokenize{white-paper/metadata-schema:pidinst-metadata-schema}}\label{\detokenize{white-paper/metadata-schema:id1}}\label{\detokenize{white-paper/metadata-schema::doc}}
 \sphinxAtStartPar
-The metadata that is to be registered with an instrument PID need to
-contain enough information to unambiguously identify the
-instrument across networks and infrastructures.  It furthermore allows
-to link resources related to the instrument and thus provides a mean
-to aggregate information about the instrument.
+The metadata that is to be registered with an instrument PID needs to
+contain enough information to unambiguously identify the instrument
+across networks and infrastructures.  It should also allow linking
+related resources to the instrument, thus providing a means to
+aggregate information about the instrument.  The PIDINST working group
+defined a schema of metadata that can be registered alongside
+instrument PIDs at PID providers to help meet these criteria.  Version
+1.0 has been endorsed as an RDA recommendation.%
+\begin{footnote}[1]\sphinxAtStartFootnote
+Krahl, R., Darroch, L., Huber, R., Devaraju, A., Klump, J., Habermann, T.,
+Stocker, M., \& The Research Data Alliance Persistent Identification of
+Instruments Working Group members (2022). Metadata Schema for the
+Persistent Identification of Instruments (1.0). Research Data Alliance.
+DOI: \sphinxurl{https://doi.org/10.15497/RDA00070}
+%
+\end{footnote}
 
 \sphinxAtStartPar
 Currently, two variants of the metadata schema exist.  The original
@@ -243,9 +274,13 @@ their semantics:
 \begin{description}
 \item[{\sphinxtitleref{Identifier}}] \leavevmode
 \sphinxAtStartPar
-The PID of the instrument.  The subproperty
-\sphinxtitleref{identifierType} contains the type of the PID, e.g. \sphinxtitleref{Handle} or
-\sphinxtitleref{DOI} in the case of an ePIC Handle or a DataCite DOI respectively.
+The PID of the instrument.  The subproperty \sphinxtitleref{identifierType}
+contains the type of the PID, e.g. \sphinxtitleref{Handle} or \sphinxtitleref{DOI} in the case of
+an ePIC Handle or a DataCite DOI respectively.
+
+\item[{\sphinxtitleref{SchemaVersion}}] \leavevmode
+\sphinxAtStartPar
+The version number of the PIDINST schema used to create a record.
 
 \item[{\sphinxtitleref{LandingPage}}] \leavevmode
 \sphinxAtStartPar
@@ -268,7 +303,8 @@ There may be more then one owner registered in the metadata.
 \sphinxAtStartPar
 \sphinxtitleref{Owner} is a complex property having at least the subproperty
 \sphinxtitleref{ownerName} and optionally a contact address in \sphinxtitleref{ownerContact} and a
-persistent identifier of the owner in \sphinxtitleref{ownerIdentifier}.
+common identifier of the owner in \sphinxtitleref{ownerIdentifier} and its type in
+\sphinxtitleref{ownerIdentifierType}.
 
 \item[{\sphinxtitleref{Manufacturer}}] \leavevmode
 \sphinxAtStartPar
@@ -284,18 +320,18 @@ metadata.
 
 \sphinxAtStartPar
 In the same way as \sphinxtitleref{Owner}, \sphinxtitleref{Manufacturer} is a complex property
-with subproperties \sphinxtitleref{manufacturerName}, \sphinxtitleref{manufacturerContact}, and
-\sphinxtitleref{manufacturerIdentifier}.
+with subproperties \sphinxtitleref{manufacturerName}, \sphinxtitleref{manufacturerIdentifier} and
+\sphinxtitleref{manufacturerIdentifierType}.
 
 \item[{\sphinxtitleref{Model}}] \leavevmode
 \sphinxAtStartPar
-The name of the model or type of the instrument.  In the
-case of an off the shelf product, this may be a brand name
-attributed by the manufacturer.  In the case of an custom built
-instrument, it may not have a model name.  Hence this property is
-not mandatory, but recommended if the value can be obtained.  \sphinxtitleref{Model} has an
-optional subproperty \sphinxtitleref{modelIdentifier} to be used if a persistent
-identifier for the model is known.
+The name of the model or type of the instrument.  In the case of an
+off the shelf product, this may be a brand name attributed by the
+manufacturer.  In the case of a custom built instrument, it may not
+have a model name.  Hence this property is not mandatory, but
+recommended if the value can be obtained.  \sphinxtitleref{Model} has optional
+subproperties \sphinxtitleref{modelIdentifier} and \sphinxtitleref{modelIdentifierType} to be used
+if an identifier for the model is known.
 
 \item[{\sphinxtitleref{Description}}] \leavevmode
 \sphinxAtStartPar
@@ -305,21 +341,23 @@ what this instrument is and what it can do.
 
 \item[{\sphinxtitleref{InstrumentType}}] \leavevmode
 \sphinxAtStartPar
-A classification of the type of the instrument.  At present, there
-is no global classification scheme that would apply to instruments
-in all scientific domains.  Some communities have established
-schemes that are specific to their respective domain.  If such a
-specific classification is applicable, it should be used for
-\sphinxtitleref{InstrumentType}, see {\hyperref[\detokenize{white-paper/metadata-schema-recommendations:pidinst-metadata-schema-terminologies}]{\sphinxcrossref{\DUrole{std,std-ref}{Using common terminologies}}}}.
-Otherwise, a textual description of the type of the instrument may
-be used.
+A classification of the type of the instrument.  Hierarchical
+classification enables grouping of instrument records.
+
+\sphinxAtStartPar
+In the same way as \sphinxtitleref{Owner}, \sphinxtitleref{Manufacturer} and \sphinxtitleref{Model},
+\sphinxtitleref{InstrumentType} is a complex property with subproperties
+\sphinxtitleref{instrumentTypeName}, \sphinxtitleref{instrumentTypeIdentifier} and
+\sphinxtitleref{instrumentTypeIdentifierType}.
 
 \item[{\sphinxtitleref{MeasuredVariable}}] \leavevmode
 \sphinxAtStartPar
 The variables or physical properties that the instrument measures or
-observes.  Again, there is no overarching classification scheme
-established in all scientific domains at present, but specific
-classification should be used if applicable.
+observes.  Some communities have established terminologies to
+identify measured variables that are specific to their respective
+domain (see {\hyperref[\detokenize{white-paper/metadata-schema-recommendations:pidinst-metadata-schema-terminologies}]{\sphinxcrossref{\DUrole{std,std-ref}{Using common terminologies}}}}).  If such
+a standard is applicable, it should be used for for
+\sphinxtitleref{MeasuredVariable}.  Otherwise, a textual description may be used.
 
 \item[{\sphinxtitleref{Date}}] \leavevmode
 \sphinxAtStartPar
@@ -353,7 +391,7 @@ The links established using this property are particuarly useful as
 they allow the automatic aggregation of a rich set of information
 about the instrument.  Each \sphinxtitleref{RelatedIdentifier} needs to have
 subproperties \sphinxtitleref{relatedIdentifierType} and \sphinxtitleref{relationType} to specify
-the type of the related PID and the type of the relation
+the type of the related identifier and the type of the relation
 respectively.
 
 \item[{\sphinxtitleref{AlternateIdentifier}}] \leavevmode
@@ -378,10 +416,10 @@ values are \sphinxtitleref{serialNumber} and \sphinxtitleref{inventoryNumber} re
 \subsection{Recommendations using the PIDINST metadata schema}
 \label{\detokenize{white-paper/metadata-schema-recommendations:recommendations-using-the-pidinst-metadata-schema}}\label{\detokenize{white-paper/metadata-schema-recommendations:pidinst-metadata-schema-recommendations}}\label{\detokenize{white-paper/metadata-schema-recommendations::doc}}
 \sphinxAtStartPar
-We recommend that an instrument’s associated metadata is published in a common language,
-specifically US English to enable its reuse.  In the following section, we provide
-advanced recommendations on how to specify the values in the PIDINST
-metadata and discuss special cases.
+We recommend that an instrument’s associated metadata is published in
+a common language, specifically US English to enable its reuse.  In
+the following section, we provide advanced recommendations on how to
+specify the values in the PIDINST metadata and discuss special cases.
 
 
 \subsubsection{Using common terminologies}
@@ -390,42 +428,39 @@ metadata and discuss special cases.
 Common terminologies such as controlled vocabularies, taxonomies or
 ontologies, are sets of standardised terms that solve the problem of
 ambiguities associated with metadata markup and enable records to be
-shared and interpreted semantically by computers. Many terminologies
+shared and interpreted semantically by computers.  Many terminologies
 exist, covering a broad spectrum of disciplines and their best
-practices. The PIDINST schema is designed to complement
-multidisciplinary best practices for property values. Many properties
+practices.  The PIDINST schema is designed to complement
+multidisciplinary best practices for property values.  Many properties
 allow for soft\sphinxhyphen{}typing (e.g., \sphinxstyleemphasis{ownerName}), giving users the ability to
 use values of their choice, such as free text or domain\sphinxhyphen{}specific
-terminologies. Property attributes enable users and machines to
+terminologies.  Property attributes enable users and machines to
 understand the context of the value (e.g., \sphinxstyleemphasis{ownerIdentifier},
 \sphinxstyleemphasis{ownerIdentifierType}), again using free text or standardised
-terminologies. While free text is allowed, institutions should consider
-using common terminologies where practical to enhance the (semantic)
-interoperability of PID records, particularly where they form part of
-domain\sphinxhyphen{}specific best practice. For example, a comprehensive set of
-terminologies that describe \sphinxstyleemphasis{instrumentType} or the recently added
-\sphinxstyleemphasis{Model} (via \sphinxstyleemphasis{modelIdentifier}) are used widely in the Earth science
-marine domain (\sphinxurl{http://vocab.nerc.ac.uk/collection/L22/current/},
+terminologies.  While free text is allowed, institutions should
+consider using common terminologies where practical to enhance the
+(semantic) interoperability of PID records, particularly where they
+form part of domain\sphinxhyphen{}specific best practice.  For example, a
+comprehensive set of terminologies that describe \sphinxstyleemphasis{instrumentType} (via
+\sphinxstyleemphasis{instrumentTypeIdentifier}) or \sphinxstyleemphasis{Model} (via \sphinxstyleemphasis{modelIdentifier}) are
+used widely in the Earth science marine domain
+(\sphinxurl{http://vocab.nerc.ac.uk/collection/L22/current/},
 \sphinxurl{http://vocab.nerc.ac.uk/collection/L05/current/}).
-An example of the use of common terminologies in ePID records is shown
+An example of the use of common terminologies in ePIC records is shown
 in \hyperref[\detokenize{white-paper/metadata-schema-recommendations:tab-schema-handle-record}]{Table \ref{\detokenize{white-paper/metadata-schema-recommendations:tab-schema-handle-record}}}.
 
 
-\begin{savenotes}\sphinxattablestart
-\centering
-\sphinxcapstartof{table}
-\sphinxthecaptionisattop
-\sphinxcaption{Handle record of instrument identifier
+\begin{savenotes}\sphinxatlongtablestart\begin{longtable}[c]{|*{2}{\X{1}{2}|}}
+\sphinxthelongtablecaptionisattop
+\caption{Handle record of instrument identifier
        http://hdl.handle.net/21.T11998/0000\sphinxhyphen{}001A\sphinxhyphen{}3905\sphinxhyphen{}F displaying
        the use of common terminologies to identify instrument
        metadata compliant with the PIDINST schema as implemented
-       by ePIC. The terminologies used are published on the NERC
-       Vocabulary Server (NVS). The data for each
-       metadata property is provided in JSON. The Handle record
+       by ePIC.  The terminologies used are published on the NERC
+       Vocabulary Server (NVS).  The data for each
+       metadata property is provided in JSON.  The Handle record
        can be viewed at
-       http://hdl.handle.net/21.T11998/0000\sphinxhyphen{}001A\sphinxhyphen{}3905\sphinxhyphen{}F?noredirect}\label{\detokenize{white-paper/metadata-schema-recommendations:id4}}\label{\detokenize{white-paper/metadata-schema-recommendations:tab-schema-handle-record}}
-\sphinxaftertopcaption
-\begin{tabular}[t]{|*{2}{\X{1}{2}|}}
+       http://hdl.handle.net/21.T11998/0000\sphinxhyphen{}001A\sphinxhyphen{}3905\sphinxhyphen{}F?noredirect\strut}\label{\detokenize{white-paper/metadata-schema-recommendations:tab-schema-handle-record}}\\*[\sphinxlongtablecapskipadjust]
 \hline
 \sphinxstyletheadfamily 
 \sphinxAtStartPar
@@ -435,11 +470,32 @@ Type
 Data
 \\
 \hline
+\endfirsthead
+
+\multicolumn{2}{c}%
+{\makebox[0pt]{\sphinxtablecontinued{\tablename\ \thetable{} \textendash{} continued from previous page}}}\\
+\hline
+\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Type
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Data
+\\
+\hline
+\endhead
+
+\hline
+\multicolumn{2}{r}{\makebox[0pt][r]{\sphinxtablecontinued{continues on next page}}}\\
+\endfoot
+
+\endlastfoot
+
 \sphinxAtStartPar
 URL
 &
 \begin{sphinxVerbatimintable}[commandchars=\\\{\}]
-https://linkedsystems.uk/system/instance/TOOL0022\PYGZus{}2490/current/
+\PYG{l+s+s2}{\PYGZdq{}https://linkedsystems.uk/system/instance/TOOL0022\PYGZus{}2490/current/\PYGZdq{}}
 \end{sphinxVerbatimintable}
 \\
 \hline
@@ -457,22 +513,32 @@ https://linkedsystems.uk/system/instance/TOOL0022\PYGZus{}2490/current/
 \\
 \hline
 \begin{DUlineblock}{0em}
-\item[] 21.T11148/9a15a4735d4bda329d80
-\item[] (LandingPage)
+\item[] 21.T11148/aa24da8ba845c23ea75c
+\item[] (SchemaVersion)
 \end{DUlineblock}
 &
 \begin{sphinxVerbatimintable}[commandchars=\\\{\}]
-https://linkedsystems.uk/system/instance/TOOL0022\PYGZus{}2490/current/
+\PYG{l+s+s2}{\PYGZdq{}1.0\PYGZdq{}}
 \end{sphinxVerbatimintable}
 \\
 \hline
 \begin{DUlineblock}{0em}
-\item[] 21.T11148/709a23220f2c3d64d1e1
+\item[] 21.T11148/e0efc41346cda4ba84ca
+\item[] (LandingPage)
+\end{DUlineblock}
+&
+\begin{sphinxVerbatimintable}[commandchars=\\\{\}]
+\PYG{l+s+s2}{\PYGZdq{}https://linkedsystems.uk/system/instance/TOOL0022\PYGZus{}2490/current/\PYGZdq{}}
+\end{sphinxVerbatimintable}
+\\
+\hline
+\begin{DUlineblock}{0em}
+\item[] 21.T11148/ab8d232261b9b60ba559
 \item[] (Name)
 \end{DUlineblock}
 &
 \begin{sphinxVerbatimintable}[commandchars=\\\{\}]
-Sea\PYGZhy{}Bird SBE 37\PYGZhy{}IM MicroCAT C\PYGZhy{}T Sensor
+\PYG{l+s+s2}{\PYGZdq{}Sea\PYGZhy{}Bird SBE 37\PYGZhy{}IM MicroCAT C\PYGZhy{}T Sensor\PYGZdq{}}
 \end{sphinxVerbatimintable}
 \\
 \hline
@@ -482,17 +548,18 @@ Sea\PYGZhy{}Bird SBE 37\PYGZhy{}IM MicroCAT C\PYGZhy{}T Sensor
 \end{DUlineblock}
 &
 \begin{sphinxVerbatimintable}[commandchars=\\\{\}]
-\PYG{p}{[}\PYG{p}{\PYGZob{}}
-  \PYG{n+nt}{\PYGZdq{}owner\PYGZdq{}}\PYG{p}{:} \PYG{p}{\PYGZob{}}
-    \PYG{n+nt}{\PYGZdq{}ownerName\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}National Oceanography Centre\PYGZdq{}}\PYG{p}{,}
-    \PYG{n+nt}{\PYGZdq{}ownerContact\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}louise.darroch@bodc.ac.uk\PYGZdq{}}\PYG{p}{,}
-    \PYG{n+nt}{\PYGZdq{}ownerIdentifier\PYGZdq{}}\PYG{p}{:}\PYG{p}{\PYGZob{}}
-      \PYG{n+nt}{\PYGZdq{}ownerIdentifierValue\PYGZdq{}}\PYG{p}{:}
-        \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/B75/current/ORG00009/\PYGZdq{}}\PYG{p}{,}
-      \PYG{n+nt}{\PYGZdq{}ownerIdentifierType\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}URL\PYGZdq{}}
-     \PYG{p}{\PYGZcb{}}
-   \PYG{p}{\PYGZcb{}}
-\PYG{p}{\PYGZcb{}}\PYG{p}{]}
+ \PYG{p}{[}
+   \PYG{p}{\PYGZob{}}
+     \PYG{n+nt}{\PYGZdq{}Owner\PYGZdq{}}\PYG{p}{:} \PYG{p}{\PYGZob{}}
+       \PYG{n+nt}{\PYGZdq{}ownerName\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}National Oceanography Centre\PYGZdq{}}\PYG{p}{,}
+       \PYG{n+nt}{\PYGZdq{}ownerContact\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}someone@example.org\PYGZdq{}}\PYG{p}{,}
+       \PYG{n+nt}{\PYGZdq{}ownerIdentifier\PYGZdq{}}\PYG{p}{:} \PYG{p}{\PYGZob{}}
+         \PYG{n+nt}{\PYGZdq{}ownerIdentifierValue\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/B75/current/ORG00009/\PYGZdq{}}\PYG{p}{,}
+         \PYG{n+nt}{\PYGZdq{}ownerIdentifierType\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}URL\PYGZdq{}}
+      \PYG{p}{\PYGZcb{}}
+    \PYG{p}{\PYGZcb{}}
+  \PYG{p}{\PYGZcb{}}
+\PYG{p}{]}
 \end{sphinxVerbatimintable}
 \\
 \hline
@@ -502,16 +569,17 @@ Sea\PYGZhy{}Bird SBE 37\PYGZhy{}IM MicroCAT C\PYGZhy{}T Sensor
 \end{DUlineblock}
 &
 \begin{sphinxVerbatimintable}[commandchars=\\\{\}]
-\PYG{p}{[}\PYG{p}{\PYGZob{}}
-  \PYG{n+nt}{\PYGZdq{}manufacturer\PYGZdq{}}\PYG{p}{:}\PYG{p}{\PYGZob{}}
-    \PYG{n+nt}{\PYGZdq{}manufacturerName\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}Sea\PYGZhy{}Bird Scientific\PYGZdq{}}\PYG{p}{,}
-    \PYG{n+nt}{\PYGZdq{}manufacturerIdentifier\PYGZdq{}}\PYG{p}{:}\PYG{p}{\PYGZob{}}
-      \PYG{n+nt}{\PYGZdq{}manufacturerIdentifierValue\PYGZdq{}}\PYG{p}{:}
-        \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/L35/current/MAN0013/\PYGZdq{}}\PYG{p}{,}
-      \PYG{n+nt}{\PYGZdq{}manufacturerIdentifierType\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}URL\PYGZdq{}}
+\PYG{p}{[}
+  \PYG{p}{\PYGZob{}}
+    \PYG{n+nt}{\PYGZdq{}Manufacturer\PYGZdq{}}\PYG{p}{:} \PYG{p}{\PYGZob{}}
+      \PYG{n+nt}{\PYGZdq{}manufacturerName\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}Sea\PYGZhy{}Bird Scientific\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}manufacturerIdentifier\PYGZdq{}}\PYG{p}{:} \PYG{p}{\PYGZob{}}
+        \PYG{n+nt}{\PYGZdq{}manufacturerIdentifierValue\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/L35/current/MAN0013/\PYGZdq{}}\PYG{p}{,}
+        \PYG{n+nt}{\PYGZdq{}manufacturerIdentifierType\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}URL\PYGZdq{}}
+      \PYG{p}{\PYGZcb{}}
     \PYG{p}{\PYGZcb{}}
   \PYG{p}{\PYGZcb{}}
-\PYG{p}{\PYGZcb{}}\PYG{p}{]}
+\PYG{p}{]}
 \end{sphinxVerbatimintable}
 \\
 \hline
@@ -521,39 +589,56 @@ Sea\PYGZhy{}Bird SBE 37\PYGZhy{}IM MicroCAT C\PYGZhy{}T Sensor
 \end{DUlineblock}
 &
 \begin{sphinxVerbatimintable}[commandchars=\\\{\}]
-\PYG{p}{[}\PYG{p}{\PYGZob{}}
-   \PYG{n+nt}{\PYGZdq{}modelName\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}Sea\PYGZhy{}Bird SBE 37 MicroCat IM\PYGZhy{}CT with optional pressure (submersible) CTD sensor series\PYGZdq{}}\PYG{p}{,}
-   \PYG{n+nt}{\PYGZdq{}modelIdentifier\PYGZdq{}}\PYG{p}{:}\PYG{p}{\PYGZob{}}
-     \PYG{n+nt}{\PYGZdq{}modelIdentifierValue\PYGZdq{}}\PYG{p}{:}
-       \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/L22/current/TOOL0022/\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}modelIdentifierType\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}URL\PYGZdq{}}
-   \PYG{p}{\PYGZcb{}}
-\PYG{p}{\PYGZcb{}}\PYG{p}{]}
+ \PYG{p}{[}
+   \PYG{p}{\PYGZob{}}
+     \PYG{n+nt}{\PYGZdq{}modelName\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}Sea\PYGZhy{}Bird SBE 37 MicroCat IM\PYGZhy{}CT with optional pressure (submersible) CTD sensor series\PYGZdq{}}\PYG{p}{,}
+     \PYG{n+nt}{\PYGZdq{}modelIdentifier\PYGZdq{}}\PYG{p}{:} \PYG{p}{\PYGZob{}}
+       \PYG{n+nt}{\PYGZdq{}modelIdentifierValue\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/L22/current/TOOL0022/\PYGZdq{}}\PYG{p}{,}
+       \PYG{n+nt}{\PYGZdq{}modelIdentifierType\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}URL\PYGZdq{}}
+    \PYG{p}{\PYGZcb{}}
+  \PYG{p}{\PYGZcb{}}
+\PYG{p}{]}
 \end{sphinxVerbatimintable}
 \\
 \hline
 \begin{DUlineblock}{0em}
-\item[] 21.T11148/55f8ebc805e65b5b71dd
+\item[] 21.T11148/f1627ce85386d8d75078
 \item[] (Description)
 \end{DUlineblock}
 &
 \begin{sphinxVerbatimintable}[commandchars=\\\{\}]
-A high accuracy conductivity and temperature recorder with an optional
-pressure sensor designed for deployment on moorings. The IM model has an
-inductive modem for real\PYGZhy{}time data transmission plus internal flash memory
-data storage.
+\PYG{l+s+s2}{\PYGZdq{}A high accuracy conductivity and temperature recorder with an optional}
+\PYG{l+s+s2}{pressure sensor designed for deployment on moorings. The IM model has an}
+\PYG{l+s+s2}{inductive modem for real\PYGZhy{}time data transmission plus internal flash memory}
+\PYG{l+s+s2}{data storage.\PYGZdq{}}
 \end{sphinxVerbatimintable}
 \\
 \hline
 \begin{DUlineblock}{0em}
-\item[] 21.T11148/f76ad9d0324302fc47dd
-\item[] (InstrumentType)
+\item[] 21.T11148/c60c8da7fff2ef4f98ce
+\item[] (InstrumentTypes)
 \end{DUlineblock}
 &
 \begin{sphinxVerbatimintable}[commandchars=\\\{\}]
 \PYG{p}{[}
-  \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/L05/current/134/\PYGZdq{}}\PYG{p}{,}
-  \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/L05/current/350/\PYGZdq{}}
+  \PYG{p}{\PYGZob{}}
+    \PYG{n+nt}{\PYGZdq{}InstrumentType\PYGZdq{}}\PYG{p}{:} \PYG{p}{\PYGZob{}}
+      \PYG{n+nt}{\PYGZdq{}instrumentTypeName\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}water temperature sensor\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}instrumentTypeIdentifier\PYGZdq{}}\PYG{p}{:} \PYG{p}{\PYGZob{}}
+        \PYG{n+nt}{\PYGZdq{}instrumentTypeIdentifierValue\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/L05/current/134/\PYGZdq{}}\PYG{p}{,}
+        \PYG{n+nt}{\PYGZdq{}instrumentTypeIdentifierType\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}URL\PYGZdq{}}
+      \PYG{p}{\PYGZcb{}}
+    \PYG{p}{\PYGZcb{}}
+  \PYG{p}{\PYGZcb{}}\PYG{p}{,}
+  \PYG{p}{\PYGZob{}}
+    \PYG{n+nt}{\PYGZdq{}InstrumentType\PYGZdq{}}\PYG{p}{:} \PYG{p}{\PYGZob{}}
+      \PYG{n+nt}{\PYGZdq{}instrumentTypeName\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}salinity sensor\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}InstrumentTypeIdentifier\PYGZdq{}}\PYG{p}{:}\PYG{p}{\PYGZob{}}
+        \PYG{n+nt}{\PYGZdq{}instrumentTypeIdentifierValue\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/L05/current/350/\PYGZdq{}}\PYG{p}{,}
+        \PYG{n+nt}{\PYGZdq{}instrumentTypeIdentifierType\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}URL\PYGZdq{}}
+      \PYG{p}{\PYGZcb{}}
+    \PYG{p}{\PYGZcb{}}
+  \PYG{p}{\PYGZcb{}}
 \PYG{p}{]}
 \end{sphinxVerbatimintable}
 \\
@@ -564,27 +649,20 @@ data storage.
 \end{DUlineblock}
 &
 \begin{sphinxVerbatimintable}[commandchars=\\\{\}]
-\PYG{p}{[}\PYG{p}{\PYGZob{}}
-  \PYG{n+nt}{\PYGZdq{}measuredVariable\PYGZdq{}}\PYG{p}{:}\PYG{p}{\PYGZob{}}
-    \PYG{n+nt}{\PYGZdq{}variableMeasured\PYGZdq{}}\PYG{p}{:}
-      \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/P01/current/CNDCPR01/\PYGZdq{}}
+\PYG{p}{[}
+  \PYG{p}{\PYGZob{}}
+    \PYG{n+nt}{\PYGZdq{}MeasuredVariable\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/P01/current/CNDCPR01/\PYGZdq{}}
+  \PYG{p}{\PYGZcb{}}\PYG{p}{,}
+  \PYG{p}{\PYGZob{}}
+    \PYG{n+nt}{\PYGZdq{}MeasuredVariable\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/P01/current/PSALPR01/\PYGZdq{}}
+  \PYG{p}{\PYGZcb{}}\PYG{p}{,}
+  \PYG{p}{\PYGZob{}}
+    \PYG{n+nt}{\PYGZdq{}MeasuredVariable\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/P01/current/TEMPPR01/\PYGZdq{}}
+  \PYG{p}{\PYGZcb{}}\PYG{p}{,}
+  \PYG{p}{\PYGZob{}}
+    \PYG{n+nt}{\PYGZdq{}MeasuredVariable\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/P01/current/PREXMCAT/\PYGZdq{}}
   \PYG{p}{\PYGZcb{}}
-\PYG{p}{\PYGZcb{}}\PYG{p}{,}\PYG{p}{\PYGZob{}}
-  \PYG{n+nt}{\PYGZdq{}measuredVariable\PYGZdq{}}\PYG{p}{:}\PYG{p}{\PYGZob{}}
-    \PYG{n+nt}{\PYGZdq{}variableMeasured\PYGZdq{}}\PYG{p}{:}
-      \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/P01/current/PSALPR01/\PYGZdq{}}
-  \PYG{p}{\PYGZcb{}}
-\PYG{p}{\PYGZcb{}}\PYG{p}{,}\PYG{p}{\PYGZob{}}
-  \PYG{n+nt}{\PYGZdq{}measuredVariable\PYGZdq{}}\PYG{p}{:}\PYG{p}{\PYGZob{}}
-    \PYG{n+nt}{\PYGZdq{}variableMeasured\PYGZdq{}}\PYG{p}{:}
-      \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/P01/current/TEMPPR01/\PYGZdq{}}
-  \PYG{p}{\PYGZcb{}}
-\PYG{p}{\PYGZcb{}}\PYG{p}{,}\PYG{p}{\PYGZob{}}
-  \PYG{n+nt}{\PYGZdq{}measuredVariable\PYGZdq{}}\PYG{p}{:}\PYG{p}{\PYGZob{}}
-    \PYG{n+nt}{\PYGZdq{}variableMeasured\PYGZdq{}}\PYG{p}{:}
-      \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/P01/current/PREXMCAT/\PYGZdq{}}
-  \PYG{p}{\PYGZcb{}}
-\PYG{p}{\PYGZcb{}}\PYG{p}{]}
+\PYG{p}{]}
 \end{sphinxVerbatimintable}
 \\
 \hline
@@ -594,12 +672,14 @@ data storage.
 \end{DUlineblock}
 &
 \begin{sphinxVerbatimintable}[commandchars=\\\{\}]
-\PYG{p}{[}\PYG{p}{\PYGZob{}}
-  \PYG{n+nt}{\PYGZdq{}date\PYGZdq{}}\PYG{p}{:}\PYG{p}{\PYGZob{}}
-    \PYG{n+nt}{\PYGZdq{}dateValue\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}1999\PYGZhy{}11\PYGZhy{}01\PYGZdq{}}\PYG{p}{,}
-    \PYG{n+nt}{\PYGZdq{}dateType\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}Commissioned\PYGZdq{}}
+\PYG{p}{[}
+  \PYG{p}{\PYGZob{}}
+    \PYG{n+nt}{\PYGZdq{}date\PYGZdq{}}\PYG{p}{:} \PYG{p}{\PYGZob{}}
+      \PYG{n+nt}{\PYGZdq{}dateValue\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}1999\PYGZhy{}11\PYGZhy{}01\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}dateType\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}Commissioned\PYGZdq{}}
+    \PYG{p}{\PYGZcb{}}
   \PYG{p}{\PYGZcb{}}
-\PYG{p}{\PYGZcb{}}\PYG{p}{]}
+\PYG{p}{]}
 \end{sphinxVerbatimintable}
 \\
 \hline
@@ -609,12 +689,14 @@ data storage.
 \end{DUlineblock}
 &
 \begin{sphinxVerbatimintable}[commandchars=\\\{\}]
-\PYG{p}{[}\PYG{p}{\PYGZob{}}
-  \PYG{n+nt}{\PYGZdq{}alternateIdentifier\PYGZdq{}}\PYG{p}{:}\PYG{p}{\PYGZob{}}
-    \PYG{n+nt}{\PYGZdq{}alternateIdentifierValue\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}2490\PYGZdq{}}\PYG{p}{,}
-    \PYG{n+nt}{\PYGZdq{}alternateIdentifierType\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}serialNumber\PYGZdq{}}
+\PYG{p}{[}
+  \PYG{p}{\PYGZob{}}
+    \PYG{n+nt}{\PYGZdq{}AlternateIdentifier\PYGZdq{}}\PYG{p}{:} \PYG{p}{\PYGZob{}}
+      \PYG{n+nt}{\PYGZdq{}alternateIdentifierValue\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}2490\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}alternateIdentifierType\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}serialNumber\PYGZdq{}}
+    \PYG{p}{\PYGZcb{}}
   \PYG{p}{\PYGZcb{}}
-\PYG{p}{\PYGZcb{}}\PYG{p}{]}
+\PYG{p}{]}
 \end{sphinxVerbatimintable}
 \\
 \hline
@@ -624,20 +706,20 @@ data storage.
 \end{DUlineblock}
 &
 \begin{sphinxVerbatimintable}[commandchars=\\\{\}]
-\PYG{p}{[}\PYG{p}{\PYGZob{}}
-  \PYG{n+nt}{\PYGZdq{}relatedIdentifier\PYGZdq{}}\PYG{p}{:}\PYG{p}{\PYGZob{}}
-    \PYG{n+nt}{\PYGZdq{}relatedIdentifierValue\PYGZdq{}}\PYG{p}{:}
-      \PYG{l+s+s2}{\PYGZdq{}https://www.bodc.ac.uk/data/documents/nodb/pdf/37imbrochurejul08.pdf\PYGZdq{}}\PYG{p}{,}
-    \PYG{n+nt}{\PYGZdq{}relatedIdentifierType\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}URL\PYGZdq{}}\PYG{p}{,}
-    \PYG{n+nt}{\PYGZdq{}relationType\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}IsDescribedBy \PYGZdq{}}
+ \PYG{p}{[}
+   \PYG{p}{\PYGZob{}}
+     \PYG{n+nt}{\PYGZdq{}RelatedIdentifier\PYGZdq{}}\PYG{p}{:} \PYG{p}{\PYGZob{}}
+       \PYG{n+nt}{\PYGZdq{}relatedIdentifierValue\PYGZdq{}}\PYG{p}{:}
+         \PYG{l+s+s2}{\PYGZdq{}https://www.bodc.ac.uk/data/documents/nodb/pdf/37imbrochurejul08.pdf\PYGZdq{}}\PYG{p}{,}
+       \PYG{n+nt}{\PYGZdq{}relatedIdentifierType\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}URL\PYGZdq{}}\PYG{p}{,}
+       \PYG{n+nt}{\PYGZdq{}relationType\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}IsDescribedBy \PYGZdq{}}
+    \PYG{p}{\PYGZcb{}}
   \PYG{p}{\PYGZcb{}}
-\PYG{p}{\PYGZcb{}}\PYG{p}{]}
+\PYG{p}{]}
 \end{sphinxVerbatimintable}
 \\
 \hline
-\end{tabular}
-\par
-\sphinxattableend\end{savenotes}
+\end{longtable}\sphinxatlongtableend\end{savenotes}
 
 
 \subsubsection{Using other PIDs}
@@ -677,9 +759,9 @@ reference a class of instruments, see next subsection.
 \sphinxAtStartPar
 In a similar way to common terminologies, persistent identifiers have
 been created to help users classify and accurately describe physical
-objects.  The research resource identifier (RRID) can be used to identify
-classes of instruments (models) and is thus related to PIDINST, which
-identifies instrument instances.%
+objects.  The research resource identifier (RRID) can be used to
+identify classes of instruments (models) and is thus related to
+PIDINST, which identifies instrument instances.%
 \begin{footnote}[1]\sphinxAtStartFootnote
 Bandrowski A, Brush M, Grethe JS, Haendel MA, Kennedy DN, Hill S, Hof
 PR, Martone ME, Pols M, Tan SC, Washington N, Zudilova\sphinxhyphen{}Seinstra E,
@@ -688,12 +770,13 @@ Shift in Publishing.} J
 Comp Neurol. 2016 Jan 1;524(1):8\sphinxhyphen{}22.
 \sphinxurl{https://doi.org/10.1002/cne.23913}
 %
-\end{footnote} This work is undertaken
-by the \sphinxhref{http://myweb.fsu.edu/aglerum/usedit/usedit-about.html}{UsedIT} group, which is extending the RRID to instrument classes
-that could be used to describe the \sphinxstyleemphasis{Model} (via \sphinxstyleemphasis{modelIdentifier}) property
-(\hyperref[\detokenize{white-paper/metadata-schema-recommendations:tab-schema-use-rrid}]{Table \ref{\detokenize{white-paper/metadata-schema-recommendations:tab-schema-use-rrid}}}).  RRIDs are not described in detail
-here, but it is envisioned that the RRID metadata schema, which was
-described in detail previously,%
+\end{footnote}
+This work is undertaken by the \sphinxhref{http://myweb.fsu.edu/aglerum/usedit/usedit-about.html}{UsedIT} group, which is extending the
+RRID to instrument classes that could be used to describe the \sphinxstyleemphasis{Model}
+(via \sphinxstyleemphasis{modelIdentifier}) property (\hyperref[\detokenize{white-paper/metadata-schema-recommendations:tab-schema-use-rrid}]{Table \ref{\detokenize{white-paper/metadata-schema-recommendations:tab-schema-use-rrid}}}).
+RRIDs are not described in detail here, but it is envisioned that the
+RRID metadata schema, which was described in detail
+previously,%
 \begin{footnote}[2]\sphinxAtStartFootnote
 Bandrowski AE, Cachat J, Li Y, Müller HM, Sternberg PW, Ciccarese P,
 Clark T, Marenco L, Wang R, Astakhov V, Grethe JS, Martone ME. A
@@ -701,10 +784,10 @@ hybrid human and machine resource curation pipeline for the
 Neuroscience Information Framework. Database (Oxford). 2012 Mar
 20;2012:bas005. \sphinxurl{https://doi.org/10.1093/database/bas005}
 %
-\end{footnote} and extended by
-UsedIT, will be interoperable with instrument instance (PIDINST) PIDs.
-This interoperability should enable any project to quickly download
-data about the model to consistently fill mapped fields.
+\end{footnote} and extended by UsedIT, will be
+interoperable with instrument instance (PIDINST) PIDs.  This
+interoperability should enable any project to quickly download data
+about the model to consistently fill mapped fields.
 
 \sphinxAtStartPar
 Why RRIDs? RRIDs are currently used in about 1000 journals to tag
@@ -712,21 +795,21 @@ classes of research resources (including reagents like antibodies or
 plasmids, organisms, cell lines, and a relatively broad category of
 “tools” which includes software tools and services such as university
 core facilities, but recently has been extended to physical tools such
-as models of sequencers or microscopes). Because RRIDs were created as
-an agreement between a group of biological journals and the National
-Institutes of Health, they are most commonly found and linked in the
-biological sciences literature (e.g., Cell, eLife), they are part of the
-JATS NISO standard, STAR Methods, and the MDAR pan\sphinxhyphen{}publisher
-reproducibility checklist, resolved by identifiers.org and the n2t
-resolver and echoed by some of the major reagent providers (e.g., Thermo
-Fisher, Addgene, and the MMRRC mouse repository).
+as models of sequencers or microscopes).  Because RRIDs were created
+as an agreement between a group of biological journals and the
+National Institutes of Health, they are most commonly found and linked
+in the biological sciences literature (e.g., Cell, eLife), they are
+part of the JATS NISO standard, STAR Methods, and the MDAR
+pan\sphinxhyphen{}publisher reproducibility checklist, resolved by identifiers.org
+and the n2t resolver and echoed by some of the major reagent providers
+(e.g., Thermo Fisher, Addgene, and the MMRRC mouse repository).
 
 
 \begin{savenotes}\sphinxattablestart
 \centering
 \sphinxcapstartof{table}
 \sphinxthecaptionisattop
-\sphinxcaption{Example showing the use of RRIDs in the PIDINST metadata schema.}\label{\detokenize{white-paper/metadata-schema-recommendations:id5}}\label{\detokenize{white-paper/metadata-schema-recommendations:tab-schema-use-rrid}}
+\sphinxcaption{Example showing the use of RRIDs in the PIDINST metadata schema.}\label{\detokenize{white-paper/metadata-schema-recommendations:tab-schema-use-rrid}}
 \sphinxaftertopcaption
 \begin{tabulary}{\linewidth}[t]{|T|T|T|T|T|T|}
 \hline
@@ -865,7 +948,7 @@ In all these cases it is still useful to make it at least explicit
 that this information has not been omitted inadvertently and also to
 give a reason why it is missing.  For this purpose, PIDINST adopts the
 \sphinxstyleemphasis{standard values for unknown information} from DataCite, see Appendix
-3 in the DataCite Metadata Schema Documentation. %
+3 in the DataCite Metadata Schema Documentation.%
 \begin{footnote}[3]\sphinxAtStartFootnote
 DataCite Metadata Working Group (2019).  DataCite Metadata Schema
 Documentation for the Publication and Citation of Research Data.
@@ -873,7 +956,7 @@ Version 4.3.  DataCite e.V.  \sphinxurl{https://doi.org/10.14454/7xq3-zf69}
 %
 \end{footnote}
 \sphinxSetupCaptionForVerbatim{Encoding unknown values in the instrument PID metadata using XML}
-\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/metadata-schema-recommendations:id6}}\label{\detokenize{white-paper/metadata-schema-recommendations:snip-schema-unknown-xml}}}
+\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/metadata-schema-recommendations:snip-schema-unknown-xml}}}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
   \PYG{n+nt}{\PYGZlt{}name}\PYG{n+nt}{\PYGZgt{}}:tba\PYG{n+nt}{\PYGZlt{}/name\PYGZgt{}}
   \PYG{n+nt}{\PYGZlt{}owners}\PYG{n+nt}{\PYGZgt{}}
@@ -916,7 +999,7 @@ at PID providers compliant with RDA PIDINST recommendations.
        PIDs at PID providers compliant with RDA PIDINST
        recommendations. The table provides links to the relevant
        metadata schema that accompanies PID records at PID
-       providers.}\label{\detokenize{white-paper/registration:id1}}\label{\detokenize{white-paper/registration:tab-register-guidance}}
+       providers.}\label{\detokenize{white-paper/registration:tab-register-guidance}}
 \sphinxaftertopcaption
 \begin{tabulary}{\linewidth}[t]{|T|T|T|}
 \hline
@@ -935,7 +1018,7 @@ Metadata schema
 ePIC
 &
 \sphinxAtStartPar
-{\hyperref[\detokenize{cookbook/index:epic-cookbook}]{\sphinxcrossref{\DUrole{std,std-ref}{ePIC Cookbook}}}}
+{\hyperref[\detokenize{epic-cookbook/index:epic-cookbook}]{\sphinxcrossref{\DUrole{std,std-ref}{ePIC Cookbook}}}}
 &
 \sphinxAtStartPar
 \sphinxhref{https://github.com/rdawg-pidinst/schema/blob/master/schema.rst}{PIDINST}
@@ -945,7 +1028,7 @@ ePIC
 DataCite
 &
 \sphinxAtStartPar
-\sphinxurl{https://datacite.org/dois.html}
+{\hyperref[\detokenize{datacite-cookbook/index:datacite-cookbook}]{\sphinxcrossref{\DUrole{std,std-ref}{DataCite Cookbook}}}}
 &
 \sphinxAtStartPar
 \sphinxhref{https://github.com/rdawg-pidinst/schema/blob/master/schema-datacite.rst}{PIDINST to DataCite}
@@ -978,53 +1061,54 @@ locator to the PID’s metadata record.
 \label{\detokenize{white-paper/duplication:dealing-with-duplication}}\label{\detokenize{white-paper/duplication::doc}}
 \sphinxAtStartPar
 Duplication between identifier records is not a new problem and is
-common to many applications (e.g. bibliographic, medical records). While
-PIDINST identifiers are considered globally persistent it is accepted
-that duplication may occur particularly where institutions loan
-instruments to other organisations or provide access to specialised
-facilities (e.g. large scale synchrotrons, medical laboratories,
-computational facilities). Such duplication may lead to inaccurate
-statistics or reporting about instrument assets.
+common to many applications (e.g. bibliographic, medical records).
+While PIDINST identifiers are considered globally persistent it is
+accepted that duplication may occur particularly where institutions
+loan instruments to other organisations or provide access to
+specialised facilities (e.g. large scale synchrotrons, medical
+laboratories, computational facilities).  Such duplication may lead to
+inaccurate statistics or reporting about instrument assets.
 
 \sphinxAtStartPar
-It is recommended that owners of instruments try to employ workflows and
-procedures that avoid duplication in the first instance. Where this has
-not been possible, it is recommended that instrument owners employ
-deduplication, effectively merging duplicate records into one
-representative record by ensuring links between them. This can be
-achieved using the PIDINST metadata schema \sphinxstyleemphasis{relatedIdentifier} property
-with a \sphinxstyleemphasis{relationType} attribute \sphinxstyleemphasis{IsIdenticalTo} as shown in
+It is recommended that owners of instruments try to employ workflows
+and procedures that avoid duplication in the first instance.  Where
+this has not been possible, it is recommended that instrument owners
+employ deduplication, effectively merging duplicate records into one
+representative record by ensuring links between them.  This can be
+achieved using the PIDINST metadata schema \sphinxstyleemphasis{relatedIdentifier}
+property with a \sphinxstyleemphasis{relationType} attribute \sphinxstyleemphasis{IsIdenticalTo} as shown in
 \hyperref[\detokenize{white-paper/duplication:snip-dub-merge-xml}]{Snippet \ref{\detokenize{white-paper/duplication:snip-dub-merge-xml}}} and \hyperref[\detokenize{white-paper/duplication:snip-dub-merge-json}]{\ref{\detokenize{white-paper/duplication:snip-dub-merge-json}}}.
 \sphinxSetupCaptionForVerbatim{Merging duplicate instrument PID records using XML}
-\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/duplication:id1}}\label{\detokenize{white-paper/duplication:snip-dub-merge-xml}}}
+\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/duplication:snip-dub-merge-xml}}}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
   \PYG{n+nt}{\PYGZlt{}relatedIdentifiers}\PYG{n+nt}{\PYGZgt{}}
      \PYG{n+nt}{\PYGZlt{}relatedIdentifier} \PYG{n+na}{relatedIdentifierType=}\PYG{l+s}{\PYGZdq{}DOI\PYGZdq{}} \PYG{n+na}{relationType=}\PYG{l+s}{\PYGZdq{}IsIdenticalTo\PYGZdq{}}\PYG{n+nt}{\PYGZgt{}}10.4232/10.CPoS\PYGZhy{}2013\PYGZhy{}02en\PYG{n+nt}{\PYGZlt{}/relatedIdentifier\PYGZgt{}}
   \PYG{n+nt}{\PYGZlt{}/relatedIdentifiers\PYGZgt{}}
 \end{sphinxVerbatim}
 \sphinxSetupCaptionForVerbatim{Merging duplicate instrument PID records using JSON}
-\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/duplication:id2}}\label{\detokenize{white-paper/duplication:snip-dub-merge-json}}}
+\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/duplication:snip-dub-merge-json}}}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{p}{[}\PYG{p}{\PYGZob{}}
-   \PYG{n+nt}{\PYGZdq{}RelatedIdentifier\PYGZdq{}}\PYG{p}{:}\PYG{p}{\PYGZob{}}
-      \PYG{n+nt}{\PYGZdq{}RelatedIdentifierValue\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}10.4232/10.CPoS\PYGZhy{}2013\PYGZhy{}02en\PYGZdq{}}\PYG{p}{,}
-      \PYG{n+nt}{\PYGZdq{}RelatedIdentifierType\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}DOI\PYGZdq{}}\PYG{p}{,}
-      \PYG{n+nt}{\PYGZdq{}relationType\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}IsIdenticalTo\PYGZdq{}}
-      \PYG{p}{\PYGZcb{}}
-  \PYG{p}{\PYGZcb{}}\PYG{p}{]}
+  \PYG{n+nt}{\PYGZdq{}RelatedIdentifier\PYGZdq{}}\PYG{p}{:}\PYG{p}{\PYGZob{}}
+    \PYG{n+nt}{\PYGZdq{}RelatedIdentifierValue\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}10.4232/10.CPoS\PYGZhy{}2013\PYGZhy{}02en\PYGZdq{}}\PYG{p}{,}
+    \PYG{n+nt}{\PYGZdq{}RelatedIdentifierType\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}DOI\PYGZdq{}}\PYG{p}{,}
+    \PYG{n+nt}{\PYGZdq{}relationType\PYGZdq{}}\PYG{p}{:}\PYG{l+s+s2}{\PYGZdq{}IsIdenticalTo\PYGZdq{}}
+  \PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}\PYG{p}{]}
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
 Recent advances in technologies are expanding to algorithms that
-automatically detect and resolve deduplication. While such methodologies
-have been known to improve the efficiency of detection in large
-collections such as Google Scholar or OpenAire Research Graph,
-algorithms may be limited by heterogeneous representations for example,
-by the use of differing semantics. While automatic detection is
-encouraged, the PIDINST schema is designed to complement
-multidisciplinary best practices for property values and many properties
-allow for soft\sphinxhyphen{}typing, giving users the ability to use values of their
-choice, such as free text or domain\sphinxhyphen{}specific standards.
+automatically detect and resolve deduplication.  While such
+methodologies have been known to improve the efficiency of detection
+in large collections such as Google Scholar or \sphinxhref{https://graph.openaire.eu}{OpenAIRE Graph},
+algorithms may be limited by heterogeneous representations for
+example, by the use of differing semantics.  While automatic detection
+is encouraged, the PIDINST schema is designed to complement
+multidisciplinary best practices for property values and many
+properties allow for soft\sphinxhyphen{}typing, giving users the ability to use
+values of their choice, such as free text or domain\sphinxhyphen{}specific
+standards.
 
 
 \subsection{Linking physical objects}
@@ -1087,13 +1171,13 @@ in PIDINST.
 \noindent\sphinxincludegraphics{{image4}.png}
 \caption{An example of a webpage QR code that includes an organisation logo
 and re\sphinxhyphen{}directs the scanner to the PID URL
-(\sphinxurl{http://hdl.handle.net/21.T11998/0000-001A-3905-F}).}\label{\detokenize{white-paper/physical-objects:id2}}\label{\detokenize{white-paper/physical-objects:fig-objects-qr}}\end{figure}
+(\sphinxurl{http://hdl.handle.net/21.T11998/0000-001A-3905-F}).}\label{\detokenize{white-paper/physical-objects:fig-objects-qr}}\end{figure}
 \sphinxSetupCaptionForVerbatim{An instrument serial number expressed in XML}
-\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/physical-objects:id3}}\label{\detokenize{white-paper/physical-objects:snip-objects-serial}}}
+\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/physical-objects:snip-objects-serial}}}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-  \PYGZlt{}AlternateIdentifiers\PYGZgt{}
-     \PYGZlt{}AlternateIdentifier alternateIdentifierType=\PYGZdq{}serialNumber\PYGZdq{}\PYGZdq{}\PYGZgt{}7351\PYGZhy{}349l\PYGZhy{}mn24\PYGZhy{}019f\PYGZlt{}/AlternateIdentifier\PYGZgt{}
-  \PYGZlt{}/AlternateIdentifiers\PYGZgt{}
+  \PYG{n+nt}{\PYGZlt{}AlternateIdentifiers}\PYG{n+nt}{\PYGZgt{}}
+     \PYG{n+nt}{\PYGZlt{}AlternateIdentifier} \PYG{n+na}{alternateIdentifierType=}\PYG{l+s}{\PYGZdq{}serialNumber\PYGZdq{}}\PYG{n+nt}{\PYGZgt{}}7351\PYGZhy{}349l\PYGZhy{}mn24\PYGZhy{}019f\PYG{n+nt}{\PYGZlt{}/AlternateIdentifier\PYGZgt{}}
+  \PYG{n+nt}{\PYGZlt{}/AlternateIdentifiers\PYGZgt{}}
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
@@ -1134,7 +1218,7 @@ for the superceded PID as shown in
 \hyperref[\detokenize{white-paper/create-new-pid:snip-create-superseded-json}]{\ref{\detokenize{white-paper/create-new-pid:snip-create-superseded-json}}}.
 \sphinxSetupCaptionForVerbatim{The use of the relatedIdentifier property to represent
 superseding PID records in XML}
-\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/create-new-pid:id1}}\label{\detokenize{white-paper/create-new-pid:snip-create-superseding-xml}}}
+\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/create-new-pid:snip-create-superseding-xml}}}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
   \PYG{n+nt}{\PYGZlt{}relatedIdentifiers}\PYG{n+nt}{\PYGZgt{}}
      \PYG{n+nt}{\PYGZlt{}relatedIdentifier} \PYG{n+na}{relatedIdentifierType=}\PYG{l+s}{\PYGZdq{}DOI\PYGZdq{}} \PYG{n+na}{relationType=}\PYG{l+s}{\PYGZdq{}IsNewVersionOf\PYGZdq{}}\PYG{n+nt}{\PYGZgt{}}10.4232/10.CPoS\PYGZhy{}2013\PYGZhy{}02en\PYG{n+nt}{\PYGZlt{}/relatedIdentifier\PYGZgt{}}
@@ -1142,7 +1226,7 @@ superseding PID records in XML}
 \end{sphinxVerbatim}
 \sphinxSetupCaptionForVerbatim{The use of the relatedIdentifier property to represent
 superseded PID records in XML}
-\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/create-new-pid:id2}}\label{\detokenize{white-paper/create-new-pid:snip-create-superseded-xml}}}
+\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/create-new-pid:snip-create-superseded-xml}}}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
   \PYG{n+nt}{\PYGZlt{}relatedIdentifiers}\PYG{n+nt}{\PYGZgt{}}
      \PYG{n+nt}{\PYGZlt{}relatedIdentifier} \PYG{n+na}{relatedIdentifierType=}\PYG{l+s}{\PYGZdq{}DOI\PYGZdq{}} \PYG{n+na}{relationType=}\PYG{l+s}{\PYGZdq{}IsPreviousVersionOf\PYGZdq{}}\PYG{n+nt}{\PYGZgt{}}http://hdl.handle.net/21.T11998/0000\PYGZhy{}001A\PYGZhy{}3905\PYGZhy{}F\PYG{n+nt}{\PYGZlt{}/relatedIdentifier\PYGZgt{}}
@@ -1150,7 +1234,7 @@ superseded PID records in XML}
 \end{sphinxVerbatim}
 \sphinxSetupCaptionForVerbatim{The use of the relatedIdentifier property to represent
 superseding PID records in JSON}
-\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/create-new-pid:id3}}\label{\detokenize{white-paper/create-new-pid:snip-create-superseding-json}}}
+\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/create-new-pid:snip-create-superseding-json}}}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
   \PYG{p}{[}\PYG{p}{\PYGZob{}}
     \PYG{n+nt}{\PYGZdq{}RelatedIdentifier\PYGZdq{}}\PYG{p}{:}\PYG{p}{\PYGZob{}}
@@ -1162,7 +1246,7 @@ superseding PID records in JSON}
 \end{sphinxVerbatim}
 \sphinxSetupCaptionForVerbatim{The use of the relatedIdentifier property to represent
 superseded PID records in JSON}
-\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/create-new-pid:id4}}\label{\detokenize{white-paper/create-new-pid:snip-create-superseded-json}}}
+\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/create-new-pid:snip-create-superseded-json}}}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
   \PYG{p}{[}\PYG{p}{\PYGZob{}}
     \PYG{n+nt}{\PYGZdq{}RelatedIdentifier\PYGZdq{}}\PYG{p}{:}\PYG{p}{\PYGZob{}}
@@ -1202,7 +1286,7 @@ instrument metadata into data workflows.
 \sphinxthecaptionisattop
 \sphinxcaption{Descriptive landing page metadata describing measuring
        instruments. To be used in conjunction with the core
-       instrument metadata used in the PIDINST schema.}\label{\detokenize{white-paper/landing-page-content:id2}}\label{\detokenize{white-paper/landing-page-content:tab-landing-content-inst}}
+       instrument metadata used in the PIDINST schema.}\label{\detokenize{white-paper/landing-page-content:tab-landing-content-inst}}
 \sphinxaftertopcaption
 \begin{tabulary}{\linewidth}[t]{|T|T|}
 \hline
@@ -1264,7 +1348,7 @@ component etc.
        lifetime of an instrument. This kind of metadata should be
        associated to dates and ideally accompanied by comments. To
        be used in conjunction with the core instrument metadata
-       used in the PIDINST schema.}\label{\detokenize{white-paper/landing-page-content:id3}}\label{\detokenize{white-paper/landing-page-content:tab-landing-content-events}}
+       used in the PIDINST schema.}\label{\detokenize{white-paper/landing-page-content:tab-landing-content-events}}
 \sphinxaftertopcaption
 \begin{tabulary}{\linewidth}[t]{|T|T|}
 \hline
@@ -1354,7 +1438,7 @@ between systems. Below are some examples of landing page encodings.
 \label{\detokenize{white-paper/landing-page-encoding:json-ld}}
 \sphinxAtStartPar
 There is a strong relation between PIDs with values of types that are
-defined in a data type registry (DTR) as for instance in the NERC
+defined in a data type registry (DTR) as for instance in the
 example in \hyperref[\detokenize{white-paper/metadata-schema-recommendations:tab-schema-handle-record}]{Table \ref{\detokenize{white-paper/metadata-schema-recommendations:tab-schema-handle-record}}} and linked data. First
 of all a PID with a type value is a triple where the PID plays the
 role of the subject, the type definition is the predicate and the
@@ -1379,146 +1463,177 @@ can be mapped into a linked data representation. In the following a
 respective representation in JSON\sphinxhyphen{}LD of the schema example shown in
 \hyperref[\detokenize{white-paper/metadata-schema-recommendations:tab-schema-handle-record}]{Table \ref{\detokenize{white-paper/metadata-schema-recommendations:tab-schema-handle-record}}} is shown in
 \hyperref[\detokenize{white-paper/landing-page-encoding:snip-landing-encoding-json-ld}]{Snippet \ref{\detokenize{white-paper/landing-page-encoding:snip-landing-encoding-json-ld}}}.
-\sphinxSetupCaptionForVerbatim{representation in JSON\sphinxhyphen{}LD of the NERC example of
+\sphinxSetupCaptionForVerbatim{representation in JSON\sphinxhyphen{}LD of the example of
 \hyperref[\detokenize{white-paper/metadata-schema-recommendations:tab-schema-handle-record}]{Table \ref{\detokenize{white-paper/metadata-schema-recommendations:tab-schema-handle-record}}}.}
-\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/landing-page-encoding:id4}}\label{\detokenize{white-paper/landing-page-encoding:snip-landing-encoding-json-ld}}}
+\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/landing-page-encoding:snip-landing-encoding-json-ld}}}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-    \PYG{p}{\PYGZob{}}
-    \PYG{n+nt}{\PYGZdq{}@context\PYGZdq{}} \PYG{p}{:} \PYG{p}{\PYGZob{}}
-     \PYG{n+nt}{\PYGZdq{}ARK\PYGZhy{}Identifier\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/7af6f46512fb4c190d01\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}AlternateIdentifier\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/d87a75c52c68b06e9a18\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}AlternateIdentifierValue\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/38330bcc6a40ca85e5b4\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}AlternateIdentifiers\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/eb3c713572f681e6c4c3\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}Bibcode\PYGZhy{}Identifier\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/6c2fc7682e48ac7160b5\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}DOI\PYGZhy{}Identifier\PYGZhy{}General\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/d93427e3c56173e9dc08\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}Date\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/eb9a4bc1c0c153e4e4b0\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}Dates\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/22c62082a4d2d9ae2602\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}Description\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/55f8ebc805e65b5b71dd\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}Handle\PYGZhy{}Identifier\PYGZhy{}ASCII\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/3626040cadcac1571685\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}ISAN\PYGZhy{}Identifier\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/48cfce4482166a103c50\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}ISBN\PYGZhy{}Identifier\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/2ff8ad6cdd4e46622944\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}ISNI\PYGZhy{}Identifier\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/cff32964e132c14fc56f\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}ISRC\PYGZhy{}Identifier\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/2719170925ff2bfb5157\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}ISSN\PYGZhy{}Identifier\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/7e689432354610f388c0\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}ISTC\PYGZhy{}Identifier\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/1f0df9ef66774b2e2aa1\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}ISWC\PYGZhy{}Identifier\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/698fba7e1c659fcfdcdd\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}InstrumentType\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/f76ad9d0324302fc47dd\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}LandingPage\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/9a15a4735d4bda329d80\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}Manufacturer\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/7adfcd13b3b01de0d875\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}Manufacturers\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/1f3e82ddf0697a497432\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}MeasuredVariable\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/1fcb0dad9aced457d67e\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}MeasuredVariables\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/72928b84e060d491ee41\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}Name\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/709a23220f2c3d64d1e1\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}Owner\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/89ff31225c5f042fff61\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}Owners\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/4eaec4bc0f1df68ab2a7\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}PMCID\PYGZhy{}Identifier\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/e94bec7d7f1c63dd00cd\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}PMID\PYGZhy{}Identifier\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/234c084bac48480bfe5d\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}RelatedIdentifier\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/ec9f00af0761a065dbd0\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}RelatedIdentifierType\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/015dc79a77940fb65aa4\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}RelatedIdentifierValue\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/38330bcc6a40ca85e5b4\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}RelatedIdentifiers\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/178fb558abc755ca7046\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}URN\PYGZhy{}Identifier\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/d22b6854df3503df7831\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}VariableMeasured\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/f1627ce85386d8d75078\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}alternateIdentifierType\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/015dc79a77940fb65aa4\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}arXiv\PYGZhy{}Identifier\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/d66f8368c3d305941a2e\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}date\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/be707495360a234ef049\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}dateType\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/2f0e608b621a5a97e0d9\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}dti\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}http://hdl.handle.net/\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}identifier\PYGZhy{}general\PYGZhy{}with\PYGZhy{}type\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/8eb858ee0b12e8e463a5\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}identifierType\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/015dc79a77940fb65aa4\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}identifierValue\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/38330bcc6a40ca85e5b4\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}manufacturerIdentifier\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/5b240e16ea32ea25cf65\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}manufacturerIdentifierType\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/015dc79a77940fb65aa4\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}manufacturerIdentifierValue\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/38330bcc6a40ca85e5b4\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}manufacturerName\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/798588c5a1ec532f737b\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}modelName\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/798588c5a1ec532f737b\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}other\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/f40cb15558a7c1546c91\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}ownerContact\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/a88b7dcd1a9e3e17770b\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}ownerIdentifier\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/1e3c17ac2a3e7ebf466a\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}ownerIdentifierType\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/015dc79a77940fb65aa4\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}ownerIdentifierValue\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/38330bcc6a40ca85e5b4\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}ownerName\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/798588c5a1ec532f737b\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}relationType\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/292a53bd9ee27a242082\PYGZdq{}}
+  \PYG{p}{\PYGZob{}}
+    \PYG{n+nt}{\PYGZdq{}@context\PYGZdq{}}\PYG{p}{:} \PYG{p}{\PYGZob{}}
+      \PYG{n+nt}{\PYGZdq{}ARK\PYGZhy{}Identifier\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/7af6f46512fb4c190d01\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}AlternateIdentifier\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/d87a75c52c68b06e9a18\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}AlternateIdentifiers\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/eb3c713572f681e6c4c3\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}Bibcode\PYGZhy{}Identifier\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/6c2fc7682e48ac7160b5\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}DOI\PYGZhy{}Identifier\PYGZhy{}General\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/d93427e3c56173e9dc08\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}Date\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/eb9a4bc1c0c153e4e4b0\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}Dates\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/22c62082a4d2d9ae2602\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}Description\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/f1627ce85386d8d75078\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}Handle\PYGZhy{}Identifier\PYGZhy{}ASCII\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/3626040cadcac1571685\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}ISAN\PYGZhy{}Identifier\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/48cfce4482166a103c50\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}ISBN\PYGZhy{}Identifier\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/2ff8ad6cdd4e46622944\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}ISNI\PYGZhy{}Identifier\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/cff32964e132c14fc56f\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}ISRC\PYGZhy{}Identifier\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/2719170925ff2bfb5157\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}ISSN\PYGZhy{}Identifier\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/7e689432354610f388c0\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}ISTC\PYGZhy{}Identifier\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/1f0df9ef66774b2e2aa1\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}ISWC\PYGZhy{}Identifier\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/698fba7e1c659fcfdcdd\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}InstrumentType\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/f76ad9d0324302fc47dd\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}InstrumentTypes\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/c60c8da7fff2ef4f98ce\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}LandingPage\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/e0efc41346cda4ba84ca\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}Manufacturer\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/7adfcd13b3b01de0d875\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}Manufacturers\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/1f3e82ddf0697a497432\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}MeasuredVariable\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/f1627ce85386d8d75078\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}MeasuredVariables\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/72928b84e060d491ee41\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}Model\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/c1a0ec5ad347427f25d6\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}Name\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/ab8d232261b9b60ba559\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}Owner\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/89ff31225c5f042fff61\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}Owners\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/4eaec4bc0f1df68ab2a7\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}PMCID\PYGZhy{}Identifier\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/e94bec7d7f1c63dd00cd\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}PMID\PYGZhy{}Identifier\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/234c084bac48480bfe5d\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}RelatedIdentifier\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/ec9f00af0761a065dbd0\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}RelatedIdentifiers\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/178fb558abc755ca7046\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}SchemaVersion\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/aa24da8ba845c23ea75c\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}URN\PYGZhy{}Identifier\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/d22b6854df3503df7831\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}alternateIdentifierName\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/f1627ce85386d8d75078\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}alternateIdentifierType\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/015dc79a77940fb65aa4\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}alternateIdentifierValue\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/f1627ce85386d8d75078\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}arXiv\PYGZhy{}Identifier\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/d66f8368c3d305941a2e\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}date\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/eb9a4bc1c0c153e4e4b0\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}dateType\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/2f0e608b621a5a97e0d9\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}dateValue\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/be707495360a234ef049\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}dti\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}http://hdl.handle.net/\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}identifier\PYGZhy{}general\PYGZhy{}with\PYGZhy{}type\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/8eb858ee0b12e8e463a5\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}identifierType\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/015dc79a77940fb65aa4\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}identifierValue\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/f1627ce85386d8d75078\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}instrumentTypeIdentifier\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/f9bdfd1810b999e3b11e\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}instrumentTypeIdentifierType\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/015dc79a77940fb65aa4\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}instrumentTypeIdentifierValue\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/f1627ce85386d8d75078\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}instrumentTypeName\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/f1627ce85386d8d75078\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}manufacturerIdentifier\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/5b240e16ea32ea25cf65\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}manufacturerIdentifierType\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/015dc79a77940fb65aa4\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}manufacturerIdentifierValue\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/f1627ce85386d8d75078\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}manufacturerName\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/798588c5a1ec532f737b\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}modelIdentifier\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/7e86a0b84960d0992fdf\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}modelIdentifierType\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/015dc79a77940fb65aa4\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}modelIdentifierValue\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/f1627ce85386d8d75078\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}modelName\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/f1627ce85386d8d75078\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}ownerContact\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/a88b7dcd1a9e3e17770b\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}ownerIdentifier\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/1e3c17ac2a3e7ebf466a\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}ownerIdentifierType\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/f1627ce85386d8d75078\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}ownerIdentifierValue\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:221.T11148/38330bcc6a40ca85e5b4\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}ownerName\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/798588c5a1ec532f737b\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}relatedIdentifierName\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/f1627ce85386d8d75078\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}relatedIdentifierType\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/015dc79a77940fb65aa4\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}relatedIdentifierValue\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/f1627ce85386d8d75078\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}relationType\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11148/292a53bd9ee27a242082\PYGZdq{}}
     \PYG{p}{\PYGZcb{}}\PYG{p}{,}
-    \PYG{n+nt}{\PYGZdq{}@id\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11998/0000\PYGZhy{}001A\PYGZhy{}3905\PYGZhy{}F\PYGZdq{}}\PYG{p}{,}
-    \PYG{n+nt}{\PYGZdq{}AlternateIdentifiers\PYGZdq{}} \PYG{p}{:} \PYG{p}{[}
-     \PYG{p}{\PYGZob{}}
-     \PYG{n+nt}{\PYGZdq{}AlternateIdentifier\PYGZdq{}} \PYG{p}{:} \PYG{p}{\PYGZob{}}
-        \PYG{n+nt}{\PYGZdq{}AlternateIdentifierValue\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}2490\PYGZdq{}}\PYG{p}{,}
-        \PYG{n+nt}{\PYGZdq{}alternateIdentifierType\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}serialNumber\PYGZdq{}}
-     \PYG{p}{\PYGZcb{}}
-     \PYG{p}{\PYGZcb{}}
+    \PYG{n+nt}{\PYGZdq{}@id\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}dti:21.T11998/0000\PYGZhy{}001A\PYGZhy{}3905\PYGZhy{}F\PYGZdq{}}\PYG{p}{,}
+    \PYG{n+nt}{\PYGZdq{}AlternateIdentifiers\PYGZdq{}}\PYG{p}{:} \PYG{p}{[}
+      \PYG{p}{\PYGZob{}}
+        \PYG{n+nt}{\PYGZdq{}AlternateIdentifier\PYGZdq{}}\PYG{p}{:} \PYG{p}{\PYGZob{}}
+          \PYG{n+nt}{\PYGZdq{}alternateIdentifierValue\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}2490\PYGZdq{}}\PYG{p}{,}
+          \PYG{n+nt}{\PYGZdq{}alternateIdentifierType\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}serialNumber\PYGZdq{}}
+        \PYG{p}{\PYGZcb{}}
+      \PYG{p}{\PYGZcb{}}
     \PYG{p}{]}\PYG{p}{,}
-    \PYG{n+nt}{\PYGZdq{}Dates\PYGZdq{}} \PYG{p}{:} \PYG{p}{[}
-     \PYG{p}{\PYGZob{}}
-     \PYG{n+nt}{\PYGZdq{}date\PYGZdq{}} \PYG{p}{:} \PYG{p}{\PYGZob{}}
-        \PYG{n+nt}{\PYGZdq{}date\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}1999\PYGZhy{}11\PYGZhy{}01\PYGZdq{}}\PYG{p}{,}
-        \PYG{n+nt}{\PYGZdq{}dateType\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}Commissioned\PYGZdq{}}
-     \PYG{p}{\PYGZcb{}}
-     \PYG{p}{\PYGZcb{}}
+    \PYG{n+nt}{\PYGZdq{}Dates\PYGZdq{}}\PYG{p}{:} \PYG{p}{[}
+      \PYG{p}{\PYGZob{}}
+        \PYG{n+nt}{\PYGZdq{}date\PYGZdq{}}\PYG{p}{:} \PYG{p}{\PYGZob{}}
+          \PYG{n+nt}{\PYGZdq{}date\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}1999\PYGZhy{}11\PYGZhy{}01\PYGZdq{}}\PYG{p}{,}
+          \PYG{n+nt}{\PYGZdq{}dateType\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}Commissioned\PYGZdq{}}
+        \PYG{p}{\PYGZcb{}}
+      \PYG{p}{\PYGZcb{}}
     \PYG{p}{]}\PYG{p}{,}
-    \PYG{n+nt}{\PYGZdq{}Description\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}A high accuracy conductivity and temperature recorder with an optional pressure sensor designed for deployment on moorings. The IM model has an inductive modem for real\PYGZhy{}time data transmission plus internal flash memory data storage.\PYGZdq{}}\PYG{p}{,}
-    \PYG{n+nt}{\PYGZdq{}InstrumentType\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/L22/current/TOOL0022/\PYGZdq{}}\PYG{p}{,}
-    \PYG{n+nt}{\PYGZdq{}LandingPage\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}https://linkedsystems.uk/system/instance/TOOL0022\PYGZus{}2490/current/\PYGZdq{}}\PYG{p}{,}
-    \PYG{n+nt}{\PYGZdq{}Manufacturers\PYGZdq{}} \PYG{p}{:} \PYG{p}{[}
-     \PYG{p}{\PYGZob{}}
-     \PYG{n+nt}{\PYGZdq{}Manufacturer\PYGZdq{}} \PYG{p}{:} \PYG{p}{\PYGZob{}}
-        \PYG{n+nt}{\PYGZdq{}manufacturerIdentifier\PYGZdq{}} \PYG{p}{:} \PYG{p}{\PYGZob{}}
-           \PYG{n+nt}{\PYGZdq{}manufacturerIdentifierType\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}URL\PYGZdq{}}\PYG{p}{,}
-           \PYG{n+nt}{\PYGZdq{}manufacturerIdentifierValue\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/L35/current/MAN0013/\PYGZdq{}}
-        \PYG{p}{\PYGZcb{}}\PYG{p}{,}
-        \PYG{n+nt}{\PYGZdq{}manufacturerName\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}Sea\PYGZhy{}Bird Scientific\PYGZdq{}}\PYG{p}{,}
-        \PYG{n+nt}{\PYGZdq{}modelName\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}SBE 37\PYGZhy{}IM\PYGZdq{}}
-     \PYG{p}{\PYGZcb{}}
-     \PYG{p}{\PYGZcb{}}
+    \PYG{n+nt}{\PYGZdq{}Description\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}A high accuracy conductivity and temperature recorder with an optional pressure sensor designed for deployment on moorings. The IM model has an inductive modem for real\PYGZhy{}time data transmission plus internal flash memory data storage.\PYGZdq{}}\PYG{p}{,}
+    \PYG{n+nt}{\PYGZdq{}InstrumentTypes\PYGZdq{}}\PYG{p}{:} \PYG{p}{[}
+      \PYG{p}{\PYGZob{}}
+        \PYG{n+nt}{\PYGZdq{}InstrumentType\PYGZdq{}}\PYG{p}{:} \PYG{p}{\PYGZob{}}
+          \PYG{n+nt}{\PYGZdq{}instrumentTypeName\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}water temperature sensor\PYGZdq{}}\PYG{p}{,}
+          \PYG{n+nt}{\PYGZdq{}instrumentTypeIdentifier\PYGZdq{}}\PYG{p}{:} \PYG{p}{\PYGZob{}}
+            \PYG{n+nt}{\PYGZdq{}instrumentTypeIdentifierValue\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/L05/current/134/\PYGZdq{}}\PYG{p}{,}
+            \PYG{n+nt}{\PYGZdq{}instrumentTypeIdentifierType\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}URL\PYGZdq{}}
+          \PYG{p}{\PYGZcb{}}
+        \PYG{p}{\PYGZcb{}}
+      \PYG{p}{\PYGZcb{}}\PYG{p}{,}
+      \PYG{p}{\PYGZob{}}
+        \PYG{n+nt}{\PYGZdq{}InstrumentType\PYGZdq{}}\PYG{p}{:} \PYG{p}{\PYGZob{}}
+          \PYG{n+nt}{\PYGZdq{}instrumentTypeName\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}salinity sensor\PYGZdq{}}\PYG{p}{,}
+          \PYG{n+nt}{\PYGZdq{}instrumentTypeIdentifier\PYGZdq{}}\PYG{p}{:} \PYG{p}{\PYGZob{}}
+            \PYG{n+nt}{\PYGZdq{}instrumentTypeIdentifierValue\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/L05/current/350/\PYGZdq{}}\PYG{p}{,}
+            \PYG{n+nt}{\PYGZdq{}instrumentTypeIdentifierType\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}URL\PYGZdq{}}
+          \PYG{p}{\PYGZcb{}}
+        \PYG{p}{\PYGZcb{}}
+      \PYG{p}{\PYGZcb{}}
     \PYG{p}{]}\PYG{p}{,}
-    \PYG{n+nt}{\PYGZdq{}MeasuredVariables\PYGZdq{}} \PYG{p}{:} \PYG{p}{[}
-     \PYG{p}{\PYGZob{}}
-     \PYG{n+nt}{\PYGZdq{}MeasuredVariable\PYGZdq{}} \PYG{p}{:} \PYG{p}{\PYGZob{}}
-        \PYG{n+nt}{\PYGZdq{}VariableMeasured\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/P01/current/CNDCPR01/\PYGZdq{}}
-     \PYG{p}{\PYGZcb{}}
-     \PYG{p}{\PYGZcb{}}\PYG{p}{,}
-     \PYG{p}{\PYGZob{}}
-     \PYG{n+nt}{\PYGZdq{}MeasuredVariable\PYGZdq{}} \PYG{p}{:} \PYG{p}{\PYGZob{}}
-        \PYG{n+nt}{\PYGZdq{}VariableMeasured\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/P01/current/PSALPR01/\PYGZdq{}}
-     \PYG{p}{\PYGZcb{}}
-     \PYG{p}{\PYGZcb{}}\PYG{p}{,}
-     \PYG{p}{\PYGZob{}}
-     \PYG{n+nt}{\PYGZdq{}MeasuredVariable\PYGZdq{}} \PYG{p}{:} \PYG{p}{\PYGZob{}}
-        \PYG{n+nt}{\PYGZdq{}VariableMeasured\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/P01/current/TEMPPR01/\PYGZdq{}}
-     \PYG{p}{\PYGZcb{}}
-     \PYG{p}{\PYGZcb{}}\PYG{p}{,}
-     \PYG{p}{\PYGZob{}}
-     \PYG{n+nt}{\PYGZdq{}MeasuredVariable\PYGZdq{}} \PYG{p}{:} \PYG{p}{\PYGZob{}}
-        \PYG{n+nt}{\PYGZdq{}VariableMeasured\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/P01/current/PREXMCAT/\PYGZdq{}}
-     \PYG{p}{\PYGZcb{}}
-     \PYG{p}{\PYGZcb{}}
+    \PYG{n+nt}{\PYGZdq{}LandingPage\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}https://linkedsystems.uk/system/instance/TOOL0022\PYGZus{}2490/current/\PYGZdq{}}\PYG{p}{,}
+    \PYG{n+nt}{\PYGZdq{}Manufacturers\PYGZdq{}}\PYG{p}{:} \PYG{p}{[}
+      \PYG{p}{\PYGZob{}}
+        \PYG{n+nt}{\PYGZdq{}Manufacturer\PYGZdq{}}\PYG{p}{:} \PYG{p}{\PYGZob{}}
+          \PYG{n+nt}{\PYGZdq{}manufacturerIdentifier\PYGZdq{}}\PYG{p}{:} \PYG{p}{\PYGZob{}}
+            \PYG{n+nt}{\PYGZdq{}manufacturerIdentifierType\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}URL\PYGZdq{}}\PYG{p}{,}
+            \PYG{n+nt}{\PYGZdq{}manufacturerIdentifierValue\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/L35/current/MAN0013/\PYGZdq{}}
+          \PYG{p}{\PYGZcb{}}\PYG{p}{,}
+          \PYG{n+nt}{\PYGZdq{}manufacturerName\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}Sea\PYGZhy{}Bird Scientific\PYGZdq{}}
+        \PYG{p}{\PYGZcb{}}
+      \PYG{p}{\PYGZcb{}}
     \PYG{p}{]}\PYG{p}{,}
-    \PYG{n+nt}{\PYGZdq{}Name\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}Sea\PYGZhy{}Bird SBE 37\PYGZhy{}IM MicroCAT C\PYGZhy{}T Sensor\PYGZdq{}}\PYG{p}{,}
-    \PYG{n+nt}{\PYGZdq{}Owners\PYGZdq{}} \PYG{p}{:} \PYG{p}{[}
-     \PYG{p}{\PYGZob{}}
-     \PYG{n+nt}{\PYGZdq{}Owner\PYGZdq{}} \PYG{p}{:} \PYG{p}{\PYGZob{}}
-        \PYG{n+nt}{\PYGZdq{}ownerContact\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}louise.darroch@bodc.ac.uk\PYGZdq{}}\PYG{p}{,}
-        \PYG{n+nt}{\PYGZdq{}ownerIdentifier\PYGZdq{}} \PYG{p}{:} \PYG{p}{\PYGZob{}}
-           \PYG{n+nt}{\PYGZdq{}ownerIdentifierType\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}URL\PYGZdq{}}\PYG{p}{,}
-           \PYG{n+nt}{\PYGZdq{}ownerIdentifierValue\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/B75/current/ORG00009/\PYGZdq{}}
-        \PYG{p}{\PYGZcb{}}\PYG{p}{,}
-        \PYG{n+nt}{\PYGZdq{}ownerName\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}National Oceanography Centre\PYGZdq{}}
-     \PYG{p}{\PYGZcb{}}
-     \PYG{p}{\PYGZcb{}}
+    \PYG{n+nt}{\PYGZdq{}MeasuredVariables\PYGZdq{}}\PYG{p}{:} \PYG{p}{[}
+      \PYG{p}{\PYGZob{}}
+        \PYG{n+nt}{\PYGZdq{}MeasuredVariable\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/P01/current/CNDCPR01/\PYGZdq{}}
+      \PYG{p}{\PYGZcb{}}\PYG{p}{,}
+      \PYG{p}{\PYGZob{}}
+        \PYG{n+nt}{\PYGZdq{}MeasuredVariable\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/P01/current/PSALPR01/\PYGZdq{}}
+      \PYG{p}{\PYGZcb{}}\PYG{p}{,}
+      \PYG{p}{\PYGZob{}}
+        \PYG{n+nt}{\PYGZdq{}MeasuredVariable\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/P01/current/TEMPPR01/\PYGZdq{}}
+      \PYG{p}{\PYGZcb{}}\PYG{p}{,}
+      \PYG{p}{\PYGZob{}}
+        \PYG{n+nt}{\PYGZdq{}MeasuredVariable\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/P01/current/PREXMCAT/\PYGZdq{}}
+      \PYG{p}{\PYGZcb{}}
     \PYG{p}{]}\PYG{p}{,}
-    \PYG{n+nt}{\PYGZdq{}RelatedIdentifiers\PYGZdq{}} \PYG{p}{:} \PYG{p}{[}
-     \PYG{p}{\PYGZob{}}
-     \PYG{n+nt}{\PYGZdq{}RelatedIdentifier\PYGZdq{}} \PYG{p}{:} \PYG{p}{\PYGZob{}}
-        \PYG{n+nt}{\PYGZdq{}RelatedIdentifierType\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}URL\PYGZdq{}}\PYG{p}{,}
-        \PYG{n+nt}{\PYGZdq{}RelatedIdentifierValue\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}https://www.bodc.ac.uk/data/documents/nodb/pdf/37imbrochurejul08.pdf\PYGZdq{}}\PYG{p}{,}
-        \PYG{n+nt}{\PYGZdq{}relationType\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}IsDescribedBy \PYGZdq{}}
-     \PYG{p}{\PYGZcb{}}
-     \PYG{p}{\PYGZcb{}}
+    \PYG{n+nt}{\PYGZdq{}Model\PYGZdq{}}\PYG{p}{:} \PYG{p}{[}
+      \PYG{p}{\PYGZob{}}
+        \PYG{n+nt}{\PYGZdq{}modelName\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}Sea\PYGZhy{}Bird SBE 37 MicroCat IM\PYGZhy{}CT with optional pressure (submersible) CTD sensor series\PYGZdq{}}\PYG{p}{,}
+        \PYG{n+nt}{\PYGZdq{}modelIdentifier\PYGZdq{}}\PYG{p}{:} \PYG{p}{\PYGZob{}}
+          \PYG{n+nt}{\PYGZdq{}modelIdentifierValue\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/L22/current/TOOL0022/\PYGZdq{}}\PYG{p}{,}
+          \PYG{n+nt}{\PYGZdq{}modelIdentifierType\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}URL\PYGZdq{}}
+        \PYG{p}{\PYGZcb{}}
+      \PYG{p}{\PYGZcb{}}
     \PYG{p}{]}\PYG{p}{,}
-    \PYG{n+nt}{\PYGZdq{}identifier\PYGZhy{}general\PYGZhy{}with\PYGZhy{}type\PYGZdq{}} \PYG{p}{:} \PYG{p}{\PYGZob{}}
-     \PYG{n+nt}{\PYGZdq{}identiferType\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}MeasuringInstrument\PYGZdq{}}\PYG{p}{,}
-     \PYG{n+nt}{\PYGZdq{}identifierValue\PYGZdq{}} \PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}http://hdl.handle.net/21.T11998/0000\PYGZhy{}001A\PYGZhy{}3905\PYGZhy{}F\PYGZdq{}}
+    \PYG{n+nt}{\PYGZdq{}Name\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}Sea\PYGZhy{}Bird SBE 37\PYGZhy{}IM MicroCAT C\PYGZhy{}T Sensor\PYGZdq{}}\PYG{p}{,}
+    \PYG{n+nt}{\PYGZdq{}Owners\PYGZdq{}}\PYG{p}{:} \PYG{p}{[}
+      \PYG{p}{\PYGZob{}}
+        \PYG{n+nt}{\PYGZdq{}Owner\PYGZdq{}}\PYG{p}{:} \PYG{p}{\PYGZob{}}
+          \PYG{n+nt}{\PYGZdq{}ownerContact\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}someone@example.org\PYGZdq{}}\PYG{p}{,}
+          \PYG{n+nt}{\PYGZdq{}ownerIdentifier\PYGZdq{}}\PYG{p}{:} \PYG{p}{\PYGZob{}}
+            \PYG{n+nt}{\PYGZdq{}ownerIdentifierType\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}URL\PYGZdq{}}\PYG{p}{,}
+            \PYG{n+nt}{\PYGZdq{}ownerIdentifierValue\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}http://vocab.nerc.ac.uk/collection/B75/current/ORG00009/\PYGZdq{}}
+          \PYG{p}{\PYGZcb{}}\PYG{p}{,}
+          \PYG{n+nt}{\PYGZdq{}ownerName\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}National Oceanography Centre\PYGZdq{}}
+        \PYG{p}{\PYGZcb{}}
+      \PYG{p}{\PYGZcb{}}
+    \PYG{p}{]}\PYG{p}{,}
+    \PYG{n+nt}{\PYGZdq{}RelatedIdentifiers\PYGZdq{}}\PYG{p}{:} \PYG{p}{[}
+      \PYG{p}{\PYGZob{}}
+        \PYG{n+nt}{\PYGZdq{}RelatedIdentifier\PYGZdq{}}\PYG{p}{:} \PYG{p}{\PYGZob{}}
+          \PYG{n+nt}{\PYGZdq{}relatedIdentifierType\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}URL\PYGZdq{}}\PYG{p}{,}
+          \PYG{n+nt}{\PYGZdq{}relatedIdentifierValue\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}https://www.bodc.ac.uk/data/documents/nodb/pdf/37imbrochurejul08.pdf\PYGZdq{}}\PYG{p}{,}
+          \PYG{n+nt}{\PYGZdq{}relationType\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}IsDescribedBy \PYGZdq{}}
+        \PYG{p}{\PYGZcb{}}
+      \PYG{p}{\PYGZcb{}}
+    \PYG{p}{]}\PYG{p}{,}
+    \PYG{n+nt}{\PYGZdq{}SchemaVersion\PYGZdq{}}\PYG{p}{:} \PYG{l+m+mf}{1.0}\PYG{p}{,}
+    \PYG{n+nt}{\PYGZdq{}identifier\PYGZhy{}general\PYGZhy{}with\PYGZhy{}type\PYGZdq{}}\PYG{p}{:} \PYG{p}{\PYGZob{}}
+      \PYG{n+nt}{\PYGZdq{}identiferType\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}Handle\PYGZdq{}}\PYG{p}{,}
+      \PYG{n+nt}{\PYGZdq{}identifierValue\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}http://hdl.handle.net/21.T11998/0000\PYGZhy{}001A\PYGZhy{}3905\PYGZhy{}F\PYGZdq{}}
     \PYG{p}{\PYGZcb{}}
   \PYG{p}{\PYGZcb{}}
 \end{sphinxVerbatim}
@@ -1543,40 +1658,61 @@ PID suffixes:
 of \hyperref[\detokenize{white-paper/metadata-schema-recommendations:tab-schema-handle-record}]{Table \ref{\detokenize{white-paper/metadata-schema-recommendations:tab-schema-handle-record}}} that was generated
 by a JSON\sphinxhyphen{}LD to RDF converter from the JSON\sphinxhyphen{}LD in
 \hyperref[\detokenize{white-paper/landing-page-encoding:snip-landing-encoding-json-ld}]{Snippet \ref{\detokenize{white-paper/landing-page-encoding:snip-landing-encoding-json-ld}}}.}
-\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/landing-page-encoding:id5}}\label{\detokenize{white-paper/landing-page-encoding:snip-landing-encoding-turtle}}}
+\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/landing-page-encoding:snip-landing-encoding-turtle}}}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
   @prefix ns0: \PYGZlt{}http://hdl.handle.net/21.T11148/\PYGZgt{} .
   @prefix xsd: \PYGZlt{}http://www.w3.org/2001/XMLSchema\PYGZsh{}\PYGZgt{} .
+  @prefix ns1: \PYGZlt{}http://hdl.handle.net/221.T11148/\PYGZgt{} .
 
   \PYGZlt{}http://hdl.handle.net/21.T11998/0000\PYGZhy{}001A\PYGZhy{}3905\PYGZhy{}F\PYGZgt{}
     ns0:178fb558abc755ca7046 [ ns0:ec9f00af0761a065dbd0 [
-     ns0:015dc79a77940fb65aa4 \PYGZdq{}URL\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ;
-     ns0:292a53bd9ee27a242082 \PYGZdq{}IsDescribedBy \PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ;
-     ns0:38330bcc6a40ca85e5b4 \PYGZdq{}https://www.bodc.ac.uk/data/documents/nodb/pdf/37imbrochurejul08.pdf\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string
-     ] ] ;
+        ns0:015dc79a77940fb65aa4 \PYGZdq{}URL\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ;
+        ns0:292a53bd9ee27a242082 \PYGZdq{}IsDescribedBy \PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ;
+        ns0:f1627ce85386d8d75078 \PYGZdq{}https://www.bodc.ac.uk/data/documents/nodb/pdf/37imbrochurejul08.pdf\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string
+      ] ] ;
     ns0:1f3e82ddf0697a497432 [ ns0:7adfcd13b3b01de0d875 [
-     ns0:5b240e16ea32ea25cf65 [
-        ns0:015dc79a77940fb65aa4 \PYGZdq{}URL\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ;
-        ns0:38330bcc6a40ca85e5b4 \PYGZdq{}http://vocab.nerc.ac.uk/collection/L35/current/MAN0013/\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string
-     ] ;
-     ns0:798588c5a1ec532f737b \PYGZdq{}Sea\PYGZhy{}Bird Scientific\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string, \PYGZdq{}SBE 37\PYGZhy{}IM\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string
-     ] ] ;
-    ns0:22c62082a4d2d9ae2602 [ ns0:be707495360a234ef049 [
-     ns0:2f0e608b621a5a97e0d9 \PYGZdq{}Commissioned\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ;
-     ns0:be707495360a234ef049 \PYGZdq{}1999\PYGZhy{}11\PYGZhy{}01\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string
-     ] ] ;
+        ns0:5b240e16ea32ea25cf65 [
+          ns0:015dc79a77940fb65aa4 \PYGZdq{}URL\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ;
+          ns0:f1627ce85386d8d75078 \PYGZdq{}http://vocab.nerc.ac.uk/collection/L35/current/MAN0013/\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string
+        ] ;
+        ns0:798588c5a1ec532f737b \PYGZdq{}Sea\PYGZhy{}Bird Scientific\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string
+      ] ] ;
+    ns0:22c62082a4d2d9ae2602 [ ns0:eb9a4bc1c0c153e4e4b0 [
+        ns0:2f0e608b621a5a97e0d9 \PYGZdq{}Commissioned\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ;
+        ns0:eb9a4bc1c0c153e4e4b0 \PYGZdq{}1999\PYGZhy{}11\PYGZhy{}01\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string
+      ] ] ;
     ns0:4eaec4bc0f1df68ab2a7 [ ns0:89ff31225c5f042fff61 [
-     ns0:1e3c17ac2a3e7ebf466a [
+        ns0:1e3c17ac2a3e7ebf466a [
+          ns0:f1627ce85386d8d75078 \PYGZdq{}URL\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ;
+          ns1:38330bcc6a40ca85e5b4 \PYGZdq{}http://vocab.nerc.ac.uk/collection/B75/current/ORG00009/\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string
+        ] ;
+        ns0:798588c5a1ec532f737b \PYGZdq{}National Oceanography Centre\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ;
+        ns0:a88b7dcd1a9e3e17770b \PYGZdq{}someone@example.org\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string
+      ] ] ;
+    ns0:72928b84e060d491ee41 [ ns0:f1627ce85386d8d75078 \PYGZdq{}http://vocab.nerc.ac.uk/collection/P01/current/CNDCPR01/\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ], [ ns0:f1627ce85386d8d75078 \PYGZdq{}http://vocab.nerc.ac.uk/collection/P01/current/PSALPR01/\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ], [ ns0:f1627ce85386d8d75078 \PYGZdq{}http://vocab.nerc.ac.uk/collection/P01/current/TEMPPR01/\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ], [ ns0:f1627ce85386d8d75078 \PYGZdq{}http://vocab.nerc.ac.uk/collection/P01/current/PREXMCAT/\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ] ;
+    ns0:8eb858ee0b12e8e463a5 [ ns0:f1627ce85386d8d75078 \PYGZdq{}http://hdl.handle.net/21.T11998/0000\PYGZhy{}001A\PYGZhy{}3905\PYGZhy{}F\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ] ;
+    ns0:aa24da8ba845c23ea75c 1 ;
+    ns0:ab8d232261b9b60ba559 \PYGZdq{}Sea\PYGZhy{}Bird SBE 37\PYGZhy{}IM MicroCAT C\PYGZhy{}T Sensor\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ;
+    ns0:c1a0ec5ad347427f25d6 [
+      ns0:7e86a0b84960d0992fdf [
         ns0:015dc79a77940fb65aa4 \PYGZdq{}URL\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ;
-        ns0:38330bcc6a40ca85e5b4 \PYGZdq{}http://vocab.nerc.ac.uk/collection/B75/current/ORG00009/\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string
-     ] ;
-     ns0:798588c5a1ec532f737b \PYGZdq{}National Oceanography Centre\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ;
-     ns0:a88b7dcd1a9e3e17770b \PYGZdq{}louise.darroch@bodc.ac.uk\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string
-     ] ] ;
-    ns0:55f8ebc805e65b5b71dd \PYGZdq{}A high accuracy conductivity and temperature recorder with an optional pressure sensor designed for deployment on moorings. The IM model has an inductive modem for real\PYGZhy{}time data transmission plus internal flash memory data storage.\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ;
-    ns0:709a23220f2c3d64d1e1 \PYGZdq{}Sea\PYGZhy{}Bird SBE 37\PYGZhy{}IM MicroCAT C\PYGZhy{}T Sensor\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ;
-    ns0:72928b84e060d491ee41 [ ns0:1fcb0dad9aced457d67e [ ns0:f1627ce85386d8d75078 \PYGZdq{}http://vocab.nerc.ac.uk/collection/P01/current/CNDCPR01/\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ] ], [ ns0:1fcb0dad9aced457d67e [ ns0:f1627ce85386d8d75078 \PYGZdq{}http://vocab.nerc.ac.uk/collection/P01/current/PSALPR01/\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ] ], [ ns0:1fcb0dad9aced457d67e [ ns0:f1627ce85386d8d75078 \PYGZdq{}http://vocab.nerc.ac.uk/collection/P01/current/TEMPPR01/\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ] ], [ ns0:1fcb0dad9aced457d67e [ ns0:f1627ce85386d8d75078 \PYGZdq{}http://vocab.nerc.ac.uk/collection/P01/current/PREXMCAT/\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ] ] ;
-    ns0:8eb858ee0b12e8e463a5 [ ns0:38330bcc6a40ca85e5b4 \PYGZdq{}http://hdl.handle.net/21.T11998/0000\PYGZhy{}001A\PYGZhy{}3905\PYGZhy{}F\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ] ;
+        ns0:f1627ce85386d8d75078 \PYGZdq{}http://vocab.nerc.ac.uk/collection/L22/current/TOOL0022/\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string
+      ] ;
+      ns0:f1627ce85386d8d75078 \PYGZdq{}Sea\PYGZhy{}Bird SBE 37 MicroCat IM\PYGZhy{}CT with optional pressure (submersible) CTD sensor series\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string
+    ] ;
+    ns0:c60c8da7fff2ef4f98ce [ ns0:f76ad9d0324302fc47dd [
+        ns0:f1627ce85386d8d75078 \PYGZdq{}water temperature sensor\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ;
+        ns0:f9bdfd1810b999e3b11e [
+          ns0:015dc79a77940fb65aa4 \PYGZdq{}URL\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ;
+          ns0:f1627ce85386d8d75078 \PYGZdq{}http://vocab.nerc.ac.uk/collection/L05/current/134/\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string
+        ]
+      ] ], [ ns0:f76ad9d0324302fc47dd [ ns0:f1627ce85386d8d75078 \PYGZdq{}salinity sensor\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ] ] ;
+    ns0:e0efc41346cda4ba84ca \PYGZdq{}https://linkedsystems.uk/system/instance/TOOL0022\PYGZus{}2490/current/\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ;
+    ns0:eb3c713572f681e6c4c3 [ ns0:d87a75c52c68b06e9a18 [
+        ns0:015dc79a77940fb65aa4 \PYGZdq{}serialNumber\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string ;
+        ns0:f1627ce85386d8d75078 \PYGZdq{}2490\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string
+      ] ] ;
+    ns0:f1627ce85386d8d75078 \PYGZdq{}A high accuracy conductivity and temperature recorder with an optional pressure sensor designed for deployment on moorings. The IM model has an inductive modem for real\PYGZhy{}time data transmission plus internal flash memory data storage.\PYGZdq{}\PYGZca{}\PYGZca{}xsd:string .
 \end{sphinxVerbatim}
 
 
@@ -1622,7 +1758,7 @@ identifying metadata within a SensorML technical
 description using the \sphinxstyleemphasis{sml:identifier} property for a
 SeaBird Scientific SBE 37 Conductivity, temperature and
 depth sensor.}
-\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/landing-page-encoding:id6}}\label{\detokenize{white-paper/landing-page-encoding:snip-landing-encoding-sensorml}}}
+\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/landing-page-encoding:snip-landing-encoding-sensorml}}}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
   \PYG{n+nt}{\PYGZlt{}sml:identifier}\PYG{n+nt}{\PYGZgt{}}
     \PYG{n+nt}{\PYGZlt{}sml:Term} \PYG{n+na}{definition=}\PYG{l+s}{\PYGZdq{}http://www.example.com/definitions/pidinst/\PYGZdq{}}\PYG{n+nt}{\PYGZgt{}}
@@ -1674,15 +1810,16 @@ used to collect the data in a machine readable way.
 Datasets are usually published with a DataCite DOI.  The \sphinxhref{https://schema.datacite.org/}{DataCite
 Metadata Schema} allows to link the instrument from the metadata
 registered with that DOI for a data publication using the
-\sphinxstyleemphasis{relatedIdentifier} property.  The recommended \sphinxstyleemphasis{relationType} is
-\sphinxstyleemphasis{IsCompiledBy} in this case.  \hyperref[\detokenize{white-paper/linking-datasets:fig-link-hzb}]{Figure \ref{\detokenize{white-paper/linking-datasets:fig-link-hzb}}} shows an example
-for a dataset published by HZB (\sphinxurl{https://doi.org/10.5442/ND000001}).
-The data has been collected using neutron diffraction with the E2 \sphinxhyphen{}
-Flat\sphinxhyphen{}Cone Diffractometer beamline at BER II.  The image show a
-screenshot of the data publication landing page which links the PID of
-the instrument.  \hyperref[\detokenize{white-paper/linking-datasets:snip-link-dataset-datacite-xml}]{Snippet \ref{\detokenize{white-paper/linking-datasets:snip-link-dataset-datacite-xml}}} shows a
-section of the DOI metadata from the same data publication containing
-this link.
+\sphinxstyleemphasis{RelatedIdentifier} and \sphinxstyleemphasis{RelatedItem} properties.  The recommended
+\sphinxstyleemphasis{relationType} is \sphinxstyleemphasis{IsCollectedBy} in this case.  \hyperref[\detokenize{white-paper/linking-datasets:fig-link-hzb}]{Figure \ref{\detokenize{white-paper/linking-datasets:fig-link-hzb}}}
+shows an example for a dataset published by HZB
+(\sphinxurl{https://doi.org/10.5442/ND000001}).  The data has been collected using
+neutron diffraction with the E2 \sphinxhyphen{} Flat\sphinxhyphen{}Cone Diffractometer beamline at
+BER II.  The image show a screenshot of the data publication landing
+page which links the PID of the instrument.
+\hyperref[\detokenize{white-paper/linking-datasets:snip-link-dataset-datacite-xml-relidentifier}]{Snippet \ref{\detokenize{white-paper/linking-datasets:snip-link-dataset-datacite-xml-relidentifier}}} and
+\hyperref[\detokenize{white-paper/linking-datasets:snip-link-dataset-datacite-xml-relitem}]{Snippet \ref{\detokenize{white-paper/linking-datasets:snip-link-dataset-datacite-xml-relitem}}} show sections from the
+DOI metadata from the same data publication containing this link.
 
 \begin{figure}[htbp]
 \centering
@@ -1690,17 +1827,31 @@ this link.
 
 \noindent\sphinxincludegraphics{{ND000001-landing}.png}
 \caption{Landing page of a dataset published by HZB which links the PID of
-the instrument.}\label{\detokenize{white-paper/linking-datasets:id4}}\label{\detokenize{white-paper/linking-datasets:fig-link-hzb}}\end{figure}
-\sphinxSetupCaptionForVerbatim{Use of the relatedIdentifier property in the DOI
-metadata from a data publication.  The second entry links
+the instrument.}\label{\detokenize{white-paper/linking-datasets:fig-link-hzb}}\end{figure}
+\sphinxSetupCaptionForVerbatim{Use of the RelatedIdentifier property in the DOI
+metadata from a data publication.  The third entry links
 the PID of the instrument.}
-\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/linking-datasets:id5}}\label{\detokenize{white-paper/linking-datasets:snip-link-dataset-datacite-xml}}}
+\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/linking-datasets:snip-link-dataset-datacite-xml-relidentifier}}}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
   \PYG{n+nt}{\PYGZlt{}relatedIdentifiers}\PYG{n+nt}{\PYGZgt{}}
-    \PYG{n+nt}{\PYGZlt{}relatedIdentifier} \PYG{n+na}{relatedIdentifierType=}\PYG{l+s}{\PYGZdq{}DOI\PYGZdq{}} \PYG{n+na}{relationType=}\PYG{l+s}{\PYGZdq{}References\PYGZdq{}}\PYG{n+nt}{\PYGZgt{}}10.17815/jlsrf\PYGZhy{}4\PYGZhy{}110\PYG{n+nt}{\PYGZlt{}/relatedIdentifier\PYGZgt{}}
-    \PYG{n+nt}{\PYGZlt{}relatedIdentifier} \PYG{n+na}{relatedIdentifierType=}\PYG{l+s}{\PYGZdq{}DOI\PYGZdq{}} \PYG{n+na}{relationType=}\PYG{l+s}{\PYGZdq{}IsCompiledBy\PYGZdq{}}\PYG{n+nt}{\PYGZgt{}}10.5442/NI000001\PYG{n+nt}{\PYGZlt{}/relatedIdentifier\PYGZgt{}}
     \PYG{n+nt}{\PYGZlt{}relatedIdentifier} \PYG{n+na}{relatedIdentifierType=}\PYG{l+s}{\PYGZdq{}DOI\PYGZdq{}} \PYG{n+na}{relationType=}\PYG{l+s}{\PYGZdq{}IsCitedBy\PYGZdq{}}\PYG{n+nt}{\PYGZgt{}}10.1103/physrevb.99.174111\PYG{n+nt}{\PYGZlt{}/relatedIdentifier\PYGZgt{}}
+    \PYG{n+nt}{\PYGZlt{}relatedIdentifier} \PYG{n+na}{relatedIdentifierType=}\PYG{l+s}{\PYGZdq{}DOI\PYGZdq{}} \PYG{n+na}{relationType=}\PYG{l+s}{\PYGZdq{}References\PYGZdq{}}\PYG{n+nt}{\PYGZgt{}}10.17815/jlsrf\PYGZhy{}4\PYGZhy{}110\PYG{n+nt}{\PYGZlt{}/relatedIdentifier\PYGZgt{}}
+    \PYG{n+nt}{\PYGZlt{}relatedIdentifier} \PYG{n+na}{relatedIdentifierType=}\PYG{l+s}{\PYGZdq{}DOI\PYGZdq{}} \PYG{n+na}{relationType=}\PYG{l+s}{\PYGZdq{}IsCollectedBy\PYGZdq{}}\PYG{n+nt}{\PYGZgt{}}10.5442/NI000001\PYG{n+nt}{\PYGZlt{}/relatedIdentifier\PYGZgt{}}
   \PYG{n+nt}{\PYGZlt{}/relatedIdentifiers\PYGZgt{}}
+\end{sphinxVerbatim}
+\sphinxSetupCaptionForVerbatim{Use of the RelatedItem property in the DOI metadata from
+a data publication to link the PID of the instrument.}
+\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/linking-datasets:snip-link-dataset-datacite-xml-relitem}}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+  \PYG{n+nt}{\PYGZlt{}relatedItems}\PYG{n+nt}{\PYGZgt{}}
+    \PYG{c}{\PYGZlt{}!\PYGZhy{}\PYGZhy{}}\PYG{c}{ ... }\PYG{c}{\PYGZhy{}\PYGZhy{}\PYGZgt{}}
+    \PYG{n+nt}{\PYGZlt{}relatedItem} \PYG{n+na}{relatedItemType=}\PYG{l+s}{\PYGZdq{}Instrument\PYGZdq{}} \PYG{n+na}{relationType=}\PYG{l+s}{\PYGZdq{}IsCollectedBy\PYGZdq{}}\PYG{n+nt}{\PYGZgt{}}
+      \PYG{n+nt}{\PYGZlt{}relatedItemIdentifier} \PYG{n+na}{relatedItemIdentifierType=}\PYG{l+s}{\PYGZdq{}DOI\PYGZdq{}}\PYG{n+nt}{\PYGZgt{}}10.5442/NI000001\PYG{n+nt}{\PYGZlt{}/relatedItemIdentifier\PYGZgt{}}
+      \PYG{n+nt}{\PYGZlt{}titles}\PYG{n+nt}{\PYGZgt{}}
+        \PYG{n+nt}{\PYGZlt{}title}\PYG{n+nt}{\PYGZgt{}}E2 \PYGZhy{} Flat\PYGZhy{}Cone Diffractometer\PYG{n+nt}{\PYGZlt{}/title\PYGZgt{}}
+      \PYG{n+nt}{\PYGZlt{}/titles\PYGZgt{}}
+    \PYG{n+nt}{\PYGZlt{}/relatedItem\PYGZgt{}}
+  \PYG{n+nt}{\PYGZlt{}/relatedItems\PYGZgt{}}
 \end{sphinxVerbatim}
 
 
@@ -1736,14 +1887,14 @@ to ensure full compliance with Schema.org functionality.
 \noindent\sphinxincludegraphics{{image2}.png}
 \caption{An example of a dataset published by PANGAEA which includes its
 instrument identifier
-(\sphinxurl{https://doi.pangaea.de/10013/sensor.664525cf-45b9-4969-bb88-91a1c5e97a5b})}\label{\detokenize{white-paper/linking-datasets:id6}}\label{\detokenize{white-paper/linking-datasets:fig-link-pangea}}\end{figure}
+(\sphinxurl{https://doi.pangaea.de/10013/sensor.664525cf-45b9-4969-bb88-91a1c5e97a5b})}\label{\detokenize{white-paper/linking-datasets:fig-link-pangea}}\end{figure}
 
 \begin{figure}[htbp]
 \centering
 \capstart
 
 \noindent\sphinxincludegraphics{{image1}.png}
-\caption{Conceptual model of Event and Specific Instrument Type (Vehicle)}\label{\detokenize{white-paper/linking-datasets:id7}}\label{\detokenize{white-paper/linking-datasets:fig-link-model}}\end{figure}
+\caption{Conceptual model of Event and Specific Instrument Type (Vehicle)}\label{\detokenize{white-paper/linking-datasets:fig-link-model}}\end{figure}
 
 \begin{figure}[htbp]
 \centering
@@ -1751,7 +1902,7 @@ instrument identifier
 
 \noindent\sphinxincludegraphics{{image3}.png}
 \caption{Snippet of schema.org representation of event and instrument
-associated with the dataset in \hyperref[\detokenize{white-paper/linking-datasets:fig-link-pangea}]{Figure \ref{\detokenize{white-paper/linking-datasets:fig-link-pangea}}}.}\label{\detokenize{white-paper/linking-datasets:id8}}\label{\detokenize{white-paper/linking-datasets:fig-link-schema-org}}\end{figure}
+associated with the dataset in \hyperref[\detokenize{white-paper/linking-datasets:fig-link-pangea}]{Figure \ref{\detokenize{white-paper/linking-datasets:fig-link-pangea}}}.}\label{\detokenize{white-paper/linking-datasets:fig-link-schema-org}}\end{figure}
 
 
 \subsubsection{NetCDF4}
@@ -1759,49 +1910,56 @@ associated with the dataset in \hyperref[\detokenize{white-paper/linking-dataset
 \sphinxAtStartPar
 State\sphinxhyphen{}of\sphinxhyphen{}the\sphinxhyphen{}art research ships are multimillion\sphinxhyphen{}pound floating
 laboratories which operate diverse arrays of high\sphinxhyphen{}powered,
-high\sphinxhyphen{}resolution sensors around\sphinxhyphen{}the\sphinxhyphen{}clock (e.g. sea\sphinxhyphen{}floor depth, weather,
-ocean current velocity and hydrography etc.). The National Oceanography
-Centre (NOC)%
+high\sphinxhyphen{}resolution sensors around\sphinxhyphen{}the\sphinxhyphen{}clock (e.g. sea\sphinxhyphen{}floor depth,
+weather, ocean current velocity and hydrography etc.). The National
+Oceanography Centre (NOC)%
 \begin{footnote}[1]\sphinxAtStartFootnote
 British Oceanographic Data Centre (BODC) and National Marine
 Facilities (NMF) divisions
 %
-\end{footnote} and British Antarctic Survey (BAS)%
+\end{footnote} and British Antarctic Survey
+(BAS)%
 \begin{footnote}[2]\sphinxAtStartFootnote
 Uk Polar Data Centre division
 %
-\end{footnote}
-are currently working together to improve the integrity of the data
-management workflow from these sensor systems to end\sphinxhyphen{}users across the UK
-National Environment Research Council (NERC) large research vessel
-fleet, as part of a UK initiative, I/Ocean. In doing so, we can make
-cost effective use of vessel time while improving the
-FAIRness,%
+\end{footnote} are currently working together to improve the
+integrity of the data management workflow from these sensor systems to
+end\sphinxhyphen{}users across the UK National Environment Research Council (NERC)
+large research vessel fleet, as part of the initiative, I/Ocean. In
+doing so, we can make cost effective use of vessel time while
+improving the FAIRness,%
 \begin{footnote}[3]\sphinxAtStartFootnote
 Wilkinson, M., Dumontier, M., Aalbersberg, I. \sphinxstyleemphasis{et al.} The FAIR
 Guiding Principles for scientific data management and stewardship.
 \sphinxstyleemphasis{Sci Data} 3, 160018 (2016). \sphinxurl{https://doi.org/10.1038/sdata.2016.18}
 %
-\end{footnote} and in turn, access of data from these
-sensor arrays. The initial phase of the solution implements common
-NetCDF formats across ships enabling harmonised access to data for
-researchers on board while reducing ambiguity using common metadata
-standards. The formats are based on NetCDF4 and comply with Climate
-Forecast conventions. NetCDF4 groups are used to include rich
-information about the instruments used to derive parameter streams. Data
-streams are linked to the instruments which produced them using the
-variable attribute \sphinxstyleemphasis{instrument} from Attribute Convention for Data
-Discovery (ACDD) 1\sphinxhyphen{}3 (\hyperref[\detokenize{white-paper/linking-datasets:snip-link-netcdf-cdl}]{Snippet \ref{\detokenize{white-paper/linking-datasets:snip-link-netcdf-cdl}}}). Each instrument
-is identified as a group where their properties are expressed in
-variables including the instrument’s PID. Each property is defined
-using common terminologies published on the NERC Vocabulary Server. In
-this way, users can express properties of their choice. Through
-groups, other information relating to parameter streams or instruments
-could be expressed, such as calibralibrations and instrument reference
-frames and orientations.
+\end{footnote} and in turn, access of data
+from these sensor arrays. The initial phase of the solution
+implements common NetCDF formats enabling harmonised access to data
+for researchers across ships. The formats are based on NetCDF4 and
+comply with Climate Forecast conventions. It has currently been
+proposed that NetCDF4 groups could be used to identify instruments and
+associated metadata in a similar way to the SONAR\sphinxhyphen{}netCDF4 convention
+for sonar data%
+\begin{footnote}[5]\sphinxAtStartFootnote
+Macaulay, Gavin; Peña, Hector (2018). The SONAR\sphinxhyphen{}netCDF4 convention for
+sonar data, Version 1.0. ICES Cooperative Research Reports (CRR).
+Report. \sphinxurl{https://doi.org/10.17895/ices.pub.4392}
+%
+\end{footnote}. In doing so, the instrument PID is
+implemented as the data of a geophysical variable within a group that
+has an applicable date range (\hyperref[\detokenize{white-paper/linking-datasets:snip-link-netcdf-cdl}]{Snippet \ref{\detokenize{white-paper/linking-datasets:snip-link-netcdf-cdl}}}). For
+example, when the sensor was installed. Data streams are then linked
+to the instruments which produced them using the variable attribute
+\sphinxstyleemphasis{instrument} from Attribute Convention for Data Discovery (ACDD) 1\sphinxhyphen{}3.
+Through groups, other variables or attributes could hold more detailed
+information relating to an instrument. Additionally, groups may
+potentially offer a way to store other information with valid date
+ranges, such as calibrations, instrument reference frames and
+instrument orientations (e.g. the reference point of an anemometer).
 \sphinxSetupCaptionForVerbatim{Truncated CF\sphinxhyphen{}NetCDF4 CDL file. Note some terminologies
 are in development.}
-\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/linking-datasets:id9}}\label{\detokenize{white-paper/linking-datasets:snip-link-netcdf-cdl}}}
+\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/linking-datasets:snip-link-netcdf-cdl}}}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
   \PYG{n}{netcdf} \PYG{n}{iocean\PYGZus{}example} \PYG{p}{\PYGZob{}}
   \PYG{n}{dimensions}\PYG{p}{:}
@@ -1833,51 +1991,16 @@ are in development.}
     \PYG{n}{group}\PYG{p}{:} \PYG{n}{SBE\PYGZus{}2490} \PYG{p}{\PYGZob{}}
       \PYG{n}{variables}\PYG{p}{:}
         \PYG{n}{string} \PYG{n}{instrument\PYGZus{}pid}\PYG{p}{(}\PYG{n}{NCOLUMNS}\PYG{p}{)} \PYG{p}{;}
-           \PYG{n}{instrument\PYGZus{}pid}\PYG{p}{:}\PYG{n}{long\PYGZus{}name} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{PIDINST PID}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
-           \PYG{n}{instrument\PYGZus{}pid}\PYG{p}{:}\PYG{n}{sdn\PYGZus{}variable\PYGZus{}name} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{TBC}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
-           \PYG{n}{instrument\PYGZus{}pid}\PYG{p}{:}\PYG{n}{sdn\PYGZus{}variable\PYGZus{}urn} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{TBC}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
-        \PYG{n}{string} \PYG{n}{uuid}\PYG{p}{(}\PYG{n}{NCOLUMNS}\PYG{p}{)} \PYG{p}{;}
-           \PYG{n}{uuid}\PYG{p}{:}\PYG{n}{long\PYGZus{}name} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{UUID}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
-           \PYG{n}{uuid}\PYG{p}{:}\PYG{n}{sdn\PYGZus{}variable\PYGZus{}name} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Universally Unique Identifier (UUID)}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
-           \PYG{n}{uuid}\PYG{p}{:}\PYG{n}{sdn\PYGZus{}variable\PYGZus{}urn} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{SDN:W07::IDEN0007}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
-        \PYG{n}{string} \PYG{n}{instrument\PYGZus{}name}\PYG{p}{(}\PYG{n}{NCOLUMNS}\PYG{p}{)} \PYG{p}{;}
-           \PYG{n}{instrument\PYGZus{}name}\PYG{p}{:}\PYG{n}{long\PYGZus{}name} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Instrument name}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
-           \PYG{n}{instrument\PYGZus{}name}\PYG{p}{:}\PYG{n}{sdn\PYGZus{}variable\PYGZus{}name} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Long name}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
-           \PYG{n}{instrument\PYGZus{}name}\PYG{p}{:}\PYG{n}{sdn\PYGZus{}variable\PYGZus{}urn} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{SDN:W07::IDEN0002}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
-        \PYG{n}{string} \PYG{n}{serial\PYGZus{}number}\PYG{p}{(}\PYG{n}{NCOLUMNS}\PYG{p}{)} \PYG{p}{;}
-           \PYG{n}{serial\PYGZus{}number}\PYG{p}{:}\PYG{n}{long\PYGZus{}name} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Instrument serial number}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
-           \PYG{n}{serial\PYGZus{}number}\PYG{p}{:}\PYG{n}{sdn\PYGZus{}variable\PYGZus{}name} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Serial Number}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
-           \PYG{n}{serial\PYGZus{}number}\PYG{p}{:}\PYG{n}{sdn\PYGZus{}variable\PYGZus{}urn} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{SDN:W07::IDEN0005}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
-        \PYG{n}{string} \PYG{n}{model\PYGZus{}id}\PYG{p}{(}\PYG{n}{NCOLUMNS}\PYG{p}{)} \PYG{p}{;}
-           \PYG{n}{model\PYGZus{}id}\PYG{p}{:}\PYG{n}{long\PYGZus{}name} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Model Name Identifier}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
-           \PYG{n}{model\PYGZus{}id}\PYG{p}{:}\PYG{n}{sdn\PYGZus{}variable\PYGZus{}name} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Model name}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
-           \PYG{n}{model\PYGZus{}id}\PYG{p}{:}\PYG{n}{sdn\PYGZus{}variable\PYGZus{}urn} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{SDN:W07::IDEN0003}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
-        \PYG{n+nb}{float} \PYG{n}{accuracy\PYGZus{}temperature}\PYG{p}{(}\PYG{n}{NCOLUMNS}\PYG{p}{)} \PYG{p}{;}
-           \PYG{n}{accuracy\PYGZus{}temperature}\PYG{p}{:}\PYG{n}{long\PYGZus{}name} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Instrument accuracy of temperature}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
-           \PYG{n}{accuracy\PYGZus{}temperature}\PYG{p}{:}\PYG{n}{units} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degC}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
-           \PYG{n}{accuracy\PYGZus{}temperature}\PYG{p}{:}\PYG{n}{sdn\PYGZus{}variable\PYGZus{}name} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Accuracy}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
-           \PYG{n}{accuracy\PYGZus{}temperature}\PYG{p}{:}\PYG{n}{sdn\PYGZus{}variable\PYGZus{}urn} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{SDN:W04::CAPB0001}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
-           \PYG{n}{accuracy\PYGZus{}temperature}\PYG{p}{:}\PYG{n}{variable\PYGZus{}parameter} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{/seatemp}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
-           \PYG{n}{accuracy\PYGZus{}temperature}\PYG{p}{:}\PYG{n}{sdn\PYGZus{}uom\PYGZus{}urn} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{SDN:P06::UPAA}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
-           \PYG{n}{accuracy\PYGZus{}temperature}\PYG{p}{:}\PYG{n}{sdn\PYGZus{}uom\PYGZus{}name} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Degrees Celsius}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
+           \PYG{n}{instrument\PYGZus{}pid}\PYG{p}{:}\PYG{n}{long\PYGZus{}name} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Instrument identifier}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
 
       \PYG{o}{/}\PYG{o}{/} \PYG{n}{group} \PYG{n}{attributes}\PYG{p}{:}
            \PYG{p}{:}\PYG{n}{date\PYGZus{}valid\PYGZus{}from} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{2020\PYGZhy{}01\PYGZhy{}31T00:00:00Z}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
-           \PYG{p}{:}\PYG{n}{metadata\PYGZus{}link} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{https://linkedsystems.uk/system/instance/TOOL0022\PYGZus{}2490/current/}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
-           \PYG{p}{:}\PYG{n}{comment} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s+s2}{2020\PYGZhy{}06\PYGZhy{}26T13:29:42Z: Instrument cleaned on 2020\PYGZhy{}02\PYGZhy{}10T13:04:00Z}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
+           \PYG{p}{:}\PYG{n}{date\PYGZus{}valid\PYGZus{}to} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{2020\PYGZhy{}08\PYGZhy{}16T00:00:00Z}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
+
       \PYG{n}{data}\PYG{p}{:}
 
        \PYG{n}{instrument\PYGZus{}pid} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{http://hdl.handle.net/21.T11998/0000\PYGZhy{}001A\PYGZhy{}3905\PYGZhy{}F}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
 
-       \PYG{n}{uuid} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{TOOL0022\PYGZus{}2490}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
-
-       \PYG{n}{instrument\PYGZus{}name} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{SBE 37\PYGZhy{}IM MicroCAT s/n 2490}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
-
-       \PYG{n}{serial\PYGZus{}number} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{2490}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
-
-       \PYG{n}{model\PYGZus{}id} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{http://vocab.nerc.ac.uk/collection/L22/current/TOOL0022/}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
-
-       \PYG{n}{accuracy\PYGZus{}temperature} \PYG{o}{=} \PYG{l+m+mf}{0.002} \PYG{p}{;}
       \PYG{p}{\PYGZcb{}} \PYG{o}{/}\PYG{o}{/} \PYG{n}{group} \PYG{n}{SBE\PYGZus{}2490}
     \PYG{p}{\PYGZcb{}} \PYG{o}{/}\PYG{o}{/} \PYG{n}{group} \PYG{n}{instruments}
   \PYG{p}{\PYGZcb{}}
@@ -1885,20 +2008,97 @@ are in development.}
 
 \sphinxAtStartPar
 The National Centres for Environmental Information (NCEI) at the
-National Oceanic and Atmospheric Administration (NOAA) in the US, also
-report instruments in CF\sphinxhyphen{}NetCDF files but as empty data variables within
-the root group of the NetCDF file instead of sub groups. The PID
-instrument identifier may be expressed as an instrument attribute e.g.
-\hyperref[\detokenize{white-paper/linking-datasets:snip-link-pidinst-netcdf}]{Snippet \ref{\detokenize{white-paper/linking-datasets:snip-link-pidinst-netcdf}}}. Ideally, blank separated lists
-should be used if linking more than one instrument.
-\sphinxSetupCaptionForVerbatim{Addition of a instrument PID attribute to NCEI CF\sphinxhyphen{}NetCDF
-files.}
-\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/linking-datasets:id10}}\label{\detokenize{white-paper/linking-datasets:snip-link-pidinst-netcdf}}}
+National Oceanic and Atmospheric Administration (NOAA) in the US,
+report instruments using a CF\sphinxhyphen{}NetCDF specification%
+\begin{footnote}[4]\sphinxAtStartFootnote
+\sphinxurl{https://www.ncei.noaa.gov/data/oceans/ncei/formats/netcdf/v2.0/index.html}
+%
+\end{footnote}. These
+are either global attributes specified using the \sphinxstyleemphasis{instrument}
+attribute from the Attribute Convention for Data Discovery (ACDD)
+1\sphinxhyphen{}3. Alternatively they are defined as empty geophysical variables
+within the root group of the NetCDF file. In the latter case,
+the instrument PID may be expressed as an attribute \sphinxstyleemphasis{instrument\_pid}
+within the recommended variable attributes as shown in
+\hyperref[\detokenize{white-paper/linking-datasets:snip-link-pidinst-netcdf}]{Snippet \ref{\detokenize{white-paper/linking-datasets:snip-link-pidinst-netcdf}}}. Alternatively, an \sphinxstyleemphasis{instrument\_pid}
+attribute could be added to the set of global attributes.
+\sphinxSetupCaptionForVerbatim{Addition of an instrument PID attribute to NCEI CF\sphinxhyphen{}NetCDF
+files v2.0.}
+\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/linking-datasets:snip-link-pidinst-netcdf}}}
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-  \PYG{n+nb}{int} \PYG{n}{instrument\PYGZus{}parameter\PYGZus{}variable}\PYG{p}{;}
-     \PYG{n}{instrument\PYGZus{}parameter\PYGZus{}variable}\PYG{p}{:}\PYG{n}{long\PYGZus{}name} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
-     \PYG{n}{instrument\PYGZus{}parameter\PYGZus{}variable}\PYG{p}{:}\PYG{n}{comment} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
-     \PYG{n}{instrument\PYGZus{}parameter\PYGZus{}variable}\PYG{p}{:}\PYG{n}{instrument\PYGZus{}pid} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
+    \PYG{n}{char} \PYG{n}{instrument1} \PYG{p}{;}
+  \PYG{n}{instrument1}\PYG{p}{:}\PYG{n}{instrument\PYGZus{}pid} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{http://hdl.handle.net/21.T11998/0000\PYGZhy{}001A\PYGZhy{}3905\PYGZhy{}F}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
+            \PYG{n}{instrument1}\PYG{p}{:}\PYG{n}{long\PYGZus{}name} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Seabird 37 Microcat}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
+            \PYG{n}{instrument1}\PYG{p}{:}\PYG{n}{ncei\PYGZus{}name} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{CTD}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
+            \PYG{n}{instrument1}\PYG{p}{:}\PYG{n}{make\PYGZus{}model} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{SBE\PYGZhy{}37}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
+            \PYG{n}{instrument1}\PYG{p}{:}\PYG{n}{serial\PYGZus{}number} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{1859723}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
+            \PYG{n}{instrument1}\PYG{p}{:}\PYG{n}{calibration\PYGZus{}date} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{2016\PYGZhy{}03\PYGZhy{}25}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
+            \PYG{n}{instrument1}\PYG{p}{:}\PYG{n}{accuracy} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
+            \PYG{n}{instrument1}\PYG{p}{:}\PYG{n}{precision} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
+            \PYG{n}{instrument1}\PYG{p}{:}\PYG{n}{comment} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{serial number and calibration dates are bogus}\PYG{l+s+s2}{\PYGZdq{}} \PYG{p}{;}
+\end{sphinxVerbatim}
+
+
+\subsubsection{OpenAIRE CERIF metadata}
+\label{\detokenize{white-paper/linking-datasets:openaire-cerif-metadata}}
+\sphinxAtStartPar
+The \sphinxstyleemphasis{OpenAIRE Guidelines for CRIS Managers} %
+\begin{footnote}[6]\sphinxAtStartFootnote
+Dvořák, Jan, Czerniak, Andreas, \& Ivanović, Dragan. (2023). OpenAIRE
+Guidelines for CRIS Managers 1.2 (1.2.0). \sphinxstyleemphasis{Zenodo}.
+\sphinxurl{https://doi.org/10.5281/zenodo.8050936}
+%
+\end{footnote}
+provide orientation for Research Information System (CRIS) managers to
+expose their metadata in a way that is compatible with the OpenAIRE
+infrastructure as well as the European Open Science Cloud (EOSC).
+These Guidelines also serve as an example of a CERIF\sphinxhyphen{}based (Common
+European Research Information Format) standard for information
+interchange between individual CRISs and other research
+e\sphinxhyphen{}Infrastructures.
+
+\sphinxAtStartPar
+The metadata format described by the Guidelines are includes Equipment
+which could contain Instruments as well via the \sphinxhref{https://openaire-guidelines-for-cris-managers.readthedocs.io/en/v1.2.0/cerif\_xml\_product\_entity.html\#generatedby}{GeneratedBy property}.
+\sphinxSetupCaptionForVerbatim{Use of the equipment entity for an instrument in
+exposed in a product (dataset) metadata record.
+Detailed \sphinxhref{https://github.com/openaire/guidelines-cris-managers/blob/cb96b925159655adfd97fb11c4a93f3d20c8cbef/samples/openaire\_cerif\_xml\_example\_products.xml\#L30}{product (dataset) example} at \sphinxstyleemphasis{OpenAIRE
+Guidelines for CRIS Managers repository on GitHub}.}
+\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/linking-datasets:id7}}\label{\detokenize{white-paper/linking-datasets:snip-link-product-oaire-cerif-xml}}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+  \PYG{n+nt}{\PYGZlt{}GeneratedBy}\PYG{n+nt}{\PYGZgt{}}
+    \PYG{n+nt}{\PYGZlt{}Equipment} \PYG{n+na}{id=}\PYG{l+s}{\PYGZdq{}82394876\PYGZdq{}}\PYG{n+nt}{\PYGZgt{}}
+        \PYG{n+nt}{\PYGZlt{}Name} \PYG{n+na}{xml:lang=}\PYG{l+s}{\PYGZdq{}en\PYGZdq{}}\PYG{n+nt}{\PYGZgt{}}E2 \PYGZhy{} Flat\PYGZhy{}Cone Diffractometer\PYG{n+nt}{\PYGZlt{}/Name\PYGZgt{}}
+        \PYG{n+nt}{\PYGZlt{}Identifier} \PYG{n+na}{type=}\PYG{l+s}{\PYGZdq{}DOI\PYGZdq{}}\PYG{n+nt}{\PYGZgt{}}https://doi.org/10.5442/NI000001\PYG{n+nt}{\PYGZlt{}/Identifier\PYGZgt{}}
+        \PYG{n+nt}{\PYGZlt{}Description} \PYG{n+na}{xml:lang=}\PYG{l+s}{\PYGZdq{}en\PYGZdq{}}\PYG{n+nt}{\PYGZgt{}}A 3\PYGZhy{}dimensional part of the reciprocal space can be scanned in less then five steps by combining the “off\PYGZhy{}plane Bragg\PYGZhy{}scattering” and the flat\PYGZhy{}cone layer concept while using a new computer\PYGZhy{}controlled tilting axis of the detector bank. Parasitic scattering from cryostat or furnace walls is reduced by an oscillating \PYGZbs{}\PYGZdq{}radial\PYGZbs{}\PYGZdq{} collimator. The datasets and all connected information is stored in one independent NeXus file format for each measurement and can be easily archived. The software package TVneXus deals with the raw data sets, the transformed physical spaces and the usual data analysis tools (e.g. MatLab). TVneXus can convert to various data sets e.g. into powder diffractograms, linear detector projections, rotation crystal pictures or the 2D/3D reciprocal space.\PYG{n+nt}{\PYGZlt{}/Description\PYGZgt{}}
+    \PYG{n+nt}{\PYGZlt{}/Equipment\PYGZgt{}}
+  \PYG{n+nt}{\PYGZlt{}/GeneratedBy\PYGZgt{}}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+The products (dataset) relates internal to the Equipment record via
+the \sphinxstyleemphasis{id} attribute, eg. 82394874.  The metadata for the equipment
+itself is exposed via equipment metadata record and described in the
+\sphinxhref{https://openaire-guidelines-for-cris-managers.readthedocs.io/en/v1.2.0/cerif\_xml\_equipment\_entity.html}{Equipment entity}.
+\sphinxSetupCaptionForVerbatim{Use of the equipment entity for an instrument in
+exposed in a product (dataset) metadata record.
+Detailed \sphinxhref{https://github.com/openaire/guidelines-cris-managers/blob/cb96b925159655adfd97fb11c4a93f3d20c8cbef/samples/openaire\_cerif\_xml\_example\_equipments.xml\#L18C1-L29C17}{equipment example} at \sphinxstyleemphasis{OpenAIRE Guidelines for
+CRIS Managers repository on GitHub}.}
+\def\sphinxLiteralBlockLabel{\label{\detokenize{white-paper/linking-datasets:id8}}\label{\detokenize{white-paper/linking-datasets:snip-link-equipment-oaire-cerif-xml}}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+  \PYG{n+nt}{\PYGZlt{}Equipment} \PYG{n+na}{xmlns=}\PYG{l+s}{\PYGZdq{}https://www.openaire.eu/cerif\PYGZhy{}profile/1.2/\PYGZdq{}} \PYG{n+na}{id=}\PYG{l+s}{\PYGZdq{}82394876\PYGZdq{}}\PYG{n+nt}{\PYGZgt{}}
+    \PYG{n+nt}{\PYGZlt{}Name} \PYG{n+na}{xml:lang=}\PYG{l+s}{\PYGZdq{}en\PYGZdq{}}\PYG{n+nt}{\PYGZgt{}}E2 \PYGZhy{} Flat\PYGZhy{}Cone Diffractometer\PYG{n+nt}{\PYGZlt{}/Name\PYGZgt{}}
+    \PYG{n+nt}{\PYGZlt{}Identifier} \PYG{n+na}{type=}\PYG{l+s}{\PYGZdq{}DOI\PYGZdq{}}\PYG{n+nt}{\PYGZgt{}}https://doi.org/10.5442/NI000001\PYG{n+nt}{\PYGZlt{}/Identifier\PYGZgt{}}
+    \PYG{n+nt}{\PYGZlt{}Description} \PYG{n+na}{xml:lang=}\PYG{l+s}{\PYGZdq{}en\PYGZdq{}}\PYG{n+nt}{\PYGZgt{}}A 3\PYGZhy{}dimensional part of the reciprocal space can be scanned in less then five steps by combining the “off\PYGZhy{}plane Bragg\PYGZhy{}scattering” and the flat\PYGZhy{}cone layer concept while using a new computer\PYGZhy{}controlled tilting axis of the detector bank. Parasitic scattering from cryostat or furnace walls is reduced by an oscillating \PYGZbs{}\PYGZdq{}radial\PYGZbs{}\PYGZdq{} collimator. The datasets and all connected information is stored in one independent NeXus file format for each measurement and can be easily archived. The software package TVneXus deals with the raw data sets, the transformed physical spaces and the usual data analysis tools (e.g. MatLab). TVneXus can convert to various data sets e.g. into powder diffractograms, linear detector projections, rotation crystal pictures or the 2D/3D reciprocal space.\PYG{n+nt}{\PYGZlt{}/Description\PYGZgt{}}
+    \PYG{n+nt}{\PYGZlt{}Owner}\PYG{n+nt}{\PYGZgt{}}
+      \PYG{n+nt}{\PYGZlt{}OrgUnit} \PYG{n+na}{id=}\PYG{l+s}{\PYGZdq{}OrgUnits/350002\PYGZdq{}}\PYG{n+nt}{\PYGZgt{}}
+        \PYG{n+nt}{\PYGZlt{}Acronym}\PYG{n+nt}{\PYGZgt{}}HZB\PYG{n+nt}{\PYGZlt{}/Acronym\PYGZgt{}}
+        \PYG{n+nt}{\PYGZlt{}Name} \PYG{n+na}{xml:lang=}\PYG{l+s}{\PYGZdq{}de\PYGZdq{}}\PYG{n+nt}{\PYGZgt{}}Helmholtz\PYGZhy{}Zentrum Berlin Für Materialien Und Energie\PYG{n+nt}{\PYGZlt{}/Name\PYGZgt{}}
+        \PYG{n+nt}{\PYGZlt{}Name} \PYG{n+na}{xml:lang=}\PYG{l+s}{\PYGZdq{}en\PYGZdq{}}\PYG{n+nt}{\PYGZgt{}}Helmholtz\PYGZhy{}Zentrum Berlin\PYG{n+nt}{\PYGZlt{}/Name\PYGZgt{}}
+        \PYG{n+nt}{\PYGZlt{}RORID}\PYG{n+nt}{\PYGZgt{}}https://ror.org/02aj13c28\PYG{n+nt}{\PYGZlt{}/RORID\PYGZgt{}}
+      \PYG{n+nt}{\PYGZlt{}/OrgUnit\PYGZgt{}}
+    \PYG{n+nt}{\PYGZlt{}/Owner\PYGZgt{}}
+  \PYG{n+nt}{\PYGZlt{}/Equipment\PYGZgt{}}
 \end{sphinxVerbatim}
 
 
@@ -1931,10 +2131,10 @@ one experimental station at BESSY II.%
 to the respective instrument page from the HZB instrument database
 that did already exist before and was thus not created for this
 purpose.  One particularity with these instruments is that they are
-custom built by HZB.  Thus, in the metadata HZB appears as Creator as
-well as Contributor with property contributorType value
-HostingInstitution.  It is noteworthy that one of the DOIs uses the
-additional property fundingReference from the DataCite schema to
+custom built by HZB.  Thus, in the metadata HZB appears as \sphinxtitleref{Creator}
+as well as \sphinxtitleref{Contributor} with property \sphinxtitleref{contributorType} value
+\sphinxtitleref{HostingInstitution}.  It is noteworthy that one of the DOIs uses the
+additional property \sphinxtitleref{fundingReference} from the DataCite schema to
 acknowledge external funding that HZB received for upgrading the
 instrument.  This property was not considered in the PIDINST schema,
 or in the DataCite mapping.  HZB plans to continue the adoption and to
@@ -1945,20 +2145,21 @@ user operation in the near future.
 \subsubsection{British Oceanographic Data Centre (BODC)}
 \label{\detokenize{white-paper/adoption:british-oceanographic-data-centre-bodc}}
 \sphinxAtStartPar
-The British Oceanographic Data Centre (BODC) is a national facility for
-preserving and distributing oceanographic and marine data. BODC tested
-the ePIC implementation in web\sphinxhyphen{}published, sensor technical metadata
-descriptions encoded in the Open Geospatial Consortium’s (OGC)
-\sphinxhref{https://www.opengeospatial.org/standards/sensorml}{SensorML} open standards for conceptualising and integrating
-real\sphinxhyphen{}world sensors. In an initial test case, a PID was minted for a
+The British Oceanographic Data Centre (BODC) is a national facility
+for preserving and distributing oceanographic and marine data.  BODC
+tested the ePIC implementation in web\sphinxhyphen{}published, sensor technical
+metadata descriptions encoded in the Open Geospatial Consortium’s
+(OGC) \sphinxhref{https://www.opengeospatial.org/standards/sensorml}{SensorML} open standards for conceptualising and integrating
+real\sphinxhyphen{}world sensors.  In an initial test case, a PID was minted for a
 Sea\sphinxhyphen{}Bird Scientific SBE37 Microcat regularly deployed on fixed\sphinxhyphen{}point
-moorings in the \sphinxhref{https://projects.noc.ac.uk/pap/}{Porcupine Abyssal Plain Sustained Observatory (PAP\sphinxhyphen{}SO)} in the north Atlantic. For further details see
-{\hyperref[\detokenize{white-paper/landing-page-encoding:landing-page-encoding-swe}]{\sphinxcrossref{\DUrole{std,std-ref}{Sensor web enablement (SWE)}}}}. BODC plan to continue adoption
+moorings in the \sphinxhref{https://projects.noc.ac.uk/pap/}{Porcupine Abyssal Plain Sustained Observatory
+(PAP\sphinxhyphen{}SO)} in the north Atlantic.  For further details see
+{\hyperref[\detokenize{white-paper/landing-page-encoding:landing-page-encoding-swe}]{\sphinxcrossref{\DUrole{std,std-ref}{Sensor web enablement (SWE)}}}}.  BODC plan to continue adoption
 identifying sensors on large research vessels owned by the Natural
 Environment Research Council (NERC) and managed by the National
-Oceanography Centre (NOC) and British Antarctic Survey (BAS). PIDs will
-be used to manage sensor data and metadata workflows from ‘deck to
-desktop’ as part of a UK initiative, I/Ocean.
+Oceanography Centre (NOC) and British Antarctic Survey (BAS).  PIDs
+will be used to manage sensor data and metadata workflows from ‘deck
+to desktop’ as part of a UK initiative, I/Ocean.
 
 
 \subsubsection{EISCAT3D}
@@ -1967,128 +2168,247 @@ desktop’ as part of a UK initiative, I/Ocean.
 \sphinxhref{https://eiscat.se/business/eiscat3d7/}{EISCAT3D} will be an international research infrastructure, using
 radar observations and the incoherent scatter technique for studies of
 the atmosphere and near\sphinxhyphen{}Earth space environment above the
-Fenno\sphinxhyphen{}Scandinavian Arctic as well as for the support of the solar system
-and radio astronomy sciences. EISCAT3D will implement persistent
-identification for instruments following the recommendations by PIDINST.
-The radar is complex, more digital than previous radars, and is roughly
-divided into a number of separate units. While software is a substantial
-constituent of these units, they can be regarded as hardware units, each
-persistently identified. Updates to the units will be primarily to
-software and result in new unit versions with own PIDs. The radar itself
-can also be persistently identified and the relation type HasComponent
-can be used to relate to the persistently identified units.
+Fenno\sphinxhyphen{}Scandinavian Arctic as well as for the support of the solar
+system and radio astronomy sciences.  EISCAT3D will implement
+persistent identification for instruments following the
+recommendations by PIDINST.  The radar is complex, more digital than
+previous radars, and is roughly divided into a number of separate
+units.  While software is a substantial constituent of these units,
+they can be regarded as hardware units, each persistently identified.
+Updates to the units will be primarily to software and result in new
+unit versions with own PIDs.  The radar itself can also be
+persistently identified and the relation type HasComponent can be used
+to relate to the persistently identified units.
 
 
 \subsubsection{SENSOR.awi.de and PANGAEA}
 \label{\detokenize{white-paper/adoption:sensor-awi-de-and-pangaea}}
 \sphinxAtStartPar
 The Alfred Wegener Institute Helmholtz Centre for Polar and Marine
-Research (AWI) has been continuously committed to develop and sustain an
-eResearch infrastructure for coherent discovery, view, dissemination,
-and archival of scientific data and related information in polar and
-marine regions. In order to address the increasing heterogeneity of
-research platforms and respective devices and sensors along with varying
-project\sphinxhyphen{}driven requirements, a generic and modular framework has been
-built intended to support the flow of sensor observations to archives
-(O2A).%
+Research (AWI) has been continuously committed to develop and sustain
+an eResearch infrastructure for coherent discovery, view,
+dissemination, and archival of scientific data and related information
+in polar and marine regions.  In order to address the increasing
+heterogeneity of research platforms and respective devices and sensors
+along with varying project\sphinxhyphen{}driven requirements, a generic and modular
+framework has been built intended to support the flow of sensor
+observations to archives (O2A).%
 \begin{footnote}[5]\sphinxAtStartFootnote
 Koppe, R., Gerchow, P., Macario, A., Haas, A., Schäfer\sphinxhyphen{}Neth, C.
 and Pfeiffenberger, H. (2015): O2A: A Generic Framework for Enabling
 the Flow of Sensor Observations to Archives and Publications, OCEANS
 2015 Genova. doi: 10.1109/OCEANS\sphinxhyphen{}Genova.2015.7271657
 %
-\end{footnote} In this context, SENSOR.awi.de, available since
-2015, is an O2A component dedicated to the registry of research
-platforms, devices and sensors and in the meantime in use by several
-international partners (e.g. MOSAiC project). SENSOR.awi.de has been
-built using OGC SensorML standard and all individual records, to date
-over 4000, are assigned a persistent identifier using UUIDs in the
-handle syntax along with automated generation of a record
-citation. Terminologies (e.g., controlled vocabularies) are used to
-define sensor categories (NERC L05) as well as sensor types and models
-(NERC L22). The data model of SENSOR.awi.de is compliant with the
-PIDINST schema and the additional implementation of Datacite DOIS for
-sensors is to date under evaluation.  The ultimate goal of SENSOR.awi.de
-is to enhance the quality of published and archived data in PANGAEA by
-providing complete metadata and persistent identifiers on instruments
-and sensors used in the data acquisition process
-(\hyperref[\detokenize{white-paper/linking-datasets:fig-link-pangea}]{Figure \ref{\detokenize{white-paper/linking-datasets:fig-link-pangea}}}). Given that platforms and sensors evolve
+\end{footnote} In this context,
+SENSOR.awi.de, available since 2015, is an O2A component dedicated to
+the registry of research platforms, devices and sensors and in the
+meantime in use by several international partners (e.g. MOSAiC
+project).  SENSOR.awi.de has been built using OGC SensorML standard
+and all individual records, to date over 4000, are assigned a
+persistent identifier using UUIDs in the handle syntax along with
+automated generation of a record citation.  Terminologies (e.g.,
+controlled vocabularies) are used to define sensor categories (NERC
+L05) as well as sensor types and models (NERC L22).  The data model of
+SENSOR.awi.de is compliant with the PIDINST schema and the additional
+implementation of Datacite DOIS for sensors is to date under
+evaluation.  The ultimate goal of SENSOR.awi.de is to enhance the
+quality of published and archived data in PANGAEA by providing
+complete metadata and persistent identifiers on instruments and
+sensors used in the data acquisition process
+(\hyperref[\detokenize{white-paper/linking-datasets:fig-link-pangea}]{Figure \ref{\detokenize{white-paper/linking-datasets:fig-link-pangea}}}).  Given that platforms and sensors evolve
 in time (sensors are being calibrated, instrument payload changes,
 etc), SENSOR.awi.de also supports record versioning by maintaining an
 audit trail of changes in the XML record.
 
 \sphinxAtStartPar
-PANGAEA is a digital repository for environmental research data and the
-dedicated long term archive within the O2A framework jointly operated by
-the AWI and MARUM (University Bremen). Each dataset is made available
-with its descriptive metadata, including the relations with research
-resources (e.g., articles, funder, instrument and specimen, if
-applicable). As a data provider, PANGAEA only curates limited
-information of a device such as device name, identifier and type. As an
-effort to standardize device type and name, currently the repository
-applies external terminologies, in particular the NERC L05 device
-category vocabulary and the L22 device catalogue. The repository has
-developed tailor\sphinxhyphen{}made client applications to import these terminologies
-in a periodic, incremental manner. For both the persistent
-identification as well as for the detailed description of instruments,
-PANGAEA thus relies on institutional instrument registries such as
-SENSOR.awi.de and uses their issued PIDs to uniquely identify
-instruments which have been used to acquire data archived at PANGAEA.
-Since AWI and PANGAEA use the same vocabularies/terminologies as well as
-PIDs to represent devices, they facilitate easy integration of datasets
-in particular during transfer of near real time data from O2A raw data
-staging areas via data quality control services etc to their final
-destination, the PANGAEA data archive.\sphinxfootnotemark[5]
+PANGAEA is a digital repository for environmental research data and
+the dedicated long term archive within the O2A framework jointly
+operated by the AWI and MARUM (University Bremen).  Each dataset is
+made available with its descriptive metadata, including the relations
+with research resources (e.g., articles, funder, instrument and
+specimen, if applicable).  As a data provider, PANGAEA only curates
+limited information of a device such as device name, identifier and
+type.  As an effort to standardize device type and name, currently the
+repository applies external terminologies, in particular the NERC L05
+device category vocabulary and the L22 device catalogue.  The
+repository has developed tailor\sphinxhyphen{}made client applications to import
+these terminologies in a periodic, incremental manner.  For both the
+persistent identification as well as for the detailed description of
+instruments, PANGAEA thus relies on institutional instrument
+registries such as SENSOR.awi.de and uses their issued PIDs to
+uniquely identify instruments which have been used to acquire data
+archived at PANGAEA.  Since AWI and PANGAEA use the same
+vocabularies/terminologies as well as PIDs to represent devices, they
+facilitate easy integration of datasets in particular during transfer
+of near real time data from O2A raw data staging areas via data
+quality control services etc to their final destination, the PANGAEA
+data archive.\sphinxfootnotemark[5]
 
 
 \subsubsection{ICOS}
 \label{\detokenize{white-paper/adoption:icos}}
 \sphinxAtStartPar
 The Integrated Carbon Observation System (ICOS) is a pan\sphinxhyphen{}european
-research infrastructure for quantifying and understanding the greenhouse
-gas balance of the European continent. It conducts many continuous
-in\sphinxhyphen{}situ measurements like gas concentrations, wind speed and direction,
-humidity, temperature, etc. To deliver high quality measurement data,
-ICOS considers the adoption of a persistent identifier for instruments a
-must for documenting data provenance and tracking calibration history.
+research infrastructure for quantifying and understanding the
+greenhouse gas balance of the European continent.  It conducts many
+continuous in\sphinxhyphen{}situ measurements like gas concentrations, wind speed
+and direction, humidity, temperature, etc.  To deliver high quality
+measurement data, ICOS considers the adoption of a persistent
+identifier for instruments a must for documenting data provenance and
+tracking calibration history.
+
+
+\subsubsection{B2INST}
+\label{\detokenize{white-paper/adoption:b2inst}}
+\sphinxAtStartPar
+B2INST is a service for registering, persistently identifying and
+describing instruments.  The B2INST service fills the gap especially
+for research groups or smaller communities, who might lack the
+capability to operate a registry.
+
+\sphinxAtStartPar
+Communities and organisations can make use of the service to FAIRify
+their instrument by registering their metadata and assigning the
+instrument a PID.  This instrument\sphinxhyphen{}PID can then be added to research
+outputs, such as journal articles and datasets.
+
+\sphinxAtStartPar
+B2INST provides several generic features, like assigning PIDs and DOIs
+to the metadata, as well as presenting a landing page of the
+instrument based on the registered metadata.  It also provides
+additional features, like the possibility to upload data to the
+registered instruments (such additional data can be almost everything
+that supports the description of the instrument, e.g. calibration
+protocols, pictures of the instruments, technical manuals, etc).  In
+B2INST, the registered information is publicly available for everyone.
+Creating or maintaining information requires authorization \sphinxhyphen{} for that
+B2INST supports federated identity management, so users can use their
+home accounts to log in to the system.
+
+\sphinxAtStartPar
+The identified use cases showed that communities have different
+requirements for instrument metadata.  The PIDINST schema covers a
+minimum set of metadata to describe instruments only.  B2INST provides
+community extensions; thus, it is possible to add broader descriptions
+of instruments and to support the requirements of different
+communities.  Based on the PIDINST schema, communities can add
+metadata extensions to better support their community needs.
+
+\sphinxAtStartPar
+The current plan foresees that B2INST will be offered as a public
+service by EUDAT.  The initial proof\sphinxhyphen{}of\sphinxhyphen{}concept was set up by SURF.
+It was further developed by the GWDG, which will operate the service
+in a production mode.
+
+
+\subsubsection{National Institute of Standards and Technology (NIST)}
+\label{\detokenize{white-paper/adoption:national-institute-of-standards-and-technology-nist}}
+\sphinxAtStartPar
+Recently, a group of researchers collaborating with the Office of Data
+and Informatics at NIST had deployed a proto\sphinxhyphen{}instance of an instrument
+database.  It is our hope that this database will becomes a living
+record of all instruments from NIST.  We view the persistent
+identification of research instruments as an essential attribute
+anyone engaged in the production of high\sphinxhyphen{}quality and reproducible
+science.
+
+\sphinxAtStartPar
+We chose the SharePoint platform as our evaluation portal for the ease
+of setting up an internal facing web interface.  We made a SharePoint
+List object based on the RDA PIDINST schema v1.0 release.  Next, we
+populated the columns using two data sources.  The first is the NIST
+electron microscopy Nexus microscope inventory.  The second the NIST
+Sunflower property databases.  For the Sunflower property database, we
+limited our results to only instruments listed under a single division
+with NIST so that our feasibility study stayed manageable.  In all,
+there are 600+ instruments in the proto\sphinxhyphen{}database.
+
+\sphinxAtStartPar
+From the two data sources, we were able to populate many of the
+required columns but not all.  For the \sphinxtitleref{LandingPage} requirement,
+since the vast majority of our instruments do not have landing pages,
+we programmatically generated these with the Pelican static site
+generator using Sunflower property data.  The pages with
+internally\sphinxhyphen{}resolvable IP addresses are added to a local web host with
+the understanding that some of these can be made public at NIST’s
+discretion.  For the \sphinxtitleref{Identifier} requirement, we minted these using
+Handle, and then imported them into SharePoint.  For fields like
+\sphinxtitleref{Owner} and \sphinxtitleref{ownerName}, NIST is identified as the top\sphinxhyphen{}level owner.
+However, it is our hope that instrument custodians will self\sphinxhyphen{}report as
+second or third\sphinxhyphen{}line owners as the practice of persistent identifier
+for instruments take root.  It is worth mentioning that SharePoint
+List objects are not capable of having nested (1\sphinxhyphen{}n) objects.
+Therefore, our instrument database remains in prototype stage until a
+suitable database is identified.  This work is on\sphinxhyphen{}going.
+
+
+\subsubsection{Natural Environmental Data Service (EDS)}
+\label{\detokenize{white-paper/adoption:natural-environmental-data-service-eds}}
+\sphinxAtStartPar
+The \sphinxhref{https://eds.ukri.org/}{NERC Environmental Data Service (EDS)} is a trusted UK facility
+providing data stewardship services for environmental data across
+all environmental science domains. The EDS is made up of five data
+centres with domain specific expertise; the British Oceanographic
+Data Centre (BODC), Centre for Environmental Data Analysis (CEDA),
+Environmental Information Data Centre (EIDC), National Geoscience
+Data Centre (NGDS), and UK Polar Data Centre (PDC). The NERC\sphinxhyphen{}supported
+EDS brings the data centres together to provide an integrated data
+service across all environmental science domains. As part of the
+Research Data Cloud Pilot project funded by the UK Research and
+Innovation Council (UKRI), the EDS will prototype digital
+infrastructure to cite graphs of all the PIDs used to generate
+formal environmental data collections derived from sensors.
+These graphs (or ‘reliquaries’ of complex citations) will include
+persistent identifiers for instruments following the PIDINST
+recommendations.
 
 
 \section{Contributors}
 \label{\detokenize{white-paper/index:contributors}}
 \sphinxAtStartPar
-\sphinxstyleemphasis{Louise Darroch} (\sphinxhref{mailto:louise.darroch@bodc.ac.uk}{louise.darroch@bodc.ac.uk}, \sphinxurl{https://orcid.org/0000-0003-4163-9575}),
+\sphinxstyleemphasis{Louise Darroch} (\sphinxhref{mailto:lorr@noc.ac.uk}{lorr@noc.ac.uk}, \sphinxurl{https://orcid.org/0000-0003-4163-9575}),
 British Oceanographic Data Centre, National Oceanography Centre,
 Liverpool, L3 5DA, United Kingdom
 
 \sphinxAtStartPar
 \sphinxstyleemphasis{Robert Huber} (\sphinxhref{mailto:rhuber@uni-bremen.de}{rhuber@uni\sphinxhyphen{}bremen.de}, \sphinxurl{https://orcid.org/0000-0003-3000-0020}),
-MARUM \sphinxhyphen{} Center for Marine Environmental Sciences, University of Bremen, Leobener Str. 8, 28359 Bremen, Germany
+MARUM \sphinxhyphen{} Center for Marine Environmental Sciences, University of Bremen,
+Leobener Str. 8, 28359 Bremen, Germany
 
 \sphinxAtStartPar
-\sphinxstyleemphasis{Anusuriya Devaraju} (\sphinxhref{mailto:adevaraju@marum.de}{adevaraju@marum.de}, \sphinxurl{https://orcid.org/0000-0003-0870-3192}),
-MARUM \sphinxhyphen{} Center for Marine Environmental Sciences, University of Bremen, Leobener Str. 8, 28359 Bremen, Germany
+\sphinxstyleemphasis{Anusuriya Devaraju} (\sphinxhref{mailto:anusuriya.devaraju@csiro.au}{anusuriya.devaraju@csiro.au}, \sphinxurl{https://orcid.org/0000-0003-0870-3192}),
+CSIRO Mineral Resources, 26 Dick Perry Avenue, Kensington WA 6151, Australia
 
 \sphinxAtStartPar
 \sphinxstyleemphasis{Ulrich Schwardmann} (\sphinxhref{mailto:ulrich.schwardmann@gwdg.de}{ulrich.schwardmann@gwdg.de}, \sphinxurl{https://orcid.org/0000-0001-6337-8674}),
-GWDG, Gesellschaft für wissenschaftliche Datenverarbeitung Göttingen, Am
-Fassberg 11, 37077 Göttingen, Germany
-
-\sphinxAtStartPar
-\sphinxstyleemphasis{Anita Bandrowski} (\sphinxhref{mailto:abandrowski@ucsd.edu}{abandrowski@ucsd.edu}, \sphinxurl{https://orcid.org/0000-0002-5497-0243}),
-Department of Neuoscience, University of California at San Diego,
-9500 Gilman Drive La Jolla, CA 92093\sphinxhyphen{}0662
-
-\sphinxAtStartPar
-\sphinxstyleemphasis{Markus Stocker} (\sphinxhref{mailto:markus.stocker@tib.eu}{markus.stocker@tib.eu}, \sphinxurl{https://orcid.org/0000-0001-5492-3212}),
-TIB Leibniz Information Centre for Science and Technology, Welfengarten
-1 B, 30167 Hannover, Germany and PANGAEA, Center for Marine
-Environmental Sciences (MARUM), University of Bremen, Leobener Str. 8,
-28359 Bremen, Germany
+GWDG, Gesellschaft für wissenschaftliche Datenverarbeitung Göttingen,
+Burckhardtweg 4, 37077 Göttingen, Germany
 
 \sphinxAtStartPar
 \sphinxstyleemphasis{Rolf Krahl} (\sphinxhref{mailto:rolf.krahl@helmholtz-berlin.de}{rolf.krahl@helmholtz\sphinxhyphen{}berlin.de}, \sphinxurl{https://orcid.org/0000-0002-1266-3819}),
-Helmholtz\sphinxhyphen{}Zentrum Berlin für Materialien und Energie GmbH,
+Helmholtz\sphinxhyphen{}Zentrum Berlin für Materialien und Energie,
 Albert\sphinxhyphen{}Einstein\sphinxhyphen{}Str. 15, 12489 Berlin, Germany
+
+\sphinxAtStartPar
+\sphinxstyleemphasis{Sven Bingert} (\sphinxhref{mailto:sven.bingert@gwdg.de}{sven.bingert@gwdg.de}, \sphinxurl{https://orcid.org/0000-0001-9547-1582}),
+GWDG, Gesellschaft für wissenschaftliche Datenverarbeitung Göttingen,
+Burckhardtweg 4, 37077 Göttingen, Germany
+
+\sphinxAtStartPar
+\sphinxstyleemphasis{Philipp Wieder} (\sphinxhref{mailto:philipp.wieder@gwdg.de}{philipp.wieder@gwdg.de}, \sphinxurl{https://orcid.org/0000-0002-6992-1866}),
+GWDG, Gesellschaft für wissenschaftliche Datenverarbeitung Göttingen,
+Burckhardtweg 4, 37077 Göttingen, Germany
+
+\sphinxAtStartPar
+\sphinxstyleemphasis{Tibor Kálmán} (\sphinxhref{mailto:tibor.kalman@gwdg.de}{tibor.kalman@gwdg.de}, \sphinxurl{https://orcid.org/0000-0001-5194-5053}),
+GWDG, Gesellschaft für wissenschaftliche Datenverarbeitung Göttingen,
+Burckhardtweg 4, 37077 Göttingen, Germany
+
+\sphinxAtStartPar
+\sphinxstyleemphasis{Anita Bandrowski} (\sphinxhref{mailto:abandrowski@ucsd.edu}{abandrowski@ucsd.edu}, \sphinxurl{https://orcid.org/0000-0002-5497-0243}),
+Department of Neuroscience, University of California at San Diego,
+9500 Gilman Drive La Jolla, CA 92093\sphinxhyphen{}0662 and SciCrunch Inc, 9500
+Gilman Drive La Jolla, CA 92093\sphinxhyphen{}0662
 
 \sphinxAtStartPar
 \sphinxstyleemphasis{Ted Habermann} (\sphinxhref{mailto:ted@tedhabermann.com}{ted@tedhabermann.com}, \sphinxurl{http://orcid.org/0000-0003-3585-6733}),
@@ -2096,12 +2416,16 @@ Metadata Game Changers, 3980 Broadway, Suite 103\sphinxhyphen{}185, Boulder,
 Colorado, USA 80304
 
 \sphinxAtStartPar
+\sphinxstyleemphasis{Mark van de Sanden} (\sphinxhref{mailto:mark.vandesanden@surf.nl}{mark.vandesanden@surf.nl}, \sphinxurl{https://orcid.org/0000-0002-2718-8918}),
+SURF, Science Park 140, 1098 XG Amsterdam, The Netherlands
+
+\sphinxAtStartPar
 \sphinxstyleemphasis{Claudio D’Onofrio} (\sphinxhref{mailto:claudio.donofrio@nateko.lu.se}{claudio.donofrio@nateko.lu.se}, \sphinxurl{https://orcid.org/0000-0002-1982-3889}),
 ICOS Carbon Portal, Lund University, Physical Geography \& Ecosystem
 Science, Sölvegatan 12, 223 62 Lund, Sweden
 
 \sphinxAtStartPar
-\sphinxstyleemphasis{Maggie Hellström} (\sphinxhref{mailto:margareta.hellstrom@nateko.lu.se}{margareta.hellstrom@nateko.lu.se}, \sphinxurl{https://orcid.org/0000-0002-4154-2610}),
+\sphinxstyleemphasis{Margareta Hellström} (\sphinxhref{mailto:margareta.hellstrom@nateko.lu.se}{margareta.hellstrom@nateko.lu.se}, \sphinxurl{https://orcid.org/0000-0002-4154-2610}),
 ICOS Carbon Portal, Physical Geography \& Ecosystem Science, Lund
 University, Sölvegatan 12, 223 62 Lund, Sweden
 
@@ -2123,15 +2447,49 @@ Germany
 
 \sphinxAtStartPar
 \sphinxstyleemphasis{Tina Dohna} (\sphinxhref{mailto:tdohna@marum.de}{tdohna@marum.de}, \sphinxurl{https://orcid.org/0000-0002-5948-0980}),
-MARUM \sphinxhyphen{} Center for Marine Environmental Sciences, University of Bremen, Leobener Str. 8, 28199 Bremen, Germany
+MARUM \sphinxhyphen{} Center for Marine Environmental Sciences, University of Bremen,
+Leobener Str. 8, 28199 Bremen, Germany
+
+\sphinxAtStartPar
+\sphinxstyleemphasis{Jens Klump} (\sphinxhref{mailto:jens.klump@csiro.au}{jens.klump@csiro.au}, \sphinxurl{https://orcid.org/0000-0001-5911-6022}),
+CSIRO Mineral Resources, 26 Dick Perry Avenue, Kensington WA 6151, Australia
+
+\sphinxAtStartPar
+\sphinxstyleemphasis{Markus Stocker} (\sphinxhref{mailto:markus.stocker@tib.eu}{markus.stocker@tib.eu}, \sphinxurl{https://orcid.org/0000-0001-5492-3212}),
+TIB \textendash{} Leibniz Information Centre for Science and Technology,
+Welfengarten 1 B, 30167 Hannover, Germany and Leibniz University
+Hannover, Welfengarten 1, 30167 Hannover, Germany
+
+\sphinxAtStartPar
+\sphinxstyleemphasis{Andreas Czerniak} (\sphinxhref{mailto:andreas.czerniak@uni-bielefeld.de}{andreas.czerniak@uni\sphinxhyphen{}bielefeld.de}, \sphinxurl{https://orcid.org/0000-0003-3883-4169}),
+Bielefeld University Library, Universitätsstr. 25, 33615 Bielefeld, Germany
+
+\sphinxAtStartPar
+\sphinxstyleemphasis{Robert J. Hanisch} (\sphinxhref{mailto:robert.hanisch@nist.gov}{robert.hanisch@nist.gov}, \sphinxurl{https://orcid.org/0000-0002-6853-4602})
+Office of Data and Informatics, Material Measurement Laboratory,
+National Institute of Standards and Technology, Gaithersburg, MD, USA
+
+\sphinxAtStartPar
+\sphinxstyleemphasis{June W. Lau} (\sphinxhref{mailto:june.lau@nist.gov}{june.lau@nist.gov}, \sphinxurl{https://orcid.org/0000-0002-5233-4956})
+Office of Data and Informatics, Material Measurement Laboratory,
+National Institute of Standards and Technology, Gaithersburg, MD, USA
 
 \sphinxAtStartPar
 \sphinxstyleemphasis{The Research Data Alliance Persistent Identification of Instruments
 Working Group members} (\sphinxurl{https://www.rd-alliance.org/node/57186/members})
 
 
+\section{Competing interests}
+\label{\detokenize{white-paper/index:competing-interests}}
+\sphinxAtStartPar
+Anita Bandrowski is a founder and CEO of SciCrunch Inc, a company
+devoted to working with publishers to improve the scientific
+literature.  All other authors declare that they have no competing
+interests.
+
+
 \chapter{ePIC Cookbook}
-\label{\detokenize{cookbook/index:epic-cookbook}}\label{\detokenize{cookbook/index:id1}}\label{\detokenize{cookbook/index::doc}}
+\label{\detokenize{epic-cookbook/index:epic-cookbook}}\label{\detokenize{epic-cookbook/index:id1}}\label{\detokenize{epic-cookbook/index::doc}}
 
 \begin{savenotes}\sphinxattablestart
 \centering
@@ -2154,7 +2512,7 @@ Document type
 
 
 \section{Introduction}
-\label{\detokenize{cookbook/intro:introduction}}\label{\detokenize{cookbook/intro::doc}}
+\label{\detokenize{epic-cookbook/intro:introduction}}\label{\detokenize{epic-cookbook/intro::doc}}
 \sphinxAtStartPar
 This cookbook enables instrument providers to create persistent
 identifiers (PID) for instruments using the \sphinxhref{https://www.pidconsortium.net/}{ePIC infrastructure}.
@@ -2169,7 +2527,7 @@ guidance for publishing instrument PIDs through ePIC.
 
 
 \section{PIDINST handles at ePIC}
-\label{\detokenize{cookbook/handles:pidinst-handles-at-epic}}\label{\detokenize{cookbook/handles::doc}}
+\label{\detokenize{epic-cookbook/handles:pidinst-handles-at-epic}}\label{\detokenize{epic-cookbook/handles::doc}}
 \sphinxAtStartPar
 Properties, sub\sphinxhyphen{}properties and attributes of the PIDINST metadata
 schema used in ePIC PID handle records can be viewed as follows.  Use
@@ -2203,7 +2561,7 @@ JSON representation
 
 
 \subsection{Generating a new instrument PID}
-\label{\detokenize{cookbook/handles:generating-a-new-instrument-pid}}
+\label{\detokenize{epic-cookbook/handles:generating-a-new-instrument-pid}}
 \sphinxAtStartPar
 ePIC handles are accessed and managed via a RESTful web service, using
 the HTTP application protocol.  This service or Application
@@ -2274,9 +2632,9 @@ To manually generate a suffix using PUT method:
 
 
 \subsection{Viewing PID handle records}
-\label{\detokenize{cookbook/handles:viewing-pid-handle-records}}
+\label{\detokenize{epic-cookbook/handles:viewing-pid-handle-records}}
 \sphinxAtStartPar
-If you have specified the URLproperty in the handle record it will
+If you have specified the URL property in the handle record it will
 automatically redirect you to it when you view the handle record:
 
 \sphinxAtStartPar
@@ -2296,7 +2654,7 @@ The REST API calls can also yield JSON responses:
 
 
 \subsection{Updating the description of a PID handle record}
-\label{\detokenize{cookbook/handles:updating-the-description-of-a-pid-handle-record}}
+\label{\detokenize{epic-cookbook/handles:updating-the-description-of-a-pid-handle-record}}
 \sphinxAtStartPar
 Properties are updated using the PUT method by either specifying the
 JSON properties directly in the cURL request or parsing them via a
@@ -2310,7 +2668,8 @@ Directly specifying properties within the cURL request:
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
-\sphinxstyleemphasis{Note: Double quotes must be escaped with a backslash (\textbackslash{}) within the JSON parsed\_data string}
+\sphinxstyleemphasis{Note: Double quotes must be escaped with a backslash (\textbackslash{}) within the
+JSON parsed\_data string}
 
 \sphinxAtStartPar
 Specifying properties with a JSON file:
@@ -2321,10 +2680,10 @@ Specifying properties with a JSON file:
 
 
 \subsection{Managing PIDs}
-\label{\detokenize{cookbook/handles:managing-pids}}
+\label{\detokenize{epic-cookbook/handles:managing-pids}}
 
 \subsubsection{Using the ePIC API}
-\label{\detokenize{cookbook/handles:using-the-epic-api}}
+\label{\detokenize{epic-cookbook/handles:using-the-epic-api}}
 \sphinxAtStartPar
 The following HTTP protocol methods enable users to manage their PID
 handle records using the ePIC API based on username\sphinxhyphen{}password.
@@ -2353,7 +2712,7 @@ Server: \sphinxcode{\sphinxupquote{vm04.pid.gwdg.de}}, Port: \sphinxcode{\sphinx
 
 
 \subsubsection{Using the Handle API}
-\label{\detokenize{cookbook/handles:using-the-handle-api}}
+\label{\detokenize{epic-cookbook/handles:using-the-handle-api}}
 \sphinxAtStartPar
 The following HTTP protocol methods enable users to manage their PID
 handle records using the generic Handle API based on Certificates.
@@ -2421,6 +2780,288 @@ curl \PYGZhy{}s \PYGZhy{}\PYGZhy{}insecure \PYGZdl{}\PYGZob{}VERBOSE\PYGZcb{} \P
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 curl \PYGZhy{}s \PYGZhy{}\PYGZhy{}insecure \PYGZdl{}\PYGZob{}VERBOSE\PYGZcb{} \PYGZhy{}\PYGZhy{}key \PYGZdl{}\PYGZob{}USERKEY\PYGZcb{} \PYGZhy{}\PYGZhy{}cert \PYGZdl{}\PYGZob{}USERCERT\PYGZcb{} \PYGZhy{}H \PYGZdq{}Content\PYGZhy{}Type:application/json\PYGZdq{} \PYGZhy{}H \PYGZsq{}Authorization: Handle clientCert=\PYGZdq{}true\PYGZdq{}\PYGZsq{} \PYGZhy{}X DELETE  https://\PYGZdl{}\PYGZob{}SERVPORT\PYGZcb{}/api/handles/test\PYGZus{}epic3\PYGZus{}1234
 \end{sphinxVerbatim}
+
+
+\chapter{DataCite Cookbook}
+\label{\detokenize{datacite-cookbook/index:datacite-cookbook}}\label{\detokenize{datacite-cookbook/index:id1}}\label{\detokenize{datacite-cookbook/index::doc}}
+
+\begin{savenotes}\sphinxattablestart
+\centering
+\begin{tabular}[t]{|*{2}{\X{1}{2}|}}
+\hline
+
+\sphinxAtStartPar
+Document type
+&
+\begin{DUlineblock}{0em}
+\item[] Research Data Alliance (RDA)
+\item[] Persistent Identification of Instruments (PIDINST)
+\item[] working group output report
+\end{DUlineblock}
+\\
+\hline
+\end{tabular}
+\par
+\sphinxattableend\end{savenotes}
+
+
+\section{Introduction}
+\label{\detokenize{datacite-cookbook/intro:introduction}}\label{\detokenize{datacite-cookbook/intro::doc}}
+\sphinxAtStartPar
+This cookbook enables instrument providers to create \sphinxhref{https://datacite.org/}{DataCite} DOIs
+as persistent identifiers (PID) for instruments.  DataCite is a global
+not\sphinxhyphen{}for\sphinxhyphen{}profit organization that provides DOIs for research data and
+other research outputs.  The \sphinxhref{https://www.rd-alliance.org/groups/persistent-identification-instruments-wg}{Persistent Identification of Instruments
+WG (PIDINST)} has worked with DataCite on the mapping of
+the PIDINST metadata schema onto the DataCite schema.
+
+\sphinxAtStartPar
+This cookbook is not intended to replace the \sphinxhref{https://support.datacite.org/}{DataCite
+documentation}.  It will rather point to the relevant steps for
+minting an instrument DOI and mostly concentrate on the instrument PID
+metadata.  The cookbook assumes some basic knowledge about DOIs.  The
+\sphinxhref{https://en.wikipedia.org/wiki/Digital\_object\_identifier}{Wikipedia article on DOI} is a useful primer containing
+the relevant information.
+
+
+\section{Prerequisites for minting DOIs}
+\label{\detokenize{datacite-cookbook/prereq:prerequisites-for-minting-dois}}\label{\detokenize{datacite-cookbook/prereq::doc}}
+\sphinxAtStartPar
+As a prerequisite to issue DataCite DOIs, your organization needs to
+be a DataCite member or work with a DataCite member.  This will
+provide you with your own DOI prefix and the access to
+\sphinxhref{https://doi.datacite.org/}{DataCite Fabrica} that you will need for
+{\hyperref[\detokenize{datacite-cookbook/minting:datacite-cookbook-minting}]{\sphinxcrossref{\DUrole{std,std-ref}{Minting the instrument DOI}}}}.
+
+
+\section{Collecting the metadata}
+\label{\detokenize{datacite-cookbook/metadata:collecting-the-metadata}}\label{\detokenize{datacite-cookbook/metadata::doc}}
+\sphinxAtStartPar
+To create a DOI for an instrument, you need to collect all the
+metadata that describe the instrument and that you want to include in
+the DOI record.  Section {\hyperref[\detokenize{white-paper/metadata-schema:pidinst-metadata-schema}]{\sphinxcrossref{\DUrole{std,std-ref}{PIDINST metadata schema}}}} in the PIDINST
+White Paper describes the metadata that you should consider.
+
+\sphinxAtStartPar
+The Persistent Identification of Instruments WG has developed a
+PIDINST Metadata Schema.  But since you are going to create a DataCite
+DOI, you will be constrained to use the \sphinxhref{https://schema.datacite.org/}{DataCite Metadata Schema}.
+With version 4.5 of that schema, DataCite has significantly improved
+support for instruments and also provides a \sphinxhref{https://datacite-metadata-schema.readthedocs.io/en/latest/mappings/pidinst/}{Mapping of the
+PIDINST Schema onto the DataCite Schema}
+
+
+\subsection{Mapping of PIDINST metadata onto DataCite}
+\label{\detokenize{datacite-cookbook/metadata:mapping-of-pidinst-metadata-onto-datacite}}
+\sphinxAtStartPar
+Based on the mapping provided by DataCite, we want to give in the
+following additional hints and discuss how the metadata describing the
+instrument can be best represented in the DataCite Schema:
+\begin{description}
+\item[{\sphinxtitleref{Identifier}}] \leavevmode
+\sphinxAtStartPar
+The DOI that you are going to create.  Add as DataCite property
+\sphinxtitleref{Identifier} with \sphinxtitleref{identifierType=DOI}.
+
+\item[{\sphinxtitleref{LandingPage}}] \leavevmode
+\sphinxAtStartPar
+The URL of the landing page that the PID resolves to.  The DataCite
+Schema does not have a property for this, but you’ll register the
+URL along with the metadata when creating the DOI.
+
+\item[{\sphinxtitleref{Name}}] \leavevmode
+\sphinxAtStartPar
+The name by which this instrument is known.  Add as DataCite property
+\sphinxtitleref{Title}.
+
+\item[{\sphinxtitleref{Owner}}] \leavevmode
+\sphinxAtStartPar
+The organization or individual that manages the instrument.  Add as
+DataCite property \sphinxtitleref{Contributor} with
+\sphinxtitleref{contributorType=HostingInstitution}.  Consider also to add an
+identifier for the owner in the \sphinxtitleref{nameIdentifier} subproperty of
+\sphinxtitleref{Contributor}.
+
+\item[{\sphinxtitleref{Manufacturer}}] \leavevmode
+\sphinxAtStartPar
+The organization or individual that built the instrument.  Add as
+DataCite property \sphinxtitleref{Creator}.  Consider also to add an identifier for
+the manufacturer in the \sphinxtitleref{nameIdentifier} subproperty of \sphinxtitleref{Creator}.
+
+\item[{\sphinxtitleref{Model}}] \leavevmode
+\sphinxAtStartPar
+The name of the model or type of the instrument.  As of this
+writing, the DataCite Schema has no specific property for that.  The
+mapping provided by DataCite suggest to add it as a \sphinxtitleref{Description}
+with \sphinxtitleref{descriptionType=TechnicalInfo}, see note below.
+
+\sphinxAtStartPar
+The DataCite property \sphinxtitleref{Description} does not provide a way to
+include the \sphinxtitleref{modelIdentifier}.  If the model has a PID and you want
+to include that, one option would be to additionally add a
+\sphinxtitleref{RelatedIdentifier} with \sphinxtitleref{relationType=References}.
+
+\item[{\sphinxtitleref{Description}}] \leavevmode
+\sphinxAtStartPar
+A textual description of the device and its capabilities.  Add as
+DataCite property \sphinxtitleref{Description} with \sphinxtitleref{descriptionType=Abstract}.
+
+\item[{\sphinxtitleref{InstrumentType}}] \leavevmode
+\sphinxAtStartPar
+A classification of the type of the instrument.  As of this writing,
+the DataCite Schema has no specific property for that.  The mapping
+provided by DataCite suggest to add it as a \sphinxtitleref{Description} with
+\sphinxtitleref{descriptionType=TechnicalInfo}, see note below.  An alternative
+might be to add it as keywords providing such a classification in
+the \sphinxtitleref{Subject} property.  The latter might be particularly useful if
+the instrument type is using terms from a controlled vocabulary, as
+\sphinxtitleref{Subject} allows to link those terms using the \sphinxtitleref{subjectScheme},
+\sphinxtitleref{schemeURI}, and \sphinxtitleref{valueURI} subproperties.
+
+\item[{\sphinxtitleref{MeasuredVariable}}] \leavevmode
+\sphinxAtStartPar
+The variables or physical properties that the instrument measures or
+observes.  As of this writing, the DataCite Schema has no specific
+property for that.  The mapping provided by DataCite suggest to add
+it as a \sphinxtitleref{Description} with \sphinxtitleref{descriptionType=TechnicalInfo}, see note
+below.
+
+\item[{\sphinxtitleref{Date}}] \leavevmode
+\sphinxAtStartPar
+Relevant events pertaining to this instrument instance.  Add as
+DataCite property \sphinxtitleref{Date}.  Use \sphinxtitleref{dateType=Available} to indicate the
+date that the instrument is or was in operation.  Use a single date
+if the instrument is still in operation, to indicate a start date.
+Use a date interval to indicate a start and an end date, if the
+instrument has already been decommissioned.
+
+\item[{\sphinxtitleref{RelatedIdentifier}}] \leavevmode
+\sphinxAtStartPar
+This can be used to establish links to related resources.  The
+DataCite Schema has a property with the same name, having very
+similar subproperties and semantics as the PIDINST Schema.
+
+\item[{\sphinxtitleref{AlternateIdentifier}}] \leavevmode
+\sphinxAtStartPar
+To be used if this instrument is also registered elsewhere.  Add as
+DataCite property \sphinxtitleref{AlternateIdentifier}.  Use
+\sphinxtitleref{alternateIdentifierType=SerialNumber} for a serial number
+attributed by the manufacturer.  Use
+\sphinxtitleref{alternateIdentifierType=InventoryNumber} for an inventory number
+used by the owner.
+
+\sphinxAtStartPar
+Note that as opposed to the PIDINST schema,
+\sphinxtitleref{alternateIdentifierType} is free text in the DataCite schema.
+Thus, when adding an alternate identifier that is not a serial
+number or an inventory number, you are not forced to use
+\sphinxtitleref{alternateIdentifierType=Other}, but may set the appropriate type in
+\sphinxtitleref{alternateIdentifierType} right away.
+
+\end{description}
+
+
+\subsection{Note on Description in the DataCite Schema}
+\label{\detokenize{datacite-cookbook/metadata:note-on-description-in-the-datacite-schema}}
+\sphinxAtStartPar
+The mapping of PIDINST metadata onto DataCite suggest that \sphinxtitleref{Model},
+\sphinxtitleref{InstrumentType}, and \sphinxtitleref{MeasuredVariable} should be added as a
+\sphinxtitleref{Description} with \sphinxtitleref{descriptionType=TechnicalInfo}.  The value of
+\sphinxtitleref{Description} is free text.  There is no structured way to include
+subproperties such as \sphinxtitleref{modelIdentifier} here.
+
+\sphinxAtStartPar
+Note that \sphinxtitleref{Description} is multivalued, so you may add as many
+instances as needed, even using the same \sphinxtitleref{descriptionType}.  We
+suggest to use separate \sphinxtitleref{Description} instances for \sphinxtitleref{Model},
+\sphinxtitleref{InstrumentType} and \sphinxtitleref{MeasuredVariable} respectively.
+
+
+\subsection{Additional properties in the DataCite Schema}
+\label{\detokenize{datacite-cookbook/metadata:additional-properties-in-the-datacite-schema}}
+\sphinxAtStartPar
+There are a few more properties in the DataCite Schema that have no
+counterpart in the PIDINST Schema and that either need to be set
+because they are mandatory in DataCite or that are worth considering.
+Of course, any other DataCite property not mentioned here may be
+considered as well, if it makes sense for a particular use case.
+\begin{description}
+\item[{\sphinxtitleref{Publisher}}] \leavevmode
+\sphinxAtStartPar
+“The name of the entity that holds, archives, publishes, prints,
+distributes, releases, issues, or produces the resource” (quote from
+the definition in the DataCite Schema).  It’s not quite clear what
+that would mean in the case of an instrument and it seem to be a
+little redundant with what would be the \sphinxtitleref{Owner} in the PIDINST
+Schema.  But it is mandatory in the DataCite Schema, so it needs to
+be set.  We recommend to set it to the entity that created the DOI
+and is responsible for maintaining the DOI metadata.
+
+\item[{\sphinxtitleref{PublicationYear}}] \leavevmode
+\sphinxAtStartPar
+Mandatory in the DataCite Schema.  We suggest to set it to the year
+of issuing the DOI.
+
+\item[{\sphinxtitleref{ResourceType}}] \leavevmode
+\sphinxAtStartPar
+DataCite DOIs are for many different types of objects, so there is a
+need to indicate the type.  This is mandatory in the DataCite
+Schema.  \sphinxtitleref{ResourceType} is free text, but even more relevant is the
+subproperty \sphinxtitleref{resourceTypeGeneral} having a controlled list of values
+with defined types of resources.  Set
+\sphinxtitleref{resourceTypeGeneral=Instrument} here.
+
+\item[{\sphinxtitleref{FundingReference}}] \leavevmode
+\sphinxAtStartPar
+This is optional in the DataCite Schema, but it may be useful to
+acknowledge external funding that supported the purchase or the
+creation of the instrument.
+
+\end{description}
+
+
+\section{Minting the instrument DOI}
+\label{\detokenize{datacite-cookbook/minting:minting-the-instrument-doi}}\label{\detokenize{datacite-cookbook/minting:datacite-cookbook-minting}}\label{\detokenize{datacite-cookbook/minting::doc}}
+\sphinxAtStartPar
+\sphinxhref{https://doi.datacite.org/}{DataCite Fabrica} is the web interface to create and manage your
+DOIs and metadata.  Your organization needs to be a DataCite member or
+work with a DataCite member.  This will provide you with your own DOI
+prefix and the credentials to sign in to Fabrica.
+
+\sphinxAtStartPar
+There are basically three different options to create a new or update
+an existing DOI that we describe in the following.
+
+
+\subsection{Create the DOI using the web form}
+\label{\detokenize{datacite-cookbook/minting:create-the-doi-using-the-web-form}}
+\sphinxAtStartPar
+The most interactive way of creating a DOI is to fill a web formular,
+indicating the DOI, the URL of the landingpage, and all of the
+metadata values.  It provides useful assistence, such as automated
+validation or lookup of external identifiers while entering the
+values.  See the \sphinxhref{https://support.datacite.org/docs/fabrica-create-doi-form}{DataCite documentation}
+for detailed instructions.
+
+
+\subsection{Create the DOI using file upload}
+\label{\detokenize{datacite-cookbook/minting:create-the-doi-using-file-upload}}
+\sphinxAtStartPar
+If you want to create many instrument DOIs, manually entering all the
+metadata values separately may become tedious.  There is another web
+formular that allows the metadata to be uploaded as a file.  Different
+file formats are supported, but the most fine grained control over the
+properties and their values is propably achieved using DataCite XML.
+See the \sphinxhref{https://support.datacite.org/docs/fabrica-create-doi-file-upload}{DataCite documentation}
+for detailed instructions.
+
+
+\subsection{Use the DataCite REST API}
+\label{\detokenize{datacite-cookbook/minting:use-the-datacite-rest-api}}
+\sphinxAtStartPar
+The process of creating the DOIs can be fully automated using the
+DataCite REST API.  The metadata may be feed into the API as JSON or
+DataCite XML.  See the \sphinxhref{https://support.datacite.org/docs/api}{DataCite REST API Guide} for details.
 
 
 
